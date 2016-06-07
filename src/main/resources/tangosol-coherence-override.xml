@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd"
+           xml-override="../common/tangosol-coherence-override.xml">
+
+  <!-- To enable jmx connections -->
+  <management-config>
+    <managed-nodes system-property="coherence.management">all</managed-nodes>
+  </management-config>
+
+  <!--
+    Define a federation configuration for PrimaryCluster and SecondaryCluster
+    where the default topology is Active-Active.
+    -->
+  <federation-config>
+    <participants>
+      <participant>
+        <name system-property="primary.cluster">PrimaryCluster</name>
+        <initial-action>start</initial-action>
+        <remote-addresses>
+          <socket-address>
+            <address>127.0.0.1</address>
+            <port>7574</port>
+          </socket-address>
+        </remote-addresses>
+      </participant>
+      <participant>
+        <name system-property="secondary.cluster">SecondaryCluster</name>
+        <initial-action>pause</initial-action>
+        <remote-addresses>
+          <socket-address>
+            <address>127.0.0.1</address>
+            <port>7575</port>
+          </socket-address>
+        </remote-addresses>
+      </participant>
+    </participants>
+  </federation-config>
+</coherence>

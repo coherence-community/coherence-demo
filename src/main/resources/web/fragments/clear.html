@@ -1,0 +1,10 @@
+Obtain a strongly-typed NamedCache reference:<p>
+<pre>
+NamedCache&lt;UUID, Trade&gt; tradesCache = CacheFactory.getTypedCache("trades",
+                                TypeAssertion.withTypes(UUID.class, Trade.class));
+</pre>
+<p>To clear the cache, issue the following:<p>
+<pre>
+tradesCache.clear();
+</pre>
+If you have Federation enabled, the clear operation will be sent to other cluster.

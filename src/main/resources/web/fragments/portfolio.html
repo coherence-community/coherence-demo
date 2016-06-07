@@ -1,0 +1,26 @@
+The following code is executed to get aggregated data across all storage-enabled nodes
+for this table.
+<p>
+<pre>
+// determine the frequency of each of the symbols
+Map&lt;String, Long&gt; symbolFrequency = trades.aggregate(
+    PresentFilter.INSTANCE, GroupAggregator.createInstance(
+          Trade::getSymbol,new LongSum&lt;&gt;(Trade::getAmount)));
+
+// determine the number of positions with the symbol
+Map&lt;String, Integer&gt; symbolCount = trades.aggregate(
+    PresentFilter.INSTANCE, GroupAggregator.createInstance(Trade::getSymbol, new Count()));
+
+// get the current prices for the symbols using Map default methods which access the cache
+Map&lt;String, Double&gt; symbolPrice = new HashMap&lt;&gt;();
+
+Utilities.getPricesCache().forEach( (key, value) -&gt; symbolPrice.put(key, value.getPrice()));
+
+// determine the original valuation of the positions
+double originalValuation = cacheSize == 0 ? 0
+    : trades.aggregate(PresentFilter.INSTANCE, new DoubleSum&lt;&gt;(Trade::getPurchaseValue));
+</pre>
+<p>
+When additional cache servers are started, the aggregations can run in
+parallel across the available servers.
+</p>

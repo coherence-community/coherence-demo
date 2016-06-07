@@ -1,0 +1,29 @@
+A snapshot called "CoherenceDemoSnapshot" has been created using the default
+Persistence snapshot directory which is under the users home directory in
+"coherence/snapshot" directory.
+<p><p>
+When you issue a snapshot operation against a service, the service is automatically
+suspended before the operation and resumed after the operation. This is to ensure the service
+and data is in a consistent state.
+<p><p>
+There are a number of ways you can issue Persistence operations against services.
+<ol>
+    <li>Coherence Query Language (CohQL) - CohQL has commands for all Persistence operations. See the <a href="http://docs.oracle.com/middleware/1221/coherence/develop-applications/GUID-C0D082B1-FA62-4899-A043-4345156E6641.htm" target="_blank">
+        Coherence Documentation</a> for more information.
+    </li>
+    <li>Coherence JVisualVM Plug-in - The plug-in has a "Persistence" tab, which allows you to issue all Persistence operations. See the <a href="https://docs.oracle.com/middleware/1221/coherence/manage/jmx.htm#COHMG5582" target="_blank">
+       Administration Guide</a> for more information.
+    </li>
+    <li>
+       WLST - When using Coherence in a WebLogic Server environment, WLST can be used to issue Persistence commands when connected to the Admin server. See the
+        <a href="http://docs.oracle.com/middleware/1221/wls/CLUST/coherence.htm#CLUST742" target="_blank">WebLogic Server Documentation</a> for more information.
+    </li>
+    <li>
+        Via a JMX tool such as JVisualVM or JConsole - Operations can be invokved on the PersistenceCoordinator MBean directly. See
+        <a href="https://docs.oracle.com/middleware/1221/coherence/administer/GUID-3DC46E44-21E4-4DC4-9D12-231DE57FE7A1.htm#COHAG5341" target="_blank">Coherence Documentation</a>
+        for more information.
+    </li>
+    <li>
+        Using Java - See the examples shipped with Coherence for examples on how to do this.
+    </li>
+</ol>

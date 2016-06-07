@@ -1,0 +1,33 @@
+When checked, on every retrieval of the data, the prices cache is randomly updated using
+an Entry Processor. (If Federation is enabled, these updates a replicated to the other cluster.)
+<p><p>
+Lambdas can be used as entry processors from clients and allows you to introduce new logic
+into a running cluster without a cluster restart.
+<p>When defining lambdas, the best way
+to ensure all captured arguments are local variables and captured as a “closure” is
+to return Lambdas from static methods as shown below.
+<pre>
+    /**
+     * An entry processor to update the price of a symbol.
+     *
+     * @param randomValue   a random float to generate the price
+     *
+     * @return a {@link InvocableMap.EntryProcessor} to carry out the processing
+     */
+    protected static InvocableMap.EntryProcessor&lt;String, Price, Void&gt; updateStockPrice(float randomValue)
+    {
+        return entry -> {
+            if (entry.isPresent())
+            {
+                Price  price    = entry.getValue();
+                float  factor   = (randomValue * (MAX_FACTOR - MIN_FACTOR) + MIN_FACTOR);
+                double newPrice = price.getPrice() * factor;
+
+                // when setting the price, if the value < MIN_PRICE, then make it MIN_PRICE
+                price.setPrice(newPrice <= MIN_PRICE ? MIN_PRICE : newPrice);
+                entry.setValue(price);
+            }
+            return null;
+        };
+    }
+</pre>

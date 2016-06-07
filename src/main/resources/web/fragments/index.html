@@ -1,0 +1,18 @@
+To work with indexes, first obtain a NamedCache reference. (For this demonstration
+we have used strongly-typed caches)<p>
+<pre>
+NamedCache&lt;UUID, Trade&gt; tradesCache = CacheFactory.getTypedCache("trades",
+                                TypeAssertion.withTypes(UUID.class, Trade.class));
+</pre>
+<p>To add indexes use the following:<p>
+<pre>
+tradesCache.addIndex(Trade::getSymbol, true, null);
+tradesCache.addIndex(Trade::getPurchaseValue, false, null);
+tradesCache.addIndex(Trade::getAmount, false, null);
+</pre>
+<p>To remove indexes use the following:<p>
+<pre>
+tradesCache.removeIndex(Trade::getSymbol);
+tradesCache.removeIndex(Trade::getPurchaseValue);
+tradesCache.removeIndex(Trade::getAmount);
+</pre>

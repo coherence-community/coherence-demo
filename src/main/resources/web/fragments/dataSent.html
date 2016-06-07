@@ -1,0 +1,10 @@
+This indicates the amount of data sent to the secondary cluster.  If you make
+updates to data by either of the following, this will be replicated to the secondary cluster:
+<ul>
+    <li>Enable real-time price updates</li>
+    <li>Issue replicateAll</li>
+    <li>Clear the cache</li>
+    <li>Add addition trades</li>
+</ul>
+<p><p>
+Note: If you recover a snapshot, you must issue a "Replicate All" to ensure both clusters are in sync.

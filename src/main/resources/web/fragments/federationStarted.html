@@ -1,0 +1,46 @@
+A secondary Coherence cluster has been started and can be accessed via the "Federation" menu.
+<p><p>
+The federated caching feature federates cache data asynchronously across multiple
+geographically dispersed clusters. Cached data is federated across clusters to provide redundancy,
+off-site backup, and multiple points of access for application users in different geographical locations.
+<p><p>
+Once Federation is started any updates to data on either the primary or secondary clusters
+are replicated to the other. The default topology, if none is specified, is Active-Active.
+<p><p>
+To configure a Federated cache, change your distributed-scheme to a federated-scheme in your cache configuration.
+<pre>
+  &lt;federated-scheme&gt;
+    &lt;scheme-name&gt;federated-scheme&lt;/scheme-name&gt;
+    ...
+    &lt;autostart&gt;true&lt;/autostart&gt;
+  &lt;/federated-scheme&gt;
+</pre>
+You must also add the clusters into your operational configuration in the federation-config section.
+<pre>
+  &lt;federation-config&gt;
+    &lt;participants&gt;
+      &lt;participant&gt;
+        &lt;name&gt;PrimaryCluster&lt;/name&gt;
+        &lt;initial-action&gt;start&lt;/initial-action&gt;
+        &lt;remote-addresses&gt;
+          &lt;socket-address&gt;
+            &lt;address&gt;127.0.0.1&lt;/address&gt;
+            &lt;port&gt;7574&lt;/port&gt;
+          &lt;/socket-address&gt;
+        &lt;/remote-addresses&gt;
+      &lt;/participant&gt;
+      &lt;participant&gt;
+        &lt;name&gt;SecondaryCluster&lt;/name&gt;
+        &lt;initial-action&gt;pause&lt;/initial-action&gt;
+        &lt;remote-addresses&gt;
+          &lt;socket-address&gt;
+            &lt;address&gt;127.0.0.1&lt;/address&gt;
+            &lt;port&gt;7575&lt;/port&gt;
+          &lt;/socket-address&gt;
+        &lt;/remote-addresses&gt;
+      &lt;/participant&gt;
+    &lt;/participants&gt;
+  &lt;/federation-config&gt;
+</pre>
+
+For more information of Federation see the <a href="http://docs.oracle.com/middleware/1221/coherence/administer/GUID-B88851EC-BE98-40D5-B026-E29B66DFE384.htm#COHAG5425" target="_blank">Oracle Documentation</a>.

@@ -1,0 +1,26 @@
+The Coherence demo uses Oracle Bedrock to start additional servers to demonstrate
+the ability to provide data redundancy as well as to utilize the available cache servers to execute queries
+in parallel.
+<p><p>
+An example of starting cache servers using Oracle Bedrock is below.
+<pre>
+// use the local platform to create the new member
+LocalPlatform platform = LocalPlatform.get();
+
+// start the new cache server
+CoherenceCacheServer server = platform.launch(
+                        CoherenceCacheServer.class,
+                        DisplayName.of("Coherence Demo Server"),
+                        CacheConfig.of("cache-config.xml"),
+                        SystemProperty.of("coherence.wka", "127.0.0.1"),
+                        SystemProperty.of("coherence.ttl", "0"),
+                        Logging.at(0),
+                        ClusterPort.of(cluster.getDependencies().getGroupPort()),
+                        ClusterName.of(cluster.getClusterName())
+                        );
+
+// wait for the new cache server to join the cluster
+DeferredHelper.ensure(eventually(invoking(server).getClusterSize()), greaterThan(1));
+</pre>
+
+See <a href="https://github.com/coherence-community/oracle-bedrock" target="_blank">GitHub</a> for more information on Oracle Bedrock.
