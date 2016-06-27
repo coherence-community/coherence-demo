@@ -9,7 +9,7 @@
     <version>2.0.1-SNAPSHOT</version>
 
     <properties>
-        <coherence.version>12.2.1-0-2</coherence.version>
+        <coherence.version>12.2.1-1-0</coherence.version>
         <grizzly.version>2.3.8</grizzly.version>
         <jackson.version>2.3.2</jackson.version>
         <jersey.version>2.22.2</jersey.version>
