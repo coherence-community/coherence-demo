@@ -16,6 +16,8 @@ features including:
 The demonstration uses AngularJS 1.4.1, Bootstrap 3.3.4 as well as a number of other
 frameworks. The UI interacts with Coherence using REST.
 
+*Note:* This demonstration requires 12.2.1.1.0 of Coherence. Please see Prerequisites section below.
+
 Prerequisites
 -------------
 In order to run the demonstration you must have the following installed:
@@ -26,7 +28,7 @@ In order to run the demonstration you must have the following installed:
    - JAVA SE Runtime Environment - http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
 
 2. Maven version 3.2.5 or above installed and configured.
-3. Coherence 12.2.1.0.2 or above installed.
+3. Coherence 12.2.1.1.0 or above installed - http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
    If you wish to demonstrate the the Coherence JVisualVM Plug-in, follow the instructions below to install:
    https://docs.oracle.com/middleware/1221/coherence/manage/jmx.htm#COHMG5582
 4. You must use a browser that supports AngularJS to run this application. As of
@@ -40,7 +42,8 @@ Ensure the following environment variables are set:
 * `JAVA_HOME` -- Make sure that the `JAVA_HOME` environment variable points to the location of a JDK supported by the
 Oracle Coherence version you are using.
 
-* `COHERENCE_HOME` -- Make sure `COHERENCE_HOME` is set to point to your Coherence install directory.
+* `COHERENCE_HOME` -- Make sure `COHERENCE_HOME` is set to point to your 'coherence' directory under your 
+   install location. I.e. the directory containing the bin, lib, doc directories.
 This is only required for the Maven install-file commands.
 
 * `MAVEN_HOME` -- If mvn command is not in your path then you should set `MAVEN_HOME` and then add `MAVEN_HOME\bin` to your PATH

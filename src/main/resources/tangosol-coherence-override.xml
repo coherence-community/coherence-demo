@@ -19,22 +19,22 @@
       <participant>
         <name system-property="primary.cluster">PrimaryCluster</name>
         <initial-action>start</initial-action>
-        <remote-addresses>
+        <name-service-addresses>
           <socket-address>
             <address>127.0.0.1</address>
             <port>7574</port>
           </socket-address>
-        </remote-addresses>
+        </name-service-addresses>
       </participant>
       <participant>
         <name system-property="secondary.cluster">SecondaryCluster</name>
         <initial-action>pause</initial-action>
-        <remote-addresses>
+        <name-service-addresses>
           <socket-address>
             <address>127.0.0.1</address>
             <port>7575</port>
           </socket-address>
-        </remote-addresses>
+        </name-service-addresses>
       </participant>
     </participants>
   </federation-config>

@@ -108,10 +108,11 @@ public class Utilities
     {
         NamedCache<UUID, Trade> tradesCache = getTradesCache();
 
-        System.out.println("Adding Indexes...");
+        System.out.print("Adding Indexes...");
         tradesCache.addIndex(Trade::getSymbol, true, null);
         tradesCache.addIndex(Trade::getPurchaseValue, false, null);
         tradesCache.addIndex(Trade::getAmount, false, null);
+        System.out.println(" Done");
     }
 
 
@@ -122,10 +123,11 @@ public class Utilities
     {
         NamedCache<UUID, Trade> tradesCache = getTradesCache();
 
-        System.out.println("Removing Indexes...");
+        System.out.print("Removing Indexes...");
         tradesCache.removeIndex(Trade::getSymbol);
         tradesCache.removeIndex(Trade::getPurchaseValue);
         tradesCache.removeIndex(Trade::getAmount);
+        System.out.println(" Done");
     }
 
 
