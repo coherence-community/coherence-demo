@@ -30,7 +30,7 @@ In order to run the demonstration you must have the following installed:
 2. Maven version 3.2.5 or above installed and configured.
 3. Coherence 12.2.1.1.0 or above installed - http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
    If you wish to demonstrate the the Coherence JVisualVM Plug-in, follow the instructions below to install:
-   https://docs.oracle.com/middleware/1221/coherence/manage/jmx.htm#COHMG5582
+   http://docs.oracle.com/middleware/12211/coherence/manage/using-jmx-manage-oracle-coherence.htm#COHMG5583
 4. You must use a browser that supports AngularJS to run this application. As of
    writing this, the following are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
@@ -169,5 +169,5 @@ References
 For more information on Oracle Coherence, please see the following links:
 
 - Download Coherence - http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html
-- Coherence Documentation - http://docs.oracle.com/middleware/1221/coherence/index.html
+- Coherence Documentation - http://docs.oracle.com/middleware/12211/coherence/index.html
 - Coherence Community - http://coherence.java.net/
