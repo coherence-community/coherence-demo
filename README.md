@@ -16,7 +16,7 @@ features including:
 The demonstration uses AngularJS 1.4.1, Bootstrap 3.3.4 as well as a number of other
 frameworks. The UI interacts with Coherence using REST.
 
-*Note:* This demonstration requires 12.2.1.1.0 of Coherence. Please see Prerequisites section below.
+*Note:* This demonstration requires 12.2.1.3.0 of Coherence. Please see Prerequisites section below.
 
 Prerequisites
 -------------
@@ -28,9 +28,9 @@ In order to run the demonstration you must have the following installed:
    - JAVA SE Runtime Environment - http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
 
 2. Maven version 3.2.5 or above installed and configured.
-3. Coherence 12.2.1.1.0 or above installed - http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
+3. Coherence 12.2.1.3.0 or above installed - http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
    If you wish to demonstrate the the Coherence JVisualVM Plug-in, follow the instructions below to install:
-   http://docs.oracle.com/middleware/12211/coherence/manage/using-jmx-manage-oracle-coherence.htm#COHMG5583
+   https://docs.oracle.com/middleware/12213/coherence/manage/using-jmx-manage-oracle-coherence.htm#COHMG5583
 4. You must use a browser that supports AngularJS to run this application. As of
    writing this, the following are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).

@@ -161,7 +161,9 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     });
 
     // setup cluster name
-    var cluster = $location.search().clusterName;
+    var params       = $location.hash().substring(1).split("&");
+    var clusterParam = params[0].split("=");
+    var cluster      = clusterParam[1];
     self.clusterName = (cluster === undefined) ? '' : cluster;
 
     self.symbolsChartData = [];
