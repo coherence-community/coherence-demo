@@ -13,7 +13,7 @@ features including:
 * Federation
 * Java 8 Support
 
-The demonstration uses AngularJS 1.4.1, Bootstrap 3.3.4 as well as a number of other
+The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4 as well as a number of other
 frameworks. The UI interacts with Coherence using REST.
 
 *Note:* This demonstration requires 12.2.1.3.0 of Coherence. Please see Prerequisites section below.
