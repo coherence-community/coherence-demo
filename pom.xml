@@ -2,304 +2,395 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.oracle.coherence</groupId>
-    <artifactId>coherence-demo</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
+  <groupId>com.oracle.coherence</groupId>
+  <artifactId>coherence-demo</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
 
-    <properties>
-        <bedrock.version>5.0.11</bedrock.version>
-        <coherence.version>12.2.1-3-0</coherence.version>
-        <grizzly.version>2.3.8</grizzly.version>
-        <jackson.version>2.9.8</jackson.version>
-        <jersey.version>2.22.2</jersey.version>
-        <java.version>1.8</java.version>
-        <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
-        <maven.enforcer.plugin.version>1.3.1</maven.enforcer.plugin.version>
-        <maven.gmaven.plugin.version>1.5</maven.gmaven.plugin.version>
-        <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
-        <maven.shade.plugin.version>3.2.0</maven.shade.plugin.version>
-        <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
-        <maven.version>3.5.4</maven.version>
-    </properties>
+  <properties>
+    <bedrock.version>5.0.11</bedrock.version>
+    <coherence.version>12.2.1-3-0</coherence.version>
+    <grizzly.version>2.3.8</grizzly.version>
+    <jackson.version>2.9.8</jackson.version>
+    <jersey.version>2.22.2</jersey.version>
+    <java.version>1.8</java.version>
+    <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
+    <maven.enforcer.plugin.version>1.3.1</maven.enforcer.plugin.version>
+    <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
+    <maven.gmaven.plugin.version>1.5</maven.gmaven.plugin.version>
+    <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
+    <maven.shade.plugin.version>3.2.0</maven.shade.plugin.version>
+    <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+    <maven.version>3.5.4</maven.version>
+  </properties>
 
-    <dependencies>
-        <!-- coherence -->
-        <dependency>
-            <groupId>com.oracle.coherence</groupId>
-            <artifactId>coherence</artifactId>
-            <version>${coherence.version}</version>
-        </dependency>
+  <dependencies>
+    <!-- coherence -->
+    <dependency>
+      <groupId>com.oracle.coherence</groupId>
+      <artifactId>coherence</artifactId>
+      <version>${coherence.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>com.oracle.coherence</groupId>
-            <artifactId>coherence-rest</artifactId>
-            <version>${coherence.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.oracle.coherence</groupId>
-                    <artifactId>coherence</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+    <dependency>
+      <groupId>com.oracle.coherence</groupId>
+      <artifactId>coherence-rest</artifactId>
+      <version>${coherence.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.oracle.coherence</groupId>
+          <artifactId>coherence</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-        <!-- oracle bedrock -->
-        <dependency>
-            <groupId>com.oracle.bedrock.coherence</groupId>
-            <artifactId>coherence-12.2.1</artifactId>
-            <version>${bedrock.version}</version>
-        </dependency>
+    <!-- oracle bedrock -->
+    <dependency>
+      <groupId>com.oracle.bedrock.coherence</groupId>
+      <artifactId>coherence-12.2.1</artifactId>
+      <version>${bedrock.version}</version>
+    </dependency>
 
-        <!-- grizzly -->
-        <dependency>
-            <groupId>org.glassfish.grizzly</groupId>
-            <artifactId>grizzly-framework</artifactId>
-            <version>${grizzly.version}</version>
-        </dependency>
+    <!-- grizzly -->
+    <dependency>
+      <groupId>org.glassfish.grizzly</groupId>
+      <artifactId>grizzly-framework</artifactId>
+      <version>${grizzly.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.grizzly</groupId>
-            <artifactId>grizzly-http</artifactId>
-            <version>${grizzly.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.glassfish.grizzly</groupId>
+      <artifactId>grizzly-http</artifactId>
+      <version>${grizzly.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.grizzly</groupId>
-            <artifactId>grizzly-http-server</artifactId>
-            <version>${grizzly.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.glassfish.grizzly</groupId>
+      <artifactId>grizzly-http-server</artifactId>
+      <version>${grizzly.version}</version>
+    </dependency>
 
-        <!-- jackson -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+    <!-- jackson -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-jaxb-annotations</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
 
-        <!-- jersey -->
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-common</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
+    <!-- jersey -->
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-common</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-server</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-multipart</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-json-jackson</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-sse</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-sse</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-grizzly2-http</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-grizzly2-http</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+  </dependencies>
 
-    <url>https://github.com/coherence-community/coherence-demo</url>
+  <url>https://github.com/coherence-community/coherence-demo</url>
 
-    <licenses>
-        <license>
-            <name>Universal Permissive License 1.0 ("UPL")</name>
-            <url>https://opensource.org/licenses/UPL</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <licenses>
+    <license>
+      <name>Universal Permissive License 1.0 ("UPL")</name>
+      <url>https://opensource.org/licenses/UPL</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-    <developers>
-        <developer>
-            <name>Brian Oliver</name>
-            <organization>Oracle Corporation</organization>
-            <email>brian.oliver@oracle.com></email>
-        </developer>
+  <developers>
+    <developer>
+      <name>Brian Oliver</name>
+      <organization>Oracle Corporation</organization>
+      <email>brian.oliver@oracle.com></email>
+    </developer>
 
-        <developer>
-            <name>Tim Middleton</name>
-            <organization>Oracle Corporation</organization>
-            <email>tim.middleton@oracle.com></email>
-        </developer>
-    </developers>
+    <developer>
+      <name>Tim Middleton</name>
+      <organization>Oracle Corporation</organization>
+      <email>tim.middleton@oracle.com></email>
+    </developer>
+  </developers>
 
-    <scm>
-        <connection>scm:git:https://github.com/coherence-community/coherence-demo.git</connection>
-        <developerConnection>scm:git:https://github.com/coherence-community/coherence-demo.git</developerConnection>
-        <url>https://github.com/coherence-community/coherence-demo.git</url>
-        <tag>HEAD</tag>
-    </scm>
+  <scm>
+    <connection>
+      scm:git:https://github.com/coherence-community/coherence-demo.git
+    </connection>
+    <developerConnection>
+      scm:git:https://github.com/coherence-community/coherence-demo.git
+    </developerConnection>
+    <url>https://github.com/coherence-community/coherence-demo.git</url>
+    <tag>HEAD</tag>
+  </scm>
 
-    <build>
+  <build>
+    <plugins>
+      <!-- ensure we're using Java 8 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+
+      <!-- maven-enforcer-plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven.enforcer.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[${maven.version},)</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>${java.version}</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- create a single jar with everything in it -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${maven.shade.plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer
+                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.oracle.coherence.demo.application.Launcher
+                  </mainClass>
+                  <manifestEntries>
+                    <Implementation-GroupId>com.oracle.coherence
+                    </Implementation-GroupId>
+                    <Implementation-Description>Demonstration
+                    </Implementation-Description>
+                    <Implementation-Vendor>Oracle</Implementation-Vendor>
+                    <Implementation-Version>${actual.coherence.version}
+                    </Implementation-Version>
+                    <Implementation-Build>demo</Implementation-Build>
+                    <Specification-Vendor>Oracle</Specification-Vendor>
+                    <Specification-Version>${actual.coherence.version}
+                    </Specification-Version>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- create docker directory -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>docker</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>docker</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/assembly/image-assembly.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <!-- attach sources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven.source.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- attach javadoc -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven.javadoc.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Create a new property "actual.coherence.version" for the manifest
+           by replacing '-' with '.' -->
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <version>${maven.gmaven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>add-dynamic-properties</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>
+                properties = project.properties
+                version = properties.getProperty("coherence.version")
+                properties.setProperty("actual.coherence.version", version.replaceAll('-', '.'))
+              </source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>docker</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>project.docker</name>
+        </property>
+      </activation>
+      <build>
         <plugins>
-            <!-- ensure we're using Java 8 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin.version}</version>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${maven.exec.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>build-utils-docker-image</id>
+                <phase>package</phase>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                  <executable>docker</executable>
+                  <workingDirectory>${project.build.directory}/docker
+                  </workingDirectory>
+                  <arguments>
+                    <argument>build</argument>
+                    <argument>-t</argument>
+                    <argument>${project.artifactId}-sidecar:${project.version}</argument>
+                    <argument>.</argument>
+                  </arguments>
                 </configuration>
-            </plugin>
-
-            <!-- maven-enforcer-plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven.enforcer.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>enforce</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                        <rules>
-                            <requireMavenVersion>
-                                <version>[${maven.version},)</version>
-                            </requireMavenVersion>
-                            <requireJavaVersion>
-                                <version>${java.version}</version>
-                            </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                </execution>
-              </executions>
-            </plugin>
-
-
-            <!-- create a single jar with everything in it -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>${maven.shade.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.oracle.coherence.demo.application.Launcher</mainClass>
-                                    <manifestEntries>
-                                        <Implementation-GroupId>com.oracle.coherence</Implementation-GroupId>
-                                        <Implementation-Description>Demonstration</Implementation-Description>
-                                        <Implementation-Vendor>Oracle</Implementation-Vendor>
-                                        <Implementation-Version>${actual.coherence.version}</Implementation-Version>
-                                        <Implementation-Build>demo</Implementation-Build>
-                                        <Specification-Vendor>Oracle</Specification-Vendor>
-                                        <Specification-Version>${actual.coherence.version}</Specification-Version>
-                                    </manifestEntries>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- attach sources -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven.source.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- attach javadoc -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven.javadoc.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Create a new property "actual.coherence.version" for the manifest
-                 by replacing '-' with '.' -->
-            <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>${maven.gmaven.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>add-dynamic-properties</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <source>
-                                properties = project.properties
-                                version    = properties.getProperty("coherence.version")
-                                properties.setProperty("actual.coherence.version", version.replaceAll('-','.'))
-                            </source>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>docker-tag</id>
+                <phase>package</phase>
+                <configuration>
+                  <executable>docker</executable>
+                  <workingDirectory>${project.build.directory}/docker
+                  </workingDirectory>
+                  <arguments>
+                    <argument>tag</argument>
+                    <argument>${project.artifactId}-sidecar:${project.version}</argument>
+                    <argument>${project.artifactId}-sidecar:latest</argument>
+                  </arguments>
+                </configuration>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </build>
+      </build>
+    </profile>
+  </profiles>
 </project>
