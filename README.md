@@ -1,25 +1,37 @@
-Oracle Coherence Demonstration
-==============================
+# Oracle Coherence Demonstration
 
-Overview
---------
+## Overview
 
-This document describes how to build and run the Coherence Demonstration application.
-Building the application results in a single self-contained jar as well as javadoc and source.
-The demonstration showcases Coherence general features, scalability capabilities as well as new 12.2.1
-features including:
+This document describes how to build and run the Coherence Demonstration application. This application 
+showcases Coherence general features, scalability capabilities as well as new 12.2.1 features including:
 
 * Cache Persistence
 * Federation
 * Java 8 Support
 
+This application can either be run `locally`, or via Kubernetes using 
+the [Coherence Operator](https://github.com/oracle/coherence-operator).
+
+When running locally, the application results in a single self-contained jar as well as javadoc and source.
+
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4 as well as a number of other
 frameworks. The UI interacts with Coherence using REST.
 
-*Note:* This demonstration requires 12.2.1.3.0 of Coherence. Please see Prerequisites section below.
+> *Note:* This demonstration requires 12.2.1.3.0 of Coherence. Please see Prerequisites section below.
 
-Prerequisites
--------------
+## Table of Contents
+
+* [Prerequisites](#prerequisites)
+* [Build Instructions](#build-instructions)
+* [Running the Demo](#running-the-coherence-demonstration)
+  * [Running Locally](#running-locally)
+  * [Running on Kubernetes]()
+* [References](#references)  
+
+## What's new in this version?
+
+## Prerequisites
+
 In order to run the demonstration you must have the following installed:
 
 1. Java 8 SE Development Kit or Runtime environment.
@@ -27,15 +39,24 @@ In order to run the demonstration you must have the following installed:
    - Java SE Development Kit - http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
    - JAVA SE Runtime Environment - http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
 
-2. Maven version 3.2.5 or above installed and configured.
+2. Maven version 3.5.4 or above installed and configured.
+
 3. Coherence 12.2.1.3.0 or above installed - http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
    If you wish to demonstrate the the Coherence JVisualVM Plug-in, follow the instructions below to install:
    https://docs.oracle.com/middleware/12213/coherence/manage/using-jmx-manage-oracle-coherence.htm#COHMG5583
+
 4. You must use a browser that supports AngularJS to run this application. As of
    writing this, the following are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
 
 For more information on browser compatibility see https://code.angularjs.org/1.4.1/docs/misc/faq.
+
+Additionally if you wish to run the application in Kubernetes using the `Coherence Operator`, you must
+ensure you meet the following:
+
+* Software and Runtime Prerequisites in the (Coherence Operator Quickstart Guide)[https://oracle.github.io/coherence-operator/docs/quickstart.html#prerequisites]
+
+* Carry out the steps in (1. Environment Configuration in the Quickstart Guide)[https://oracle.github.io/coherence-operator/docs/quickstart.html#1-environment-configuration]
 
 Ensure the following environment variables are set:
 
@@ -86,8 +107,7 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFil
 mvn -s /path/to/settings.xml ...
 ```
 
-Build Instructions
-------------------
+## Build Instructions
 
 Build the Coherence Demonstration by using:
 
@@ -101,13 +121,17 @@ The target directory will contain a number of files:
 - coherence-demo-2.0.1-SNAPSHOT-javadoc.jar  - javadoc
 - coherence-demo-2.0.1-SNAPSHOT-sources.jar  - sources
 
-Run Instructions
-----------------
+## Running the Coherence demonstration
+
+The Coherence demo can be run locally, or via Kubernetes using 
+the [Coherence Operator](https://github.com/oracle/coherence-operator).
+
+### Running Locally
 
 Ensuring you have Java 8 in the PATH for your operating system, simply run the following:
 
-```
-      java -jar target/coherence-demo-2.0.1-SNAPSHOT.jar
+```bash
+java -jar target/coherence-demo-2.0.1-SNAPSHOT.jar
 ```
 
 This command will startup a Coherence cache server as well as HTTP server on port 8080 for
@@ -136,15 +160,14 @@ This will shutdown all processes including the secondary cluster if started.
 
 **Note:** Secondary cluster may not form if you are running on a VPN due to security restrictions.
 
-Modifying the Defaults
-----------------------
+### Modifying the Defaults
 
 *HTTP Ports and hostname*
 
 The default HTTP hostname is 127.0.0.1 and default port is 8080. To modify these you can
 add the http.hostname or http.port properties on startup:
 
-```
+```bash
 java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-2.0.1-SNAPSHOT.jar
 ```
 
@@ -157,17 +180,21 @@ When starting up the application the timezone is analyzed and some sensible defa
 for primary and secondary cluster names are chosen (see Launcher.java). If you wish to
 sepcify your own, you can do the following:
 
-```
+```bash
 java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-2.0.1-SNAPSHOT.jar
 ```
 
 If you wish to use a cluster name with a space you must enclose it in quotes.
 
-References
-----------
+### Running on Kubernetes
+
+
+## References
 
 For more information on Oracle Coherence, please see the following links:
 
-- Download Coherence - http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html
-- Coherence Documentation - http://docs.oracle.com/middleware/12211/coherence/index.html
-- Coherence Community - http://coherence.java.net/
+* Download Coherence - (http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html)[http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html]
+* Coherence Documentation - (https://docs.oracle.com/middleware/12213/coherence/docs.htm)[https://docs.oracle.com/middleware/12213/coherence/docs.htm]
+* Coherence Community - (http://coherence.oracle.com/)[http://coherence.oracle.com/]
+* Coherence Operator GitHub Page - (https://github.com/oracle/coherence-operator)[https://github.com/oracle/coherence-operator]
+* Coherence Operator Documentation - (https://oracle.github.io/coherence-operator/)[https://oracle.github.io/coherence-operator/]
