@@ -102,6 +102,45 @@ public class Utilities
 
 
     /**
+     * Obtain an indicator showing if we are running under the Coherence Operator in
+     * Kubernetes.
+     *
+     * @return an indicator showing if we are running under the Coherence Operator in
+     *      Kubernetes
+     */
+    public static boolean isRunningInKubernetes()
+        {
+        return System.getenv("COHERENCE_OPERATOR_SERVICE_SERVICE_HOST") != null &&
+               System.getenv("COHERENCE_OPERATOR_SERVICE_SERVICE_PORT") != null;
+        }
+
+
+    /**
+     * Obtain the Coherence cluster version.
+     *
+     * @return the Coherence cluster version
+     */
+    public static String getCoherenceVersion()
+        {
+
+        return CacheFactory.VERSION.replaceFirst(" .*$", "")
+                                   .replaceFirst("[\\.-]SNAPSHOT.*$","")
+                                   .replaceAll("-",".");
+        }
+
+
+    /**
+     * Obtain the Coherence cluster version as an integer.
+     *
+     * @return the Coherence cluster version as an integer
+     */
+    public static int getCoherenceVersionAsInt()
+        {
+        return Integer.parseInt(getCoherenceVersion().replaceAll("\\.", ""));
+        }
+
+
+    /**
      * Add indexes to the caches to improve query performance.
      */
     public static void addIndexes()

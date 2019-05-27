@@ -18,5 +18,7 @@
 
 FROM oraclelinux:7-slim
 RUN mkdir -p /files/lib
+RUN mkdir -p /files/conf
 COPY files/lib files/lib/
+COPY files/conf files/conf/
 

@@ -219,67 +219,7 @@
           </execution>
         </executions>
       </plugin>
-
-      <!-- create a single jar with everything in it -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>${maven.shade.plugin.version}</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer
-                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>com.oracle.coherence.demo.application.Launcher
-                  </mainClass>
-                  <manifestEntries>
-                    <Implementation-GroupId>com.oracle.coherence
-                    </Implementation-GroupId>
-                    <Implementation-Description>Demonstration
-                    </Implementation-Description>
-                    <Implementation-Vendor>Oracle</Implementation-Vendor>
-                    <Implementation-Version>${actual.coherence.version}
-                    </Implementation-Version>
-                    <Implementation-Build>demo</Implementation-Build>
-                    <Specification-Vendor>Oracle</Specification-Vendor>
-                    <Specification-Version>${actual.coherence.version}
-                    </Specification-Version>
-                  </manifestEntries>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       
-      <!-- create docker directory -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>docker</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>docker</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>src/assembly/image-assembly.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-
       <!-- attach sources -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -337,6 +277,55 @@
   </build>
 
   <profiles>
+    <!-- default 'stand-alone' profile which included shaded jar -->
+    <profile>
+      <id>stand-alone</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <!-- create a single jar with everything in it -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>${maven.shade.plugin.version}</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <transformers>
+                    <transformer
+                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                      <mainClass>com.oracle.coherence.demo.application.Launcher
+                      </mainClass>
+                      <manifestEntries>
+                        <Implementation-GroupId>com.oracle.coherence
+                        </Implementation-GroupId>
+                        <Implementation-Description>Demonstration
+                        </Implementation-Description>
+                        <Implementation-Vendor>Oracle</Implementation-Vendor>
+                        <Implementation-Version>${actual.coherence.version}
+                        </Implementation-Version>
+                        <Implementation-Build>demo</Implementation-Build>
+                        <Specification-Vendor>Oracle</Specification-Vendor>
+                        <Specification-Version>${actual.coherence.version}
+                        </Specification-Version>
+                      </manifestEntries>
+                    </transformer>
+                  </transformers>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- docker profile for building image for Coherence Operator -->
     <profile>
       <id>docker</id>
       <activation>
@@ -347,6 +336,53 @@
       </activation>
       <build>
         <plugins>
+
+          <!-- make a jar with specific artifacts not found in Coherence docker image -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>${maven.shade.plugin.version}</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <artifactSet>
+                    <excludes>
+                      <exclude>com.oracle.coherence:coherence:*</exclude>
+                      <exclude>com.oracle.coherence:coherence-rest:*</exclude>
+                    </excludes>
+                  </artifactSet>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- create docker directory -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>docker</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>docker</finalName>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <descriptors>
+                    <descriptor>src/assembly/image-assembly.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- build docker image -->
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>

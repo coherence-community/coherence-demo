@@ -31,7 +31,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 /**
@@ -58,6 +62,21 @@ public class DeveloperResource
      * Name of secondary cluster.
      */
     private static final String secondaryCluster = System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY);
+
+
+    @GET
+    @Produces({APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
+    @Path("environment")
+    public Response getEnvironmentInfo()
+    {
+        Map<String, Object> mapEnv =  new HashMap<>();
+
+        mapEnv.put("runningInKubernetes",   Utilities.isRunningInKubernetes());
+        mapEnv.put("coherenceVersion",      Utilities.getCoherenceVersion());
+        mapEnv.put("coherenceVersionAsInt", Utilities.getCoherenceVersionAsInt());
+
+        return Response.status(Response.Status.OK).entity(mapEnv).build();
+    }
 
 
     @GET

@@ -76,9 +76,9 @@
                     <a href="#"><span id="statusMessage" ng-show="displayStatus" ng-class="{{lastStatusClass}}">{{lastStatusMessage}}</span>&nbsp;</a>
                 </li>
                 <!-- /.dropdown -->
-                <li class="dropdown" ng-show="clusterName != secondaryClusterName">
+                <li class="dropdown" ng-show="(!isRunningInKubernetes && clusterName != secondaryClusterName) || (isRunningInKubernetes && coherenceVersionAsInt >= 122140)">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <!-- <i class="fa fa-globe fa-fw"></i>--> Federation <i class="fa fa-caret-down"></i>
+                        Federation <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li>
@@ -126,8 +126,10 @@
                         Tools <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#" ng-click="startDeveloper('jvisualvm')" ><i class="fa fa-dashboard fa-fw"></i> Start JVisualVM</a></li>
-                        <li class="divider"></li>
+                        <li ng-show="!isRunningInKubernetes">
+                            <a href="#" ng-click="startDeveloper('jvisualvm')" ><i class="fa fa-dashboard fa-fw"></i> Start JVisualVM</a>
+                        </li>
+                        <li ng-show="!isRunningInKubernetes" class="divider"></li>
                         <li><a href="#" ng-click="startDeveloper('clear')"><i class="fa fa-remove fa-fw"></i> Clear Cache</a></li>
                         <li><a href="#" ng-click="startDeveloper('populate')"><i class="fa fa-repeat fa-fw"></i> Populate Cache</a></li>
                         <li><a href="#" ng-click="addTrades()"><i class="fa fa-plus fa-fw"></i> Add Trades</a></li>
@@ -317,7 +319,7 @@
                             <div class="pull-right">
                                 <span ng-show="MAXIMUM_SERVERS - memberInfo.length > 0 && !startingMember" >
                                     <button class="btn btn-xs btn-default" ng-click="startMember()">Add Server</button>
-                                    <insight ng-click="displayInsight('addServer')" ng-show="insightEnabled"/>
+                                    <insight ng-click="displayInsightK8sAware('addServer')" ng-show="insightEnabled"/>
                                 </span>
 
                                 <span ng-show="startingMember">Starting Server <img src="images/spinner.gif"/>

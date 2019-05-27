@@ -156,7 +156,7 @@ the [Coherence Operator](https://github.com/oracle/coherence-operator).
 Ensuring you have Java 8 in the PATH for your operating system, simply run the following:
 
 ```bash
-java -jar target/coherence-demo-2.0.1-SNAPSHOT.jar
+$ java -jar target/coherence-demo-2.0.1-SNAPSHOT.jar
 ```
 
 This command will startup a Coherence cache server as well as HTTP server on port 8080 for
@@ -178,12 +178,12 @@ The following features are available to demonstrate:
 * Open secondary cluster dashboard to observe changes being replicated.
 * Stop Federation and shutdown secondary cluster.
 
-**Note:** If you recover a snapshot on a cluster you must replicate all to re-sync.
+> **Note:** If you recover a snapshot on a cluster you must replicate all to re-sync.
 
 To shutdown the application use the "Shutdown" option from the "Tools" menu.
 This will shutdown all processes including the secondary cluster if started.
 
-**Note:** Secondary cluster may not form if you are running on a VPN due to security restrictions.
+> **Note:** Secondary cluster may not form if you are running on a VPN due to security restrictions.
 
 ### Modifying the Defaults
 
@@ -193,7 +193,7 @@ The default HTTP hostname is 127.0.0.1 and default port is 8080. To modify these
 add the http.hostname or http.port properties on startup:
 
 ```bash
-java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-2.0.1-SNAPSHOT.jar
+$ java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-2.0.1-SNAPSHOT.jar
 ```
 
 By changing the http.hostname you will be able to access the application outside of
@@ -206,7 +206,7 @@ for primary and secondary cluster names are chosen (see Launcher.java). If you w
 sepcify your own, you can do the following:
 
 ```bash
-java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-2.0.1-SNAPSHOT.jar
+$ java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-2.0.1-SNAPSHOT.jar
 ```
 
 If you wish to use a cluster name with a space you must enclose it in quotes.
@@ -278,6 +278,7 @@ called `coherence-demo-namespace`.
       --set store.pof.config=pof-config.xml \
       --set store.javaOpts="-Dprimary.cluster=demo-cluster-1"  \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
+      --set coherence.image=
       coherence/coherence
    ```
 

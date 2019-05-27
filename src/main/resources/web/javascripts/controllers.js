@@ -1,7 +1,7 @@
 /*
  * File: controllers.js
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2019 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -127,6 +127,9 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.insightLabel           = 'Disable Insight';
     self.insightEnabled         = true;
     self.insightContent         = [];
+    self.isRunningInKubernetes  = false;
+    self.coherenceVersion       = undefined;
+    self.coherenceVersionAsInt  = 0;
 
     self.displayingSplash = false;
 
@@ -143,6 +146,13 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.insightLabel   = 'Enable Insight';
         self.insightEnabled = false;
     }
+
+    // retrieve the environment to determine if we are running standalone or under Kubernetes
+    $http.get('/service/developer/environment').then(function(response) {
+        self.isRunningInKubernetes = response.data.runningInKubernetes;
+        self.coherenceVersion      = response.data.coherenceVersion;
+        self.coherenceVersionAsInt = response.data.coherenceVersionAsInt;
+    });
 
     // obtain the cluster names from the developer resource as they can be overridden
     // via -Dprimary.cluster or -Dsecondary.cluster
@@ -348,20 +358,42 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     // ---- the function to start a new cluster member ----
 
     self.startMember = function() {
-        self.startingMember = true;
+        if (self.isRunningInKubernetes === true) {
+            self.displayInsight("addOrRemoveServerK8s");
+        }
+        else {
+            self.startingMember = true;
+            $http.get('/service/start-member').then(function(response) {
+                self.startingMember = false;
+                self.displayInsightIfEnabled('serverStarted');
+            });
+        }
+    };
 
-        $http.get('/service/start-member').then(function(response) {
-            self.startingMember = false;
-            self.displayInsightIfEnabled('serverStarted');
-        });
+    // ---- the function to display insight for functions that may vary when running in k8s ----
+
+    self.displayInsightK8sAware = function(target) {
+        if (self.isRunningInKubernetes) {
+            if (target === "addServer") {
+                self.displayInsight("addOrRemoveServerK8s");
+            }
+        }
+        else {
+            self.displayInsight(target);
+        }
     };
 
     // ---- the function to stop an existing cluster member for a given cluster ----
 
     self.stopMember = function(memberId) {
-        $http.get('/service/stop-member/' + memberId).then(function(response) {
-            self.displayInsightIfEnabled('serverStopped');
-        });
+        if (self.isRunningInKubernetes === true) {
+            self.displayInsight("addOrRemoveServerK8s");
+        }
+        else {
+            $http.get('/service/stop-member/' + memberId).then(function(response) {
+                self.displayInsightIfEnabled('serverStopped');
+            });
+        }
     };
 
     // ---- the function to control secondary cluster ----
@@ -509,6 +541,15 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "header":  "Coherence Demonstration",
            "content": "fragments/welcome.html"
        };
+       self.insightContent['shutdown'] = {
+           "header":  "Shutdown Coherence Demonstration",
+           "content": "fragments/shutdown.html"
+       };
+       self.insightContent['addOrRemoveServerK8s'] = {
+           "header":  "Add or Remove Server",
+           "content": "fragments/addOrRemoveServerK8s.html"
+       };
+
     };
 
     // ---- the function to close the splash screen
@@ -604,18 +645,23 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.displayNotification('Clearing all trades...', 'info', false);
         }
         else if (command === 'shutdown') {
-            continueCommand = $window.confirm('Are you sure you want to shutdown the Demo?');
-        }
-        if (continueCommand) {
-            $http.get('/service/developer/' + command).then(function(response) {
-                if (command === 'populate' || command === 'clear') {
-                    self.displayNotification('Operation completed','success', true);
-                    self.displayInsightIfEnabled(command);
+            if (self.isRunningInKubernetes === true) {
+                self.displayInsight('shutdown');
+            }
+            else {
+                continueCommand = $window.confirm('Are you sure you want to shutdown the Demo?');
+                if (continueCommand) {
+                    $http.get('/service/developer/' + command).then(function(response) {
+                        if (command === 'populate' || command === 'clear') {
+                            self.displayNotification('Operation completed','success', true);
+                            self.displayInsightIfEnabled(command);
+                        }
+                        else {
+                            self.displayInsightIfEnabled(command);
+                        }
+                    });
                 }
-                else {
-                    self.displayInsightIfEnabled(command);
-                }
-            });
+            }
         }
     };
 
