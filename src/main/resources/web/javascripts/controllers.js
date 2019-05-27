@@ -128,8 +128,11 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.insightEnabled         = true;
     self.insightContent         = [];
     self.isRunningInKubernetes  = false;
+    self.isThisPrimaryCluster   = false;
+    self.federationConfiguredInK8s = false;
     self.coherenceVersion       = undefined;
     self.coherenceVersionAsInt  = 0;
+    self.thisClusterName        = undefined;
 
     self.displayingSplash = false;
 
@@ -149,32 +152,48 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     // retrieve the environment to determine if we are running standalone or under Kubernetes
     $http.get('/service/developer/environment').then(function(response) {
-        self.isRunningInKubernetes = response.data.runningInKubernetes;
-        self.coherenceVersion      = response.data.coherenceVersion;
-        self.coherenceVersionAsInt = response.data.coherenceVersionAsInt;
-    });
+        self.isRunningInKubernetes     = response.data.runningInKubernetes;
+        self.coherenceVersion          = response.data.coherenceVersion;
+        self.coherenceVersionAsInt     = response.data.coherenceVersionAsInt;
+        self.isThisPrimaryCluster      = response.data.primaryCluster;
+        self.federationConfiguredInK8s = response.data.federationConfiguredInK8s;
+        self.thisClusterName           = response.data.thisClusterName;
 
-    // obtain the cluster names from the developer resource as they can be overridden
-    // via -Dprimary.cluster or -Dsecondary.cluster
-    $http.get('/service/developer/clusterNames').then(function(response) {
-        var clusterNames = response.data.split(':');
-        self.primaryClusterName   = clusterNames[0];
-        self.secondaryClusterName = clusterNames[1];
+        // setup cluster name
+        // TODO: Change with Jquery patch
+        var params       = $location.hash().substring(1).split("&");
+        var clusterParam = params[0].split("=");
+        var cluster      = clusterParam[1];
 
-        // display welcome here as we need to know the cluster names
-        console.log('clusterName=' + self.clusterName + ", sec=" + self.secondaryClusterName);
+        if (self.federationConfiguredInK8s && !self.isThisPrimaryCluster)
+           {
+           // if we have configuration federation in K8s and this is the
+           // secondary cluster, then set the cluster name from the "/environment/" call
+           // as the cluster name will not be abel to be retrieved from URL
 
-        // display welcome insight (on primary cluster only)
-        if (self.clusterName != self.secondaryClusterName && !insightCookies.skipSplash) {
-             self.displayInsight('welcome');
+           self.clusterName = self.thisClusterName;
+           }
+        else {
+            self.clusterName = (cluster === undefined) ? '' : cluster;
         }
+        
+        // obtain the cluster names from the developer resource as they can be overridden
+        // via -Dprimary.cluster or -Dsecondary.cluster
+        $http.get('/service/developer/clusterNames').then(function(response) {
+            var clusterNames = response.data.split(':');
+            self.primaryClusterName   = clusterNames[0];
+            self.secondaryClusterName = clusterNames[1];
+
+            // display welcome insight (on primary cluster only)
+            if (self.clusterName != self.secondaryClusterName && !insightCookies.skipSplash) {
+                 self.displayInsight('welcome');
+            }
+        });
+
     });
 
-    // setup cluster name
-    var params       = $location.hash().substring(1).split("&");
-    var clusterParam = params[0].split("=");
-    var cluster      = clusterParam[1];
-    self.clusterName = (cluster === undefined) ? '' : cluster;
+
+
 
     self.symbolsChartData = [];
 
@@ -549,7 +568,10 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "header":  "Add or Remove Server",
            "content": "fragments/addOrRemoveServerK8s.html"
        };
-
+       self.insightContent['demoShutdown'] = {
+           "header":  "Coherence Demonstration Shutdown",
+           "content": "fragments/demoShutdown.html"
+       };
     };
 
     // ---- the function to close the splash screen
@@ -566,38 +588,65 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.startSecondary = function() {
         self.secondaryCluster = 'starting';
         self.displayNotification('Starting secondary cluster...','info', false);
-        $http.get('/service/start-secondary').then(function(response) {
-            self.secondaryCluster = 'enabled';
-            self.localClusterName = self.primaryClusterName;
-            self.federationControlLabel = self.STOP_FEDERATION;
 
-            // automatically start federation as it will be paused
-            self.federationOperation('start');
-            self.displayNotification('Secondary cluster started','success', true);
+        self.secondaryCluster       = 'enabled';
+        self.localClusterName       = self.primaryClusterName;
+        self.federationControlLabel = self.STOP_FEDERATION;
 
-            self.currentBytesSent = 0;
-            self.bytesSentData    = [];
-            self.lastBytesSent    = -1;
+        // don't start new DefaultCache server if we are in K8s
+        if (self.isRunningInKubernetes && self.federationConfiguredInK8s) {
+            self.startFederationInternal();
+        }
+        else {
+            $http.get('/service/start-secondary').then(function(response) {
+                // automatically start federation as it will be paused
+                self.startFederationInternal();
+            });
+        }
+    };
 
-            self.displayInsightIfEnabled('federationStarted');
-        });
+    // ---- the function to start federation internally ----
+
+    self.startFederationInternal = function() {
+        self.federationOperation('start');
+        self.displayNotification('Secondary cluster started','success', true);
+
+        self.currentBytesSent = 0;
+        self.bytesSentData    = [];
+        self.lastBytesSent    = -1;
+
+        self.displayInsightIfEnabled('federationStarted');
     };
 
     // ---- the function to stop a secondary cluster ----
 
     self.stopSecondary = function() {
+
         self.secondaryCluster = 'stopping';
         self.displayNotification('Stopping secondary cluster...','info', false);
-        $http.get('/service/stop-member/secondary').then(function(response) {
-            self.secondaryCluster       = 'disabled';
-            self.federationControlLabel = self.START_FEDERATION;
-            self.localClusterName       = '';
 
-            // pause replication
-            self.federationOperation('pause');
-            self.displayNotification('Secondary cluster stopped','success', true);
-            self.displayInsightIfEnabled('federationStopped');
-        });
+        // don't start new DefaultCache server if we are in K8s
+        if (self.isRunningInKubernetes && self.federationConfiguredInK8s) {
+            self.pauseFederationInternal();
+        }
+        else {
+            $http.get('/service/stop-member/secondary').then(function(response) {
+                self.pauseFederationInternal();
+            });
+        }
+    };
+
+    // ---- the function to pause federation internally ----
+
+    self.pauseFederationInternal = function() {
+        self.secondaryCluster       = 'disabled';
+        self.federationControlLabel = self.START_FEDERATION;
+        self.localClusterName       = '';
+
+        // pause replication
+        self.federationOperation('pause');
+        self.displayNotification('Secondary cluster stopped','success', true);
+        self.displayInsightIfEnabled('federationStopped');
     };
 
     // ---- the function to open the secondary cluster window
@@ -632,7 +681,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         });
     };
 
-    // ---- the function to start developer tools ----
+    // ---- the function to start
+        // developer tools ----
 
     self.startDeveloper = function(command) {
         // default to continue processing command. Only shutdown has confirmation
@@ -647,28 +697,33 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         else if (command === 'shutdown') {
             if (self.isRunningInKubernetes === true) {
                 self.displayInsight('shutdown');
+                return;
             }
             else {
                 continueCommand = $window.confirm('Are you sure you want to shutdown the Demo?');
-                if (continueCommand) {
-                    $http.get('/service/developer/' + command).then(function(response) {
-                        if (command === 'populate' || command === 'clear') {
-                            self.displayNotification('Operation completed','success', true);
-                            self.displayInsightIfEnabled(command);
-                        }
-                        else {
-                            self.displayInsightIfEnabled(command);
-                        }
-                    });
-                }
             }
+        }
+
+        if (continueCommand) {
+            if (command === "shutdown") {
+                self.displayInsight("demoShutdown");
+            }
+            $http.get('/service/developer/' + command).then(function(response) {
+                if (command === 'populate' || command === 'clear') {
+                    self.displayNotification('Operation completed','success', true);
+                    self.displayInsightIfEnabled(command);
+                }
+                else {
+                    self.displayInsightIfEnabled(command);
+                }
+            });
         }
     };
 
     // ---- the function to suspend or resume federation  ----
 
     self.toggleFederationState = function() {
-       if (self.federationStateLabel == self.SUSPEND_FEDERATION) {
+       if (self.federationStateLabel === self.SUSPEND_FEDERATION) {
            self.federationOperation('pause');
            self.federationStateLabel = self.RESUME_FEDERATION;
            self.displayNotification('Replication Paused', 'success', true);

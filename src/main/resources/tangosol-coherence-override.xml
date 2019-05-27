@@ -39,8 +39,8 @@
         <initial-action>start</initial-action>
         <name-service-addresses>
           <socket-address>
-            <address>127.0.0.1</address>
-            <port>7574</port>
+            <address system-property="primary.cluster.host">127.0.0.1</address>
+            <port    system-property="primary.cluster.port">7574</port>
           </socket-address>
         </name-service-addresses>
       </participant>
@@ -49,8 +49,8 @@
         <initial-action>pause</initial-action>
         <name-service-addresses>
           <socket-address>
-            <address>127.0.0.1</address>
-            <port>7575</port>
+            <address system-property="secondary.cluster.host">127.0.0.1</address>
+            <port    system-property="secondary.cluster.port">7575</port>
           </socket-address>
         </name-service-addresses>
       </participant>

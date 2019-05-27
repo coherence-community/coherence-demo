@@ -22,6 +22,7 @@ import com.oracle.coherence.demo.model.Trade;
 
 import com.oracle.bedrock.runtime.LocalPlatform;
 
+import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.util.UUID;
 
@@ -71,9 +72,14 @@ public class DeveloperResource
     {
         Map<String, Object> mapEnv =  new HashMap<>();
 
-        mapEnv.put("runningInKubernetes",   Utilities.isRunningInKubernetes());
-        mapEnv.put("coherenceVersion",      Utilities.getCoherenceVersion());
-        mapEnv.put("coherenceVersionAsInt", Utilities.getCoherenceVersionAsInt());
+        String sClusterName = CacheFactory.ensureCluster().getClusterName();
+
+        mapEnv.put("runningInKubernetes",       Utilities.isRunningInKubernetes());
+        mapEnv.put("coherenceVersion",          Utilities.getCoherenceVersion());
+        mapEnv.put("coherenceVersionAsInt",     Utilities.getCoherenceVersionAsInt());
+        mapEnv.put("primaryCluster",            sClusterName.equals(primaryCluster));
+        mapEnv.put("federationConfiguredInK8s", Utilities.isFederationConfiguredInK8s());
+        mapEnv.put("thisClusterName",           sClusterName);
 
         return Response.status(Response.Status.OK).entity(mapEnv).build();
     }

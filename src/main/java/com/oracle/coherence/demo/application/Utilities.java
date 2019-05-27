@@ -130,6 +130,21 @@ public class Utilities
 
 
     /**
+     * Obtain an indicator showing if federation is configured in K8s.
+     *
+     * @return an indicator showing if federation is configured in K8s.
+     */
+    public static boolean isFederationConfiguredInK8s()
+        {
+        return isRunningInKubernetes() &&
+               System.getProperty("primary.cluster")   != null &&
+               System.getProperty("secondary.cluster") != null &&
+               System.getProperty("primary.cluster.host") != null &&
+               System.getProperty("secondary.cluster.host") != null;
+        }
+
+
+    /**
      * Obtain the Coherence cluster version as an integer.
      *
      * @return the Coherence cluster version as an integer

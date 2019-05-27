@@ -28,6 +28,7 @@ frameworks. The UI interacts with Coherence using REST.
 * [Running the Demo](#running-the-coherence-demonstration)
   * [Running Locally](#running-locally)
   * [Running on Kubernetes](#running-on-kubernetes)
+  * [Enabling Federation](#enabling-federation-on-kubernetes)
 * [References](#references)  
 
 ## Prerequisites
@@ -213,6 +214,9 @@ If you wish to use a cluster name with a space you must enclose it in quotes.
 
 ### Running on Kubernetes
 
+> Note: If you wish you enable Federation when running on Kubernetes, please
+> follow steps 1,2 & 3 below and continue with instructions [Here](#enabling-federation-on-kubernetes).
+   
 The following will install and run the application using Coherence Operator in a namespace
 called `coherence-demo-namespace`.
 
@@ -265,20 +269,19 @@ called `coherence-demo-namespace`.
    coherence-operator-5d4dc4546c-4c925   1/1     Running   0          50s
    ```
 
-1. Install the Coherence Chart
-
+1. Install the Coherence Cluster
+   
    ```bash
    $ helm install \
       --namespace coherence-demo-namespace \
       --name coherence-demo \
       --set clusterSize=1 \
-      --set cluster=demo-cluster-1 \
+      --set cluster=primary-cluster \
       --set imagePullSecrets=coherence-demo-secret \
       --set store.cacheConfig=cache-config.xml \
       --set store.pof.config=pof-config.xml \
-      --set store.javaOpts="-Dprimary.cluster=demo-cluster-1"  \
+      --set store.javaOpts="-Dprimary.cluster=primary-cluster"  \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
-      --set coherence.image=
       coherence/coherence
    ```
 
@@ -314,27 +317,111 @@ called `coherence-demo-namespace`.
    ```bash
    $ kubectl scale statefulsets coherence-demo --namespace coherence-demo-namespace --replicas=2
    ```
+   
+### Enabling Federation on Kubernetes
+
+You must use Coherence 12.2.1.3.3 or above for Federation to working within Kubernetes.
+
+The setup for this example uses 2 Coherence clusters in the same Kubernetes cluster. If you wish 
+to use Federation across Kubernetes cluster please see the [Coherence Operator Samples](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples).
+
+* Primary Cluster
+  * Release name: cluster-1
+  * Cluster name: PrimaryCluster
+* Secondary Cluster
+  * Release name: cluster-2
+  * Cluster name: SecondaryCluster
+
+> Note: If you wish you enable Federation when running on Kubernetes, please
+> follow steps 1,2 & 3 [Here](#running-on-kubernetes) and continue the steps below.
+   
+1. Install the **Primary** cluster
+
+   ```bash
+   $ helm install \
+      --namespace coherence-demo-namespace \
+      --name cluster-1 \
+      --set clusterSize=1 \
+      --set cluster=PrimaryCluster \
+      --set imagePullSecrets=coherence-demo-secret \
+      --set store.cacheConfig=cache-config.xml \
+      --set store.pof.config=pof-config.xml \
+      --set store.javaOpts="-Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \
+      --set store.ports.federation=40000 \
+      --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
+      coherence/coherence
+   ```   
+   
+1. Port Forward the Primary Cluster - Port **8088**
+
+   ```bash
+   $ kubectl port-forward --namespace coherence-demo-namespace cluster-1-coherence-0  8080:8080
+   ```
+
+   Open the following URL to access the application home page.
+   
+   [http://127.0.0.1:8080/application/index.html](http://127.0.0.1:8080/application/index.html)  
+
+1. Install the **Secondary(()) cluster
+
+   ```bash
+   $ helm install \
+      --namespace coherence-demo-namespace \
+      --name cluster-2 \
+      --set clusterSize=1 \
+      --set cluster=SecondaryCluster \
+      --set imagePullSecrets=coherence-demo-secret \
+      --set store.cacheConfig=cache-config.xml \
+      --set store.pof.config=pof-config.xml \
+      --set store.javaOpts="-Dwith.data=false -Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \
+      --set store.ports.federation=40000 \
+      --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
+      coherence/coherence
+   ```   
+   
+1. Port Forward the Secondary Cluster - Port **8090**
+
+   ```bash
+   $ kubectl port-forward --namespace coherence-demo-namespace cluster-2-coherence-0  8090:8080
+   ```
+
+   Open the following URL to access the application home page.
+   
+   [http://127.0.0.1:8090/application/index.html](http://127.0.0.1:8090/application/index.html)  
+
+   > You should see that there is no data in the Secondary cluster, as we have not yet started Federation.
+   
+   
+
 
 ### Uninstalling the Charts
 
 Carry out the following commands to delete the chart installed in this sample.
 
+**Without Federation**
+
 ```bash
 $ helm delete coherence-operator coherence-demo --purge
 ```
+
+**With Federation**
+
+```bash
+$ helm delete coherence-operator cluster-1 cluster-2 --purge
+```
+
 
 Before starting another sample, ensure that all the pods are gone from previous sample.
 
 If you wish to remove the `coherence-operator`, then include it in the `helm delete` command above.
 
 
-
 ## References
 
 For more information on Oracle Coherence, please see the following links:
 
-* Download Coherence - (http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html)[http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html]
-* Coherence Documentation - (https://docs.oracle.com/middleware/12213/coherence/docs.htm)[https://docs.oracle.com/middleware/12213/coherence/docs.htm]
-* Coherence Community - (http://coherence.oracle.com/)[http://coherence.oracle.com/]
-* Coherence Operator GitHub Page - (https://github.com/oracle/coherence-operator)[https://github.com/oracle/coherence-operator]
-* Coherence Operator Documentation - (https://oracle.github.io/coherence-operator/)[https://oracle.github.io/coherence-operator/]
+* Download Coherence - [http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html](http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html)
+* Coherence Documentation - [https://docs.oracle.com/middleware/12213/coherence/docs.htm](https://docs.oracle.com/middleware/12213/coherence/docs.htm)
+* Coherence Community - [http://coherence.oracle.com/](http://coherence.oracle.com/)
+* Coherence Operator GitHub Page - [https://github.com/oracle/coherence-operator](https://github.com/oracle/coherence-operator)
+* Coherence Operator Documentation - [https://oracle.github.io/coherence-operator/](https://oracle.github.io/coherence-operator/)
