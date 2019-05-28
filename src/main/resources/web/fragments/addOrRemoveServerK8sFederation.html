@@ -1,13 +1,13 @@
 Since the demonstration was started using Kubernetes, you must use the Kubernetes command <strong>kubectl</strong>
 to scale the application rather than specifically adding or removing members.
 <p>
-You have also configured **Federation**, so you must use the following to scale the Primary and Secondary clusters.
-<br/>
+You have also configured <strong>Federation</strong>, so you must use the following to scale the Primary and Secondary clusters.
+<p>
 <strong>Primary</strong><p>
 To scale the number of replicas to 2 on the PrimaryCluster, use the following:
 <pre>
 $  kubectl scale statefulsets cluster-1-coherence --namespace coherence-demo-namespace --replicas=2</pre>
-<p><strong>Secondary</strong>
+<p><strong>Secondary</strong><p>
     To scale the number of replicas to 2 on the SecondaryCluster, use the following:
 <pre>
 $  kubectl scale statefulsets cluster-2-coherence --namespace coherence-demo-namespace --replicas=2</pre>
