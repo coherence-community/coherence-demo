@@ -21,6 +21,7 @@
     <maven.gmaven.plugin.version>1.5</maven.gmaven.plugin.version>
     <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
     <maven.shade.plugin.version>3.2.0</maven.shade.plugin.version>
+    <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
     <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
     <maven.version>3.5.4</maven.version>
   </properties>
@@ -277,6 +278,26 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>coherence12214</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle.coherence</groupId>
+          <artifactId>coherence-http-netty</artifactId>
+          <version>${coherence.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          
+        </plugins>
+      </build>
+    </profile>
+
     <!-- default 'stand-alone' profile which included shaded jar -->
     <profile>
       <id>stand-alone</id>
@@ -334,6 +355,7 @@
           <name>project.docker</name>
         </property>
       </activation>
+      
       <build>
         <plugins>
 

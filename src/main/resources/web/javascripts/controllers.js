@@ -55,7 +55,7 @@ angular.module('filters', [])
     })
     .filter('clusterName', function() {
         return function(cluster) {
-            return cluster === '' ? '' : cluster + ' Cluster';
+            return cluster === '' ? '' : '(' + cluster + ')';
         };
     })
     // directive to make adding demo insight easier
@@ -133,6 +133,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.coherenceVersion       = undefined;
     self.coherenceVersionAsInt  = 0;
     self.thisClusterName        = undefined;
+    self.lastMemberCount        = undefined;
+    self.runningMode            = "";
 
     self.displayingSplash = false;
 
@@ -159,6 +161,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.federationConfiguredInK8s = response.data.federationConfiguredInK8s;
         self.thisClusterName           = response.data.thisClusterName;
 
+        self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
+        
         // setup cluster name
         // TODO: Change with Jquery patch
         var params       = $location.hash().substring(1).split("&");
@@ -191,9 +195,6 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         });
 
     });
-
-
-
 
     self.symbolsChartData = [];
 
@@ -317,6 +318,14 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.memberInfo = chartData.memberInfo.sort(function(m1, m2) {
                 return m1.id - m2.id;
             });
+
+            var currentMemberCount = (self.memberInfo.length !== undefined ? self.memberInfo.length : 0);
+
+            // check to see if member count has changed
+            if (self.lastMemberCount !== undefined && self.lastMemberCount != currentMemberCount) {
+                self.displayNotification('Member count changed from ' + self.lastMemberCount + ' to ' + currentMemberCount,'info', true);
+            }
+            self.lastMemberCount = currentMemberCount;
 
             // update the member-info based charts
             var newData = [];
@@ -826,5 +835,5 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.loadInsightContent();
 
     // schedule application state to be refreshed
-    self.refreshPromise = $interval(self.refresh, 1500);
+    self.refreshPromise = $interval(self.refresh, 5000);
 }]);

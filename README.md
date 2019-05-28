@@ -17,14 +17,13 @@ When running locally, the application results in a single self-contained jar as 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4 as well as a number of other
 frameworks. The UI interacts with Coherence using REST.
 
-> *Note:* This demonstration requires 12.2.1.3.0 of Coherence.
+> **Note:** This demonstration requires Coherence version 12.2.1.3.0 to run locally.
 
 ## Table of Contents
 
 * [Prerequisites](#prerequisites)
   * [General Prerequisites](#general-prerequisites)
   * [Kubernetes Prerequisites](#kubernetes-prerequisites)
-* [Build Instructions](#build-instructions)
 * [Running the Demo](#running-the-coherence-demonstration)
   * [Running Locally](#running-locally)
   * [Running on Kubernetes](#running-on-kubernetes)
@@ -101,7 +100,7 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFil
 **Note:** You may need to specify your settings.xml file by adding the following to download required dependencies.
 
 ```
-mvn -s /path/to/settings.xml ...
+$ mvn -s /path/to/settings.xml ...
 ```
 
 ### Kubernetes Prerequisites
@@ -113,40 +112,6 @@ ensure you meet the following:
 
 * Add the Helm repository and retrieve the Coherence image as described in the [Quickstart Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#1-environment-configuration)
 
-
-## Build Instructions
-
-1. Build the application
-
-   ```bash
-   $ mvn clean install
-   ```
-
-   The `target` directory will contain a number of files:
-
-   * coherence-demo-2.0.1-SNAPSHOT.jar          - Executable JAR file, see instructions below
-   * coherence-demo-2.0.1-SNAPSHOT-javadoc.jar  - javadoc
-   * coherence-demo-2.0.1-SNAPSHOT-sources.jar  - sources
-
-   > Continue to step 2 if you are running using Kuernetes.   
-   
-1. Build and (optionally) push the sidecar Docker image  
-
-   The Coherence Operator requires a sidecar Docker image to be built container the classes and
-   configuration files required by this application.
-   
-   Ensure that you have Docker running locally and issue the following:
-   
-   ```bash
-   $ mvn clean install -P docker
-   ```
-   
-   This will create an image called `coherence-demo-sidecar:3.0.0-SNAPSHOT` which will be  the 
-   
-   > Note: If you are running against a remote Kubernetes cluster you will need to
-   > push the above image to your repository accessible to that cluster. You will also need to 
-   > prefix the image name in your `helm` commands below.
-
 ## Running the application
 
 The Coherence demo can be run locally, or via Kubernetes using 
@@ -154,10 +119,22 @@ the [Coherence Operator](https://github.com/oracle/coherence-operator).
 
 ### Running Locally
 
+1. Build the application
+
+   ```bash
+   $ mvn clean install
+   ```
+   
+ The `target` directory will contain a number of files:
+
+ * coherence-demo-2.0.1-SNAPSHOT.jar          - Executable JAR file, see instructions below
+ * coherence-demo-2.0.1-SNAPSHOT-javadoc.jar  - javadoc
+ * coherence-demo-2.0.1-SNAPSHOT-sources.jar  - sources
+   
 Ensuring you have Java 8 in the PATH for your operating system, simply run the following:
 
 ```bash
-$ java -jar target/coherence-demo-2.0.1-SNAPSHOT.jar
+$ java -jar target/coherence-demo-3.0.0-SNAPSHOT.jar
 ```
 
 This command will startup a Coherence cache server as well as HTTP server on port 8080 for
@@ -186,7 +163,7 @@ This will shutdown all processes including the secondary cluster if started.
 
 > **Note:** Secondary cluster may not form if you are running on a VPN due to security restrictions.
 
-### Modifying the Defaults
+#### Modifying the Defaults
 
 *HTTP Ports and hostname*
 
@@ -194,7 +171,7 @@ The default HTTP hostname is 127.0.0.1 and default port is 8080. To modify these
 add the http.hostname or http.port properties on startup:
 
 ```bash
-$ java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-2.0.1-SNAPSHOT.jar
+$ java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-3.0.0-SNAPSHOT.jar
 ```
 
 By changing the http.hostname you will be able to access the application outside of
@@ -207,14 +184,14 @@ for primary and secondary cluster names are chosen (see Launcher.java). If you w
 sepcify your own, you can do the following:
 
 ```bash
-$ java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-2.0.1-SNAPSHOT.jar
+$ java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-3.0.0-SNAPSHOT.jar
 ```
 
 If you wish to use a cluster name with a space you must enclose it in quotes.
 
 ### Running on Kubernetes
 
-> Note: If you wish you enable Federation when running on Kubernetes, please
+> **Note:** If you wish you enable Federation when running on Kubernetes, please
 > follow steps 1,2 & 3 below and continue with instructions [Here](#enabling-federation-on-kubernetes).
    
 The following will install and run the application using Coherence Operator in a namespace
@@ -228,7 +205,7 @@ called `coherence-demo-namespace`.
    namespace/sample-coherence-ns created
    ```
    
-   > Note: You should only need to carry out the following the first time you run the application.
+   > **Note**: You should only need to carry out the following the first time you run the application.
 
 1. Create a secret for pulling images from private repositories
 
@@ -246,6 +223,25 @@ called `coherence-demo-namespace`.
 
    See [https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) for more information.
 
+   
+1. Build and (optionally) push the sidecar Docker image  
+
+   The Coherence Operator requires a sidecar Docker image to be built container the classes and
+   configuration files required by this application.
+   
+   Ensure that you have Docker running locally and issue the following:
+   
+   ```bash
+   $ mvn clean install -P docker
+   ```
+   
+   This will create an image called `coherence-demo-sidecar:3.0.0-SNAPSHOT` which will contain
+   cache configuration and Java classes to be added to the classpath at runtime. 
+   
+   > Note: If you are running against a remote Kubernetes cluster you will need to
+   > push the above image to your repository accessible to that cluster. You will also need to 
+   > prefix the image name in your `helm` commands below.
+   
 1. Install the Coherence Operator chart
 
    ```bash
@@ -268,7 +264,10 @@ called `coherence-demo-namespace`.
    NAME                                  READY   STATUS    RESTARTS   AGE
    coherence-operator-5d4dc4546c-4c925   1/1     Running   0          50s
    ```
-
+   
+   If you wish to enable log capture or metrics, please see [Here](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples)
+   for the list of samples.
+      
 1. Install the Coherence Cluster
    
    ```bash
@@ -283,6 +282,16 @@ called `coherence-demo-namespace`.
       --set store.javaOpts="-Dprimary.cluster=primary-cluster"  \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
       coherence/coherence
+   ```
+   
+   > **Note:** By default, the latest version of the chart will be used.  You can add `--version 1.0.0` to 
+   > choose a specific version. E.g. 1.0.0 in the above case.
+   
+   You can also choose a specific version of the Coherence Docker image by specifying the following in the
+   above `helm install` command:
+   
+   ```bash
+   --set coherence.image=store/oracle/coherence:12.2.1.3.2
    ```
 
    Because we use stateful sets, the coherence cluster will start one pod at a time.
@@ -321,6 +330,8 @@ called `coherence-demo-namespace`.
 ### Enabling Federation on Kubernetes
 
 You must use Coherence 12.2.1.3.3 or above for Federation to working within Kubernetes.
+
+To set the Coherence docu
 
 The setup for this example uses 2 Coherence clusters in the same Kubernetes cluster. If you wish 
 to use Federation across Kubernetes cluster please see the [Coherence Operator Samples](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples).
@@ -362,7 +373,7 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
    
    [http://127.0.0.1:8080/application/index.html](http://127.0.0.1:8080/application/index.html)  
 
-1. Install the **Secondary(()) cluster
+1. Install the **Secondary** cluster
 
    ```bash
    $ helm install \

@@ -30,6 +30,13 @@
 
     <title>Oracle Coherence Demonstration</title>
 
+    <!-- hide angular templates until fully loaded -->
+    <style>
+        .ng-cloak {
+            display: none !important;
+        }
+    </style>
+
     <!-- Bootstrap Core CSS -->
     <link href="javascripts/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -57,7 +64,7 @@
     <script src="javascripts/vendor/angular/angular-cookies.min.js" type="text/javascript"></script>
 </head>
 
-<body ng-app="demoApp" ng-controller="DemoController as demo">
+<body ng-app="demoApp" ng-controller="DemoController as demo" class="ng-cloak" ng-class="{{ bodyClass }}">
 
     <div id="wrapper">
 
@@ -65,7 +72,7 @@
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;">
 
             <div class="navbar-header">
-                <a class="navbar-brand" href="index.html">Oracle Coherence</a>
+                <a class="navbar-brand" href="index.html">Oracle Coherence {{ runningMode }}</a>
             </div>
             <!-- /.navbar-header -->
 
