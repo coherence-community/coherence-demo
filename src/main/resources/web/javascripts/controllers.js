@@ -387,7 +387,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     self.startMember = function() {
         if (self.isRunningInKubernetes === true) {
-            self.displayInsight("addOrRemoveServerK8s");
+            self.displayInsight(self.federationConfiguredInK8s ? "addOrRemoveServerK8sFederation" : "addOrRemoveServerK8s");
         }
         else {
             self.startingMember = true;
@@ -415,7 +415,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     self.stopMember = function(memberId) {
         if (self.isRunningInKubernetes === true) {
-            self.displayInsight("addOrRemoveServerK8s");
+            self.displayInsight(self.federationConfiguredInK8s ? "addOrRemoveServerK8sFederation" : "addOrRemoveServerK8s");
         }
         else {
             $http.get('/service/stop-member/' + memberId).then(function(response) {
@@ -577,9 +577,13 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "header":  "Add or Remove Server",
            "content": "fragments/addOrRemoveServerK8s.html"
        };
-       self.insightContent['demoShutdown'] = {
-           "header":  "Coherence Demonstration Shutdown",
-           "content": "fragments/demoShutdown.html"
+       self.insightContent['addOrRemoveServerK8sFederation'] = {
+           "header":  "Add or Remove Server - Federation in Kubernetes Enabled",
+           "content": "fragments/addOrRemoveServerK8sFederation.html"
+       };
+       self.insightContent['shutdownFederationInK8s'] = {
+           "header":  "Coherence Demonstration Shutdown - Federation in Kubernetes Enabled",
+           "content": "fragments/shutdownFederationInK8s.html"
        };
     };
 
@@ -705,7 +709,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         }
         else if (command === 'shutdown') {
             if (self.isRunningInKubernetes === true) {
-                self.displayInsight('shutdown');
+                self.displayInsight(self.federationConfiguredInK8s ? 'shutdownFederationInK8s' : 'shutdown');
                 return;
             }
             else {

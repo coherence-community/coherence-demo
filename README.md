@@ -90,6 +90,11 @@ mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar      -DpomFile
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/12.2.1/coherence-rest.12.2.1.pom
 ```
 
+> If you are using Coherence 12.2.1.4.0 and above, please also run the following:
+> ```bash
+> $ mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-grizzly.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-grizzly/12.2.1/coherence-http-grizzly.12.2.1.pom
+> ```
+
 E.g. for Windows:
 
 ```bash
@@ -97,7 +102,8 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar      -DpomFil
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\12.2.1\coherence-rest.12.2.1.pom
 ```
 
-**Note:** You may need to specify your settings.xml file by adding the following to download required dependencies.
+
+> **Note:** You may need to specify your settings.xml file by adding the following to download required dependencies.
 
 ```
 $ mvn -s /path/to/settings.xml ...
@@ -265,7 +271,7 @@ called `coherence-demo-namespace`.
    coherence-operator-5d4dc4546c-4c925   1/1     Running   0          50s
    ```
    
-   If you wish to enable log capture or metrics, please see [Here](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples)
+   If you wish to enable log capture or metrics, please see [here](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples)
    for the list of samples.
       
 1. Install the Coherence Cluster
@@ -329,9 +335,7 @@ called `coherence-demo-namespace`.
    
 ### Enabling Federation on Kubernetes
 
-You must use Coherence 12.2.1.3.3 or above for Federation to working within Kubernetes.
-
-To set the Coherence docu
+You must use Coherence 12.2.1.4.0 or above for Federation to work within Kubernetes.
 
 The setup for this example uses 2 Coherence clusters in the same Kubernetes cluster. If you wish 
 to use Federation across Kubernetes cluster please see the [Coherence Operator Samples](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples).
@@ -344,22 +348,30 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
   * Cluster name: SecondaryCluster
 
 > Note: If you wish you enable Federation when running on Kubernetes, please
-> follow steps 1,2 & 3 [Here](#running-on-kubernetes) and continue the steps below.
+> follow steps 1,2 & 3 [here](#running-on-kubernetes) and continue the steps below.
+
+1. Build the Sidecar image
+
+   ```bash
+   $ mvn clean install -P coherence12214,docker -Dcoherence.version=12.2.1-4-0
+   ```
    
 1. Install the **Primary** cluster
 
    ```bash
+   $ export DOMAIN=
    $ helm install \
       --namespace coherence-demo-namespace \
       --name cluster-1 \
       --set clusterSize=1 \
       --set cluster=PrimaryCluster \
       --set imagePullSecrets=coherence-demo-secret \
-      --set store.cacheConfig=cache-config.xml \
+      --set store.cacheConfig=cache-config-12214.xml \
+      --set store.overrideConfig=tangosol-coherence-override-12214.xml \
       --set store.pof.config=pof-config.xml \
-      --set store.javaOpts="-Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \
-      --set store.ports.federation=40000 \
+      --set store.javaOpts="-Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \      --set store.ports.federation=40000 \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
+      --set coherence.image=your-12.2.1.4.0-Coherence-image \
       coherence/coherence
    ```   
    
@@ -382,11 +394,12 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
       --set clusterSize=1 \
       --set cluster=SecondaryCluster \
       --set imagePullSecrets=coherence-demo-secret \
-      --set store.cacheConfig=cache-config.xml \
+      --set store.cacheConfig=cache-config-12214.xml \
+      --set store.overrideConfig=tangosol-coherence-override-12214.xml \
       --set store.pof.config=pof-config.xml \
-      --set store.javaOpts="-Dwith.data=false -Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \
-      --set store.ports.federation=40000 \
+      --set store.javaOpts="-Dwith.data=false -Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \      --set store.ports.federation=40000 \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
+      --set coherence.image=your-12.2.1.4.0-Coherence-image \
       coherence/coherence
    ```   
    
