@@ -369,7 +369,8 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
       --set store.cacheConfig=cache-config-12214.xml \
       --set store.overrideConfig=tangosol-coherence-override-12214.xml \
       --set store.pof.config=pof-config.xml \
-      --set store.javaOpts="-Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \      --set store.ports.federation=40000 \
+      --set store.javaOpts="-Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \
+      --set store.ports.federation=40000 \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
       --set coherence.image=your-12.2.1.4.0-Coherence-image \
       coherence/coherence
@@ -397,7 +398,8 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
       --set store.cacheConfig=cache-config-12214.xml \
       --set store.overrideConfig=tangosol-coherence-override-12214.xml \
       --set store.pof.config=pof-config.xml \
-      --set store.javaOpts="-Dwith.data=false -Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \      --set store.ports.federation=40000 \
+      --set store.javaOpts="-Dwith.data=false -Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \
+      --set store.ports.federation=40000 \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
       --set coherence.image=your-12.2.1.4.0-Coherence-image \
       coherence/coherence
