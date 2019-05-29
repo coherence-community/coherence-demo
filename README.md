@@ -347,9 +347,6 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
   * Release name: cluster-2
   * Cluster name: SecondaryCluster
 
-> Note: If you wish you enable Federation when running on Kubernetes, please
-> follow steps 1,2 & 3 [here](#running-on-kubernetes) and continue the steps below.
-
 1. Build the Sidecar image
 
    ```bash
