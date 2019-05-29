@@ -41,7 +41,7 @@ public class Utilities
     private final static float    MAX_FACTOR             = 1.06f;
     private final static double   INITIAL_PRICE          = 20;
     private final static double   MIN_PRICE              = 5;
-    private final static String[] SYMBOLS                = {"ORCL", "MSFT", "GOOG", "AAPL", "YHOO", "EMC"};
+    private final static String[] SYMBOLS                = {"ORCL", "MSFT", "GOOG", "AAPL", "NFLX", "DELL"};
 
     /**
      * The {@link TypeAssertion} for the trades cache.
@@ -242,9 +242,10 @@ public class Utilities
 
             trades.put(trade.getId(), trade);
 
-            // batch the putAll's at 1000
-            if (i % 1000 == 0)
+            // batch the putAll's at 10000
+            if (i % 10000 == 0)
             {
+                System.out.println("Flushing 10000 trades from HashMap to Coherence cache...");
                 tradesCache.putAll(trades);
                 trades.clear();
             }
