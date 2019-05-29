@@ -103,8 +103,8 @@
                                 <i class="fa fa-play  fa-fw" ng-show="federationStateLabel === RESUME_FEDERATION"></i>
                                 {{ federationStateLabel }}</a>
                         </li>
-                        <li class="divider"  ng-show="secondaryCluster == 'enabled'"></li>
-                        <li ng-show="clusterName != secondaryClusterName && secondaryCluster == 'enabled'">
+                        <li class="divider" ng-show="secondaryCluster == 'enabled && !isRunningInKubernetes'"></li>
+                        <li ng-show="clusterName != secondaryClusterName && secondaryCluster == 'enabled' && !isRunningInKubernetes">
                             <a href="#" ng-click="openSecondary()"><i class="fa fa-sign-out fa-fw"></i><span>{{secondaryClusterName | clusterName}} Dashboard</span></a>
                         </li>
                     </ul>
@@ -386,7 +386,7 @@
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script src="javascripts/vendor/jquery/jquery-3.3.1.min.js"></script>
+    <script src="javascripts/vendor/jquery/jquery-3.4.1.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="javascripts/vendor/bootstrap/bootstrap.min.js"></script>
