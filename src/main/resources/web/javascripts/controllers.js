@@ -585,6 +585,10 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "header":  "Coherence Demonstration Shutdown - Federation in Kubernetes Enabled",
            "content": "fragments/shutdownFederationInK8s.html"
        };
+       self.insightContent['demoShutdown'] = {
+           "header":  "Coherence Demonstration Shutdown",
+           "content": "fragments/demoShutdown.html"
+       };
     };
 
     // ---- the function to close the splash screen

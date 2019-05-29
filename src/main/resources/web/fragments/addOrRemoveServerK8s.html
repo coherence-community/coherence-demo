@@ -4,14 +4,14 @@ to scale the application rather than specifically adding or removing members.
 <br/>
 To scale the number of replicas to 2, use the following:
 <pre>
-$  kubectl scale statefulsets coherence-demo --namespace coherence-demo-namespace --replicas=2</pre>
+$  kubectl scale statefulsets coherence-demo --namespace coherence-demo-ns --replicas=2</pre>
 <p>
 The value for <strong>replicas</strong> is the target number of replicas that you want to have. Depending upon the current number of
 replicas, this may result in a scale up or scale down request.
 <p>
 You can use the following to see the desired and current number of replicas:
 <pre>
-$ kubectl get statefulsets coherence-demo --namespace coherence-demo-namespace
+$ kubectl get statefulsets coherence-demo --namespace coherence-demo-ns
 
 NAME             DESIRED   CURRENT   AGE
 coherence-demo   1         1         1s

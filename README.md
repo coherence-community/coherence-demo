@@ -133,9 +133,9 @@ the [Coherence Operator](https://github.com/oracle/coherence-operator).
    
  The `target` directory will contain a number of files:
 
- * coherence-demo-2.0.1-SNAPSHOT.jar          - Executable JAR file, see instructions below
- * coherence-demo-2.0.1-SNAPSHOT-javadoc.jar  - javadoc
- * coherence-demo-2.0.1-SNAPSHOT-sources.jar  - sources
+ * coherence-demo-{version}-SNAPSHOT.jar          - Executable JAR file, see instructions below
+ * coherence-demo-{version}-SNAPSHOT-javadoc.jar  - javadoc
+ * coherence-demo-{version}-SNAPSHOT-sources.jar  - sources
    
 Ensuring you have Java 8 in the PATH for your operating system, simply run the following:
 
@@ -201,12 +201,12 @@ If you wish to use a cluster name with a space you must enclose it in quotes.
 > follow steps 1,2 & 3 below and continue with instructions [Here](#enabling-federation-on-kubernetes).
    
 The following will install and run the application using Coherence Operator in a namespace
-called `coherence-demo-namespace`.
+called `coherence-demo-ns`.
 
 1. Create the demonstration namespace
 
    ```bash
-   $ kubectl create namespace coherence-demo-namespace
+   $ kubectl create namespace coherence-demo-ns
 
    namespace/sample-coherence-ns created
    ```
@@ -217,11 +217,11 @@ called `coherence-demo-namespace`.
 
    If you are pulling images from private repositories, you must create a secret
    which will be used for this. For this application we are assuming you have created a secret 
-   called `coehrence-demo-secret` in your namespace `coherence-demo-namespace`.
+   called `coehrence-demo-secret` in your namespace `coherence-demo-ns`.
    
    ```bash
    $ kubectl create secret docker-registry coherence-demo-secret \
-        --namespace coherence-demo-namespace \
+        --namespace coherence-demo-ns \
         --docker-server=your-docker-server \
         --docker-username=your-docker-username \
         --docker-password=your-docker-password
@@ -252,10 +252,10 @@ called `coherence-demo-namespace`.
 
    ```bash
    $ helm install \
-      --namespace coherence-demo-namespace \
+      --namespace coherence-demo-ns \
       --set imagePullSecrets=coherence-demo-secret \
       --name coherence-operator \
-      --set "targetNamespaces={coherence-demo-namespace}" \
+      --set "targetNamespaces={coherence-demo-ns}" \
       coherence/coherence-operator
    ```
 
@@ -264,9 +264,9 @@ called `coherence-demo-namespace`.
    ```bash
    $ helm ls
    NAME              	REVISION	UPDATED                 	STATUS  	CHART                   	APP VERSION	NAMESPACE               
-   coherence-operator	1       	Fri May 24 14:39:15 2019	DEPLOYED	coherence-operator-0.9.4	0.9.4      	coherence-demo-namespace
+   coherence-operator	1       	Fri May 24 14:39:15 2019	DEPLOYED	coherence-operator-0.9.4	0.9.4      	coherence-demo-ns
    
-   $ kubectl get pods -n coherence-demo-namespace
+   $ kubectl get pods -n coherence-demo-ns
    NAME                                  READY   STATUS    RESTARTS   AGE
    coherence-operator-5d4dc4546c-4c925   1/1     Running   0          50s
    ```
@@ -278,7 +278,7 @@ called `coherence-demo-namespace`.
    
    ```bash
    $ helm install \
-      --namespace coherence-demo-namespace \
+      --namespace coherence-demo-ns \
       --name coherence-demo \
       --set clusterSize=1 \
       --set cluster=primary-cluster \
@@ -313,7 +313,7 @@ called `coherence-demo-namespace`.
 1. Port forward the HTTP port
 
    ```bash
-   $ kubectl port-forward --namespace coherence-demo-namespace coherence-demo-0 8080:8080
+   $ kubectl port-forward --namespace coherence-demo-ns coherence-demo-0 8080:8080
    ```  
    
 1. Access the application
@@ -330,7 +330,7 @@ called `coherence-demo-namespace`.
    Scale the application to 2 nodes using:
    
    ```bash
-   $ kubectl scale statefulsets coherence-demo --namespace coherence-demo-namespace --replicas=2
+   $ kubectl scale statefulsets coherence-demo --namespace coherence-demo-ns --replicas=2
    ```
    
 ### Enabling Federation on Kubernetes
@@ -361,7 +361,7 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
    ```bash
    $ export DOMAIN=
    $ helm install \
-      --namespace coherence-demo-namespace \
+      --namespace coherence-demo-ns \
       --name cluster-1 \
       --set clusterSize=1 \
       --set cluster=PrimaryCluster \
@@ -379,7 +379,7 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
 1. Port Forward the Primary Cluster - Port **8088**
 
    ```bash
-   $ kubectl port-forward --namespace coherence-demo-namespace cluster-1-coherence-0  8080:8080
+   $ kubectl port-forward --namespace coherence-demo-ns cluster-1-coherence-0  8080:8080
    ```
 
    Open the following URL to access the application home page.
@@ -390,7 +390,7 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
 
    ```bash
    $ helm install \
-      --namespace coherence-demo-namespace \
+      --namespace coherence-demo-ns \
       --name cluster-2 \
       --set clusterSize=1 \
       --set cluster=SecondaryCluster \
@@ -408,7 +408,7 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
 1. Port Forward the Secondary Cluster - Port **8090**
 
    ```bash
-   $ kubectl port-forward --namespace coherence-demo-namespace cluster-2-coherence-0  8090:8080
+   $ kubectl port-forward --namespace coherence-demo-ns cluster-2-coherence-0  8090:8080
    ```
 
    Open the following URL to access the application home page.

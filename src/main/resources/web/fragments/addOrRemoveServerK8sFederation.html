@@ -6,18 +6,18 @@ You have also configured <strong>Federation</strong>, so you must use the follow
 <strong>Primary</strong><p>
 To scale the number of replicas to 2 on the PrimaryCluster, use the following:
 <pre>
-$  kubectl scale statefulsets cluster-1-coherence --namespace coherence-demo-namespace --replicas=2</pre>
+$  kubectl scale statefulsets cluster-1-coherence --namespace coherence-demo-ns --replicas=2</pre>
 <p><strong>Secondary</strong><p>
     To scale the number of replicas to 2 on the SecondaryCluster, use the following:
 <pre>
-$  kubectl scale statefulsets cluster-2-coherence --namespace coherence-demo-namespace --replicas=2</pre>
+$  kubectl scale statefulsets cluster-2-coherence --namespace coherence-demo-ns --replicas=2</pre>
 <p>
 The value for <strong>replicas</strong> is the target number of replicas that you want to have. Depending upon the current number of
 replicas, this may result in a scale up or scale down request.
 <p>
 You can use the following to see the desired and current number of replicas:
 <pre>
-$  kubectl get statefulsets --namespace coherence-demo-namespace
+$  kubectl get statefulsets --namespace coherence-demo-ns
 NAME                  DESIRED   CURRENT   AGE
 cluster-1-coherence   1         1         9m
 cluster-2-coherence   1         1         9m
