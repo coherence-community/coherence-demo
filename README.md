@@ -26,8 +26,8 @@ frameworks. The UI interacts with Coherence using REST.
   * [Kubernetes Prerequisites](#kubernetes-prerequisites)
 * [Running the Demo](#running-the-coherence-demonstration)
   * [Running Locally](#running-locally)
-  * [Running on Kubernetes](#running-on-kubernetes)
-  * [Enabling Federation](#enabling-federation-on-kubernetes)
+  * [Running on Kubernetes (Coherence 12.2.1.3.X)](#running-on-kubernetes-coherence-12213x)
+  * [Enabling Federation on Kubernetes](#enabling-federation-on-kubernetes)
 * [References](#references)  
 
 ## Prerequisites
@@ -195,7 +195,7 @@ $ java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-
 
 If you wish to use a cluster name with a space you must enclose it in quotes.
 
-### Running on Kubernetes
+### Running on Kubernetes (Coherence 12.2.1.3.X)
 
 > **Note:** If you wish you enable Federation when running on Kubernetes, please
 > follow steps 1,2 & 3 below and continue with instructions [Here](#enabling-federation-on-kubernetes).
@@ -417,7 +417,11 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
 
    > You should see that there is no data in the Secondary cluster, as we have not yet started Federation.
    
+1. Start Federation on the Primary Cluster
+
+   On the Primary Cluster use the `Federation` menu to `Start Federation`.
    
+   Access the Secondary Cluster dashboard and you should see the data appearing from the Primary Cluster.   
 
 
 ### Uninstalling the Charts
