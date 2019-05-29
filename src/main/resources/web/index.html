@@ -83,7 +83,7 @@
                     <a href="#"><span id="statusMessage" ng-show="displayStatus" ng-class="{{lastStatusClass}}">{{lastStatusMessage}}</span>&nbsp;</a>
                 </li>
                 <!-- /.dropdown -->
-                <li class="dropdown" ng-show="(!isRunningInKubernetes && clusterName != secondaryClusterName) || (isRunningInKubernetes && federationConfiguredInK8s)">
+                <li class="dropdown" ng-show="(!isRunningInKubernetes && clusterName != secondaryClusterName) || (isRunningInKubernetes && federationConfiguredInK8s && clusterName != secondaryClusterName))">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         Federation <i class="fa fa-caret-down"></i>
                     </a>

@@ -356,7 +356,6 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
 1. Install the **Primary** cluster
 
    ```bash
-   $ export DOMAIN=
    $ helm install \
       --namespace coherence-demo-ns \
       --name cluster-1 \

@@ -241,9 +241,19 @@ public class Utilities
             Trade  trade  = new Trade(symbol, amount, price);
 
             trades.put(trade.getId(), trade);
+
+            // batch the putAll's at 1000
+            if (i % 1000 == 0)
+            {
+                tradesCache.putAll(trades);
+                trades.clear();
+            }
         }
 
-        tradesCache.putAll(trades);
+        if (!trades.isEmpty())
+        {
+            tradesCache.putAll(trades);
+        }
 
         System.out.printf("Creation Complete! (Cache contains %d positions)\n", tradesCache.size());
     }

@@ -416,7 +416,6 @@
                   <artifactSet>
                     <excludes>
                       <exclude>com.oracle.coherence:coherence:*</exclude>
-                      <exclude>com.oracle.coherence:coherence-rest:*</exclude>
                     </excludes>
                   </artifactSet>
                 </configuration>
