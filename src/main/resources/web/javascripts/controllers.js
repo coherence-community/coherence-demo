@@ -164,7 +164,6 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
         
         // setup cluster name
-        // TODO: Change with Jquery patch
         var params       = $location.hash().substring(1).split("&");
         var clusterParam = params[0].split("=");
         var cluster      = clusterParam[1];

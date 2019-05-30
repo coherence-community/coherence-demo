@@ -11,16 +11,20 @@
   <properties>
     <bedrock.version>5.0.11</bedrock.version>
     <coherence.version>12.2.1-3-0</coherence.version>
+    <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <grizzly.version>2.3.8</grizzly.version>
     <jackson.version>2.9.8</jackson.version>
     <jersey.version>2.22.2</jersey.version>
     <java.version>1.8</java.version>
-    <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
+    <javax.activation.version>1.1.1</javax.activation.version>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
     <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
     <maven.enforcer.plugin.version>1.3.1</maven.enforcer.plugin.version>
     <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
     <maven.gmaven.plugin.version>1.5</maven.gmaven.plugin.version>
-    <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
+    <maven.javadoc.plugin.version>3.1.0</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.shade.plugin.version>3.2.0</maven.shade.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
@@ -186,17 +190,7 @@
 
   <build>
     <plugins>
-      <!-- ensure we're using Java 8 -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
-      </plugin>
-
+      
       <!-- maven-enforcer-plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -231,21 +225,6 @@
         <executions>
           <execution>
             <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- attach javadoc -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven.javadoc.plugin.version}</version>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
             </goals>
@@ -340,11 +319,14 @@
       </build>
     </profile>
 
-    <!-- default 'stand-alone' profile which included shaded jar -->
+    <!-- profile to include shaded jar if not using 122214 -->
     <profile>
       <id>stand-alone</id>
       <activation>
         <activeByDefault>true</activeByDefault>
+        <property>
+          <name>!coherence12214</name>
+        </property>
       </activation>
       <build>
         <plugins>
@@ -388,6 +370,103 @@
       </build>
     </profile>
 
+    <!-- JDK8 specifics -->
+    <profile>
+      <id>javadoc-jdk18</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <!-- attach javadoc -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven.javadoc.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <!-- JDk11 specifics -->
+    <profile>
+      <id>javadoc-jdk11</id>
+      <activation>
+        <jdk>11</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven.compiler.plugin.version}</version>
+            <configuration>
+              <release>8</release>
+            </configuration>
+          </plugin>
+
+          <!-- attach javadoc -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven.javadoc.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs-jdk11</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <additionalDependencies>
+                <additionalDependency>
+                  <groupId>com.sun.xml.bind</groupId>
+                  <artifactId>jaxb-core</artifactId>
+                  <version>${com.sun.xml.bind.version}</version>
+                </additionalDependency>
+                <additionalDependency>
+                  <groupId>com.sun.xml.bind</groupId>
+                  <artifactId>jaxb-impl</artifactId>
+                  <version>${com.sun.xml.bind.version}</version>
+                </additionalDependency>
+                <additionalDependency>
+                  <groupId>javax.xml.bind</groupId>
+                  <artifactId>jaxb-api</artifactId>
+                  <version>${com.sun.xml.bind.version}</version>
+                </additionalDependency>
+              </additionalDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-core</artifactId>
+          <version>${com.sun.xml.bind.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+          <version>${com.sun.xml.bind.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+          <version>${com.sun.xml.bind.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
     <!-- docker profile for building image for Coherence Operator -->
     <profile>
       <id>docker</id>
@@ -400,7 +479,6 @@
       
       <build>
         <plugins>
-
           <!-- make a jar with specific artifacts not found in Coherence docker image -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>

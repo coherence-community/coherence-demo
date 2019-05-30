@@ -36,10 +36,13 @@ frameworks. The UI interacts with Coherence using REST.
 
 In order to run the demonstration you must have the following installed:
 
-1. Java 8 SE Development Kit or Runtime environment.
-   You can download the software from:
-   - Java SE Development Kit - http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-   - JAVA SE Runtime Environment - http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
+1. Java 8 or 11 SE Development Kit or Runtime environment.
+   You can download JDK8 software below:
+   - [Java SE Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+   - [JAVA SE Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
+   
+   You can download JDK 11 software below:
+   - [Java SE Development Kit 11 Downloads](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
 
 2. Maven version 3.5.4 or above installed and configured.
 
@@ -50,6 +53,8 @@ In order to run the demonstration you must have the following installed:
 4. You must use a browser that supports AngularJS to run this application. As of
    writing this, the following are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
+
+> **Note**: All code compiles to JDK8 bytecode for compatibility with Coherence releases. 
 
 For more information on browser compatibility see https://code.angularjs.org/1.4.1/docs/misc/faq.
 
