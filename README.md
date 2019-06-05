@@ -54,9 +54,9 @@ In order to run the demonstration you must have the following installed:
    writing this, the following are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
 
-> **Note**: All code compiles to JDK8 bytecode for compatibility with Coherence releases. 
-
 For more information on browser compatibility see https://code.angularjs.org/1.4.1/docs/misc/faq.
+
+> **Note**: All code compiles to JDK8 bytecode for compatibility with Coherence releases. 
 
 Ensure the following environment variables are set:
 
@@ -105,13 +105,6 @@ E.g. for Windows:
 ```bash
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar      -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\12.2.1\coherence.12.2.1.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\12.2.1\coherence-rest.12.2.1.pom
-```
-
-
-> **Note:** You may need to specify your settings.xml file by adding the following to download required dependencies.
-
-```
-$ mvn -s /path/to/settings.xml ...
 ```
 
 ### Kubernetes Prerequisites
