@@ -37,6 +37,7 @@ frameworks. The UI interacts with Coherence using REST.
 In order to run the demonstration you must have the following installed:
 
 1. Java 8 or 11 SE Development Kit or Runtime environment.
+
    You can download JDK8 software below:
    - [Java SE Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
    - [JAVA SE Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
@@ -349,7 +350,9 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
 
    ```bash
    $ mvn clean install -P coherence12214,docker -Dcoherence.version=12.2.1-4-0
-   ```
+   ```         
+   
+   > **Note:** the `coherence.version` should be set to your installed 12.2.1.4 Coherence version. 
    
 1. Install the **Primary** cluster
 

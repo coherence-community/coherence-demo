@@ -16,7 +16,7 @@
     <jackson.version>2.9.8</jackson.version>
     <jersey.version>2.22.2</jersey.version>
     <java.version>1.8</java.version>
-    <javax.activation.version>1.1.1</javax.activation.version>
+    <javax.activation.version>1.2.0</javax.activation.version>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
     <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
@@ -443,6 +443,11 @@
                   <artifactId>jaxb-api</artifactId>
                   <version>${com.sun.xml.bind.version}</version>
                 </additionalDependency>
+                <additionalDependency>
+                  <groupId>javax.activation</groupId>
+                  <artifactId>javax.activation-api</artifactId>
+                  <version>${javax.activation.version}</version>
+                </additionalDependency>
               </additionalDependencies>
             </configuration>
           </plugin>
@@ -463,6 +468,11 @@
           <groupId>javax.xml.bind</groupId>
           <artifactId>jaxb-api</artifactId>
           <version>${com.sun.xml.bind.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>javax.activation</groupId>
+          <artifactId>javax.activation-api</artifactId>
+          <version>${javax.activation.version}</version>
         </dependency>
       </dependencies>
     </profile>
