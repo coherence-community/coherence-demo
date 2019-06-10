@@ -144,8 +144,7 @@ $ java -jar target/coherence-demo-3.0.0-SNAPSHOT.jar
 
 This command will startup a Coherence cache server as well as HTTP server on port 8080 for
 serving REST and application data.  Once the cache server starts, the default browser
-will be opened up to http://127.0.0.1:8080/application/index.html and the application will
-load. (If you wish to change the port used, see below.)
+will be opened up to http://127.0.0.1:8080/application/index.html and the application will load. (If you wish to change the port used, see below.)
 
 The following features are available to demonstrate:
 
