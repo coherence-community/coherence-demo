@@ -51,8 +51,7 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 @Path("/developer")
 public class DeveloperResource
 {
-    private static final String SEP    = File.separator;
-    private static final String PLUGIN = "coherence-jvisualvm.nbm";
+    private static final String SEP = File.separator;
 
     /**
      * Name of primary cluster.

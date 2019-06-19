@@ -186,7 +186,7 @@ public class Utilities
 
 
     /**
-     * populate initial prices for symbols. Make the current price for all
+     * Populate initial prices for symbols. Make the current price for all
      * symbols to be $40 to make it fair and un-biased.
      */
     public static void populatePrices()
