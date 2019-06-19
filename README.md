@@ -284,6 +284,7 @@ called `coherence-demo-ns`.
       --set store.cacheConfig=cache-config.xml \
       --set store.pof.config=pof-config.xml \
       --set store.javaOpts="-Dprimary.cluster=primary-cluster"  \
+      --set store.maxHeap=512m \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
       coherence/coherence
    ```
@@ -365,6 +366,7 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
       --set store.cacheConfig=cache-config-12214.xml \
       --set store.overrideConfig=tangosol-coherence-override-12214.xml \
       --set store.pof.config=pof-config.xml \
+      --set store.maxHeap=512m \
       --set store.javaOpts="-Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \
       --set store.ports.federation=40000 \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
@@ -375,7 +377,7 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
 1. Port Forward the Primary Cluster - Port **8088**
 
    ```bash
-   $ kubectl port-forward --namespace coherence-demo-ns cluster-1-coherence-0  8080:8080
+   $ kubectl port-forward --namespace coherence-demo-ns cluster-1-coherence-0 8080:8080
    ```
 
    Open the following URL to access the application home page.
@@ -404,7 +406,7 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
 1. Port Forward the Secondary Cluster - Port **8090**
 
    ```bash
-   $ kubectl port-forward --namespace coherence-demo-ns cluster-2-coherence-0  8090:8080
+   $ kubectl port-forward --namespace coherence-demo-ns cluster-2-coherence-0 8090:8080
    ```
 
    Open the following URL to access the application home page.
