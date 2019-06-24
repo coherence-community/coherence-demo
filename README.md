@@ -24,7 +24,7 @@ frameworks. The UI interacts with Coherence using REST.
 * [Prerequisites](#prerequisites)
   * [General Prerequisites](#general-prerequisites)
   * [Kubernetes Prerequisites](#kubernetes-prerequisites)
-* [Running the Demo](#running-the-coherence-demonstration)
+* [Running the Demo Application](#running-the-demo-application)
   * [Running Locally](#running-locally)
   * [Running on Kubernetes (Coherence 12.2.1.3.X)](#running-on-kubernetes-coherence-12213x)
   * [Enabling Federation on Kubernetes](#enabling-federation-on-kubernetes)
@@ -120,7 +120,10 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFil
 Additionally if you wish to run the application in Kubernetes using the `Coherence Operator`, you must
 ensure you carry out the following:
 
-* Ensure the `Software and Runtime Prerequisites` in the [Coherence Operator Quickstart Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#prerequisites) are met.
+* Check Software and Runtime Prerequisites
+
+  Ensure you meet the `Check Software and Runtime Prerequisites` in the 
+  [Coherence Operator Quickstart Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#prerequisites).
 
 * Add the Helm repository 
 
@@ -158,9 +161,9 @@ ensure you carry out the following:
 
 * Ensure your Local Kubernetes is enabled. If running using `Docker Desktop`, check using the `Kubernetes` slide-off in the menu bar. 
 
-## Running the application
+## Running the Demo application
 
-The Coherence demo can be run locally, or via Kubernetes using 
+The Coherence Demo can be run locally, or via Kubernetes using 
 the [Coherence Operator](https://github.com/oracle/coherence-operator).
 
 ### Running Locally
