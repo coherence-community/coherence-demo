@@ -118,9 +118,9 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFil
 ### Kubernetes Prerequisites
 
 Additionally if you wish to run the application in Kubernetes using the `Coherence Operator`, you must
-ensure you meet the following:
+ensure you carry out the following:
 
-* `Software and Runtime Prerequisites` in the [Coherence Operator Quickstart Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#prerequisites)
+* Ensure the `Software and Runtime Prerequisites` in the [Coherence Operator Quickstart Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#prerequisites) are met.
 
 * Add the Helm repository 
 
