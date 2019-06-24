@@ -47,9 +47,16 @@ In order to run the demonstration you must have the following installed:
 
 2. Maven version 3.5.4 or above installed and configured.
 
-3. Coherence 12.2.1.3.0 or above installed - http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
-   If you wish to demonstrate the the Coherence JVisualVM Plug-in, follow the instructions below to install:
+3. Coherence 12.2.1.3.0 or above installed
+
+   Dowbload from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
+   
+   If you wish to demonstrate the the Coherence JVisualVM Plug-in follow the instructions below to install:
    https://docs.oracle.com/middleware/12213/coherence/manage/using-jmx-manage-oracle-coherence.htm#COHMG5583
+
+   If you are using JDK11, JVisualVM is no longer shipped. You must go to [https://visualvm.github.io](https://visualvm.github.io)
+   to download VisualVM. You must also supply `-Dvisualvm.executable` to point to the visualvm executable. See sections 
+   below for more information.
 
 4. You must use a browser that supports AngularJS to run this application. As of
    writing this, the following are supported:
@@ -115,7 +122,43 @@ ensure you meet the following:
 
 * `Software and Runtime Prerequisites` in the [Coherence Operator Quickstart Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#prerequisites)
 
-* Add the Helm repository and retrieve the Coherence image as described in the [Quickstart Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#1-environment-configuration)
+* Add the Helm repository 
+
+   Issue the following to create a `coherence` helm repository:
+
+   ```bash
+   $ helm repo add coherence https://oracle.github.io/coherence-operator/charts
+
+   $ helm repo update
+
+   Hang tight while we grab the latest from your chart repositories...
+   ...Skip local chart repository
+   ...Successfully got an update from the "coherence" chart repository
+   ```
+
+* Retrieve the Coherence Image
+
+### Obtain the Coherence Docker Image	
+
+1. Go to to [Oracle Container Registry](https://container-registry.oracle.com)
+
+1. Search for "Coherence".	
+
+1. Select `coherence` from the list.	
+
+1. Click on `Sign-in` on the right and enter your credentials, or create and account if you don't already have one.	
+
+1. On the right, select the language for the  `Oracle Standard Terms and Restrictions`.	
+
+1. Click `Continue` and scroll down to accept the terms and conditions.	
+
+1. At the command line, do `docker login container-registry.oracle.com` with your Oracle Container Registry credentials.	
+
+1. At the command line do `docker pull container-registry.oracle.com/middleware/coherence:12.2.1.3.2`	  
+
+> **Note**: Please change the Coherence version number as required.
+
+* Ensure your Local Kubernetes is enabled. If running using `Docker Desktop`, check using the `Kubernetes` slide-off in the menu bar. 
 
 ## Running the application
 
@@ -141,6 +184,14 @@ Ensuring you have Java 8 in the PATH for your operating system, simply run the f
 ```bash
 $ java -jar target/coherence-demo-3.0.0-SNAPSHOT.jar
 ```
+
+> **Note**: If you are using JDK11 and you wish to start JVIsualVM you must then also provide 
+> the `-Dvisualvm.executable` option to point to the path of the `visualvm` executable
+> when starting with `java -jar`.
+> ```bash
+> java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm` -jar target/coherence-demo-3.0.0-SNAPSHOT.jar
+> ```
+>   
 
 This command will startup a Coherence cache server as well as HTTP server on port 8080 for
 serving REST and application data.  Once the cache server starts, the default browser
@@ -222,9 +273,12 @@ called `coherence-demo-ns`.
         --namespace coherence-demo-ns \
         --docker-server=your-docker-server \
         --docker-username=your-docker-username \
+        --docker-email=your-email-address \
         --docker-password=your-docker-password
    ```
 
+   > **Note**: By default, the above should be your Oracle Container Registry details. 
+   
    See [https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) for more information.
 
    
@@ -296,7 +350,7 @@ called `coherence-demo-ns`.
    above `helm install` command:
    
    ```bash
-   --set coherence.image=store/oracle/coherence:12.2.1.3.2
+   --set coherence.image=container-registry.oracle.com/middleware/coherence:12.2.1.4.0
    ```
 
    Because we use stateful sets, the coherence cluster will start one pod at a time.
@@ -308,6 +362,13 @@ called `coherence-demo-ns`.
    NAME                 READY   STATUS    RESTARTS   AGE
    coherence-demo-0     1/1     Running   0          4m
    ``` 
+   
+   If the above pod does not show as `Running`, you can use the following to diagnose why
+   the pod has not started correctly.
+   
+   ```bash
+   $ kubectl describe pod coherence-demo-0 -n coherence-demo-ns
+   ```
    
 1. Port forward the HTTP port
 
@@ -373,6 +434,9 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
       --set coherence.image=your-12.2.1.4.0-Coherence-image \
       coherence/coherence
    ```   
+   
+   Replace with `your-12.2.1.4.0-Coherence-image` with a Coherence 12.2.1.4.0 image such as 
+   `container-registry.oracle.com/middleware/coherence:12.2.1.4.0` when it is released.
    
 1. Port Forward the Primary Cluster - Port **8088**
 

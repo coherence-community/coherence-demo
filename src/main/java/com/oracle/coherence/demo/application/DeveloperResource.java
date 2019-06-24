@@ -125,8 +125,12 @@ public class DeveloperResource
             switch (command)
             {
             case "jvisualvm" :
-                LocalPlatform.get().launch(System.getProperty("java.home") + SEP + ".." + SEP + "bin" + SEP
-                                           + "jvisualvm");
+                // If -Dvisualvm.executable has been set then use the default for the JVM.
+                // VisualVM was removed from the JDK in 9
+                String sVisualVM = Utilities.VISUALVM.isEmpty() ?
+                                   System.getProperty("java.home") + SEP + ".." + SEP + "bin" + SEP + "jvisualvm" :
+                                   Utilities.VISUALVM;
+                LocalPlatform.get().launch(sVisualVM);
                 break;
 
             case "clear" :
