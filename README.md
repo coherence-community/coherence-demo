@@ -136,27 +136,25 @@ ensure you meet the following:
    ...Successfully got an update from the "coherence" chart repository
    ```
 
-* Retrieve the Coherence Image
+* Obtain the Coherence Docker Image	
 
-### Obtain the Coherence Docker Image	
+  1. Go to to [Oracle Container Registry](https://container-registry.oracle.com)
 
-1. Go to to [Oracle Container Registry](https://container-registry.oracle.com)
+  1. Search for "Coherence".	
 
-1. Search for "Coherence".	
+  1. Select `coherence` from the list.	
 
-1. Select `coherence` from the list.	
+  1. Click on `Sign-in` on the right and enter your credentials, or create and account if you don't already have one.	
 
-1. Click on `Sign-in` on the right and enter your credentials, or create and account if you don't already have one.	
+  1. On the right, select the language for the  `Oracle Standard Terms and Restrictions`.	
 
-1. On the right, select the language for the  `Oracle Standard Terms and Restrictions`.	
+  1. Click `Continue` and scroll down to accept the terms and conditions.	
 
-1. Click `Continue` and scroll down to accept the terms and conditions.	
+  1. At the command line, do `docker login container-registry.oracle.com` with your Oracle Container Registry credentials.	
 
-1. At the command line, do `docker login container-registry.oracle.com` with your Oracle Container Registry credentials.	
+  1. At the command line do `docker pull container-registry.oracle.com/middleware/coherence:12.2.1.3.2`	  
 
-1. At the command line do `docker pull container-registry.oracle.com/middleware/coherence:12.2.1.3.2`	  
-
-> **Note**: Please change the Coherence version number as required.
+  > **Note**: Please change the Coherence version number as required.
 
 * Ensure your Local Kubernetes is enabled. If running using `Docker Desktop`, check using the `Kubernetes` slide-off in the menu bar. 
 
