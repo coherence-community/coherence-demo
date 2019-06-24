@@ -122,7 +122,7 @@ ensure you carry out the following:
 
 * Check Software and Runtime Prerequisites
 
-  Ensure you meet the `Check Software and Runtime Prerequisites` in the 
+  Ensure you meet the `Software and Runtime Prerequisites` in the 
   [Coherence Operator Quickstart Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#prerequisites).
 
 * Add the Helm repository 
