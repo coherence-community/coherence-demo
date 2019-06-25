@@ -139,7 +139,7 @@ ensure you carry out the following:
    ...Successfully got an update from the "coherence" chart repository
    ```
 
-* Obtain the Coherence Docker Image	
+* Ensure you can pull the Coherence Docker Image	
 
   1. Go to to [Oracle Container Registry](https://container-registry.oracle.com)
 
@@ -152,6 +152,8 @@ ensure you carry out the following:
   1. On the right, select the language for the  `Oracle Standard Terms and Restrictions`.	
 
   1. Click `Continue` and scroll down to accept the terms and conditions.	
+  
+  You Can optionally carry out the following, otherwise the image will be pulled when you install the chart for the first time.
 
   1. At the command line, do `docker login container-registry.oracle.com` with your Oracle Container Registry credentials.	
 
