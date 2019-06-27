@@ -30,25 +30,25 @@ import java.util.Map;
 /**
  * The launcher for the Coherence Demo application.
  * <p>
- * To launch the application issue the following using Java 8:
+ * To launch the application issue the following using Java 8 or 11:
  * <pre>
- *     java -jar coherence-demo-2.0.0.jar.
+ *     java -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
  * </pre>
  * <p>
  * To use a different port other than 8080 use:
  * <pre>
- *     java -Dhttp.port=9000 -jar coherence-demo-2.0.0.jar.
+ *     java -Dhttp.port=9000 -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
  * </pre>
  *
  * <p>
  * To use a different hostname other than 127.0.0.1 use:
  * <pre>
- *     java -Dhttp.hostname=my-host-name.com -jar coherence-demo-2.0.0.jar.
+ *     java -Dhttp.hostname=my-host-name.com -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
  * </pre>
  * <p>
  * To change the cluster names from defaults  use:
  * <pre>
- *     java -Dprimary.cluster=Boston -Dsecondary.cluster=NewYork -jar coherence-demo-2.0.0.jar.
+ *     java -Dprimary.cluster=Boston -Dsecondary.cluster=NewYork -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
  * </pre>
  * <p>
  *

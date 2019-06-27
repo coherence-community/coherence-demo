@@ -36,12 +36,18 @@ import java.util.Random;
  */
 public class Utilities
 {
-    private final static int      NR_POSITIONS_TO_CREATE = 100000;
-    private final static float    MIN_FACTOR             = 0.95f;
-    private final static float    MAX_FACTOR             = 1.06f;
-    private final static double   INITIAL_PRICE          = 20;
-    private final static double   MIN_PRICE              = 5;
-    private final static String[] SYMBOLS                = {"ORCL", "MSFT", "GOOG", "AAPL", "YHOO", "EMC"};
+    private static final int      NR_POSITIONS_TO_CREATE = 100000;
+    private static final float    MIN_FACTOR             = 0.95f;
+    private static final float    MAX_FACTOR             = 1.06f;
+    private static final double   INITIAL_PRICE          = 20;
+    private static final double   MIN_PRICE              = 5;
+    private static final String[] SYMBOLS                = {"ORCL", "MSFT", "GOOG", "AAPL", "NFLX", "DELL"};
+    private static final Random   RANDOM                 = new Random();
+
+    /**
+     * The path to the VisualVM executable, for JDK9+
+     */
+    public static final String VISUALVM = System.getProperty("visualvm.executable", "");
 
     /**
      * The {@link TypeAssertion} for the trades cache.
@@ -102,6 +108,60 @@ public class Utilities
 
 
     /**
+     * Obtain an indicator showing if we are running under the Coherence Operator in
+     * Kubernetes.
+     *
+     * @return an indicator showing if we are running under the Coherence Operator in
+     *      Kubernetes
+     */
+    public static boolean isRunningInKubernetes()
+        {
+        return System.getenv("COHERENCE_OPERATOR_SERVICE_SERVICE_HOST") != null &&
+               System.getenv("COHERENCE_OPERATOR_SERVICE_SERVICE_PORT") != null;
+        }
+
+
+    /**
+     * Obtain the Coherence cluster version.
+     *
+     * @return the Coherence cluster version
+     */
+    public static String getCoherenceVersion()
+        {
+
+        return CacheFactory.VERSION.replaceFirst(" .*$", "")
+                                   .replaceFirst("[\\.-]SNAPSHOT.*$","")
+                                   .replaceAll("-",".");
+        }
+
+
+    /**
+     * Obtain an indicator showing if federation is configured in K8s.
+     *
+     * @return an indicator showing if federation is configured in K8s.
+     */
+    public static boolean isFederationConfiguredInK8s()
+        {
+        return isRunningInKubernetes() &&
+               System.getProperty("primary.cluster")   != null &&
+               System.getProperty("secondary.cluster") != null &&
+               System.getProperty("primary.cluster.host") != null &&
+               System.getProperty("secondary.cluster.host") != null;
+        }
+
+
+    /**
+     * Obtain the Coherence cluster version as an integer.
+     *
+     * @return the Coherence cluster version as an integer
+     */
+    public static int getCoherenceVersionAsInt()
+        {
+        return Integer.parseInt(getCoherenceVersion().replaceAll("\\.", ""));
+        }
+
+
+    /**
      * Add indexes to the caches to improve query performance.
      */
     public static void addIndexes()
@@ -132,7 +192,7 @@ public class Utilities
 
 
     /**
-     * populate initial prices for symbols. Make the current price for all
+     * Populate initial prices for symbols. Make the current price for all
      * symbols to be $40 to make it fair and un-biased.
      */
     public static void populatePrices()
@@ -174,22 +234,32 @@ public class Utilities
             populatePrices();
         }
 
-        Random               random = new Random();
         HashMap<UUID, Trade> trades = new HashMap<>();
 
         for (int i = 0; i < count; i++)
         {
             // create a random position
-            String symbol = SYMBOLS[random.nextInt(SYMBOLS.length)];
-            int    amount = random.nextInt(1000) + 1;
+            String symbol = SYMBOLS[RANDOM.nextInt(SYMBOLS.length)];
+            int    amount = RANDOM.nextInt(1000) + 1;
             double price  = priceCache.get(symbol).getPrice();
 
             Trade  trade  = new Trade(symbol, amount, price);
 
             trades.put(trade.getId(), trade);
+
+            // batch the putAll's at 10000
+            if (i % 10000 == 0)
+            {
+                System.out.println("Flushing 10000 trades from HashMap to Coherence cache...");
+                tradesCache.putAll(trades);
+                trades.clear();
+            }
         }
 
-        tradesCache.putAll(trades);
+        if (!trades.isEmpty())
+        {
+            tradesCache.putAll(trades);
+        }
 
         System.out.printf("Creation Complete! (Cache contains %d positions)\n", tradesCache.size());
     }
@@ -201,13 +271,12 @@ public class Utilities
     public static void updatePrices()
     {
         NamedCache<String, Price> priceCache = getPricesCache();
-        Random                    random     = new Random();
 
         // choose random symbol to modify
-        String symbol = SYMBOLS[random.nextInt(SYMBOLS.length)];
+        String symbol = SYMBOLS[RANDOM.nextInt(SYMBOLS.length)];
 
         // invoke using static method to ensure all arguments are captured
-        priceCache.invoke(symbol, updateStockPrice(random.nextFloat()));
+        priceCache.invoke(symbol, updateStockPrice(RANDOM.nextFloat()));
     }
 
 

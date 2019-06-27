@@ -22,6 +22,7 @@ import com.oracle.coherence.demo.model.Trade;
 
 import com.oracle.bedrock.runtime.LocalPlatform;
 
+import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.util.UUID;
 
@@ -31,7 +32,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 /**
@@ -46,8 +51,7 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 @Path("/developer")
 public class DeveloperResource
 {
-    private static final String SEP    = File.separator;
-    private static final String PLUGIN = "coherence-jvisualvm.nbm";
+    private static final String SEP = File.separator;
 
     /**
      * Name of primary cluster.
@@ -58,6 +62,26 @@ public class DeveloperResource
      * Name of secondary cluster.
      */
     private static final String secondaryCluster = System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY);
+
+
+    @GET
+    @Produces({APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
+    @Path("environment")
+    public Response getEnvironmentInfo()
+    {
+        Map<String, Object> mapEnv =  new HashMap<>();
+
+        String sClusterName = CacheFactory.ensureCluster().getClusterName();
+
+        mapEnv.put("runningInKubernetes",       Utilities.isRunningInKubernetes());
+        mapEnv.put("coherenceVersion",          Utilities.getCoherenceVersion());
+        mapEnv.put("coherenceVersionAsInt",     Utilities.getCoherenceVersionAsInt());
+        mapEnv.put("primaryCluster",            sClusterName.equals(primaryCluster));
+        mapEnv.put("federationConfiguredInK8s", Utilities.isFederationConfiguredInK8s());
+        mapEnv.put("thisClusterName",           sClusterName);
+
+        return Response.status(Response.Status.OK).entity(mapEnv).build();
+    }
 
 
     @GET
@@ -101,8 +125,12 @@ public class DeveloperResource
             switch (command)
             {
             case "jvisualvm" :
-                LocalPlatform.get().launch(System.getProperty("java.home") + SEP + ".." + SEP + "bin" + SEP
-                                           + "jvisualvm");
+                // If -Dvisualvm.executable has been set then use the default for the JVM.
+                // VisualVM was removed from the JDK in 9
+                String sVisualVM = Utilities.VISUALVM.isEmpty() ?
+                                   System.getProperty("java.home") + SEP + ".." + SEP + "bin" + SEP + "jvisualvm" :
+                                   Utilities.VISUALVM;
+                LocalPlatform.get().launch(sVisualVM);
                 break;
 
             case "clear" :

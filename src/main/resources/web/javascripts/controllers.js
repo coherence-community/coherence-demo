@@ -1,7 +1,7 @@
 /*
  * File: controllers.js
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2019 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -55,7 +55,7 @@ angular.module('filters', [])
     })
     .filter('clusterName', function() {
         return function(cluster) {
-            return cluster === '' ? '' : cluster + ' Cluster';
+            return cluster === '' ? '' : '(' + cluster + ')';
         };
     })
     // directive to make adding demo insight easier
@@ -127,6 +127,14 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.insightLabel           = 'Disable Insight';
     self.insightEnabled         = true;
     self.insightContent         = [];
+    self.isRunningInKubernetes  = false;
+    self.isThisPrimaryCluster   = false;
+    self.federationConfiguredInK8s = false;
+    self.coherenceVersion       = undefined;
+    self.coherenceVersionAsInt  = 0;
+    self.thisClusterName        = undefined;
+    self.lastMemberCount        = undefined;
+    self.runningMode            = "";
 
     self.displayingSplash = false;
 
@@ -144,27 +152,48 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.insightEnabled = false;
     }
 
-    // obtain the cluster names from the developer resource as they can be overridden
-    // via -Dprimary.cluster or -Dsecondary.cluster
-    $http.get('/service/developer/clusterNames').then(function(response) {
-        var clusterNames = response.data.split(':');
-        self.primaryClusterName   = clusterNames[0];
-        self.secondaryClusterName = clusterNames[1];
+    // retrieve the environment to determine if we are running standalone or under Kubernetes
+    $http.get('/service/developer/environment').then(function(response) {
+        self.isRunningInKubernetes     = response.data.runningInKubernetes;
+        self.coherenceVersion          = response.data.coherenceVersion;
+        self.coherenceVersionAsInt     = response.data.coherenceVersionAsInt;
+        self.isThisPrimaryCluster      = response.data.primaryCluster;
+        self.federationConfiguredInK8s = response.data.federationConfiguredInK8s;
+        self.thisClusterName           = response.data.thisClusterName;
 
-        // display welcome here as we need to know the cluster names
-        console.log('clusterName=' + self.clusterName + ", sec=" + self.secondaryClusterName);
+        self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
+        
+        // setup cluster name
+        var params       = $location.hash().substring(1).split("&");
+        var clusterParam = params[0].split("=");
+        var cluster      = clusterParam[1];
 
-        // display welcome insight (on primary cluster only)
-        if (self.clusterName != self.secondaryClusterName && !insightCookies.skipSplash) {
-             self.displayInsight('welcome');
+        if (self.federationConfiguredInK8s && !self.isThisPrimaryCluster)
+           {
+           // if we have configuration federation in K8s and this is the
+           // secondary cluster, then set the cluster name from the "/environment/" call
+           // as the cluster name will not be abel to be retrieved from URL
+
+           self.clusterName = self.thisClusterName;
+           }
+        else {
+            self.clusterName = (cluster === undefined) ? '' : cluster;
         }
-    });
+        
+        // obtain the cluster names from the developer resource as they can be overridden
+        // via -Dprimary.cluster or -Dsecondary.cluster
+        $http.get('/service/developer/clusterNames').then(function(response) {
+            var clusterNames = response.data.split(':');
+            self.primaryClusterName   = clusterNames[0];
+            self.secondaryClusterName = clusterNames[1];
 
-    // setup cluster name
-    var params       = $location.hash().substring(1).split("&");
-    var clusterParam = params[0].split("=");
-    var cluster      = clusterParam[1];
-    self.clusterName = (cluster === undefined) ? '' : cluster;
+            // display welcome insight (on primary cluster only)
+            if (self.clusterName != self.secondaryClusterName && !insightCookies.skipSplash) {
+                 self.displayInsight('welcome');
+            }
+        });
+
+    });
 
     self.symbolsChartData = [];
 
@@ -289,6 +318,14 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                 return m1.id - m2.id;
             });
 
+            var currentMemberCount = (self.memberInfo.length !== undefined ? self.memberInfo.length : 0);
+
+            // check to see if member count has changed
+            if (self.lastMemberCount !== undefined && self.lastMemberCount != currentMemberCount) {
+                self.displayNotification('Member count changed from ' + self.lastMemberCount + ' to ' + currentMemberCount,'info', true);
+            }
+            self.lastMemberCount = currentMemberCount;
+
             // update the member-info based charts
             var newData = [];
             self.memberInfo.forEach(function(member) {
@@ -348,20 +385,42 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     // ---- the function to start a new cluster member ----
 
     self.startMember = function() {
-        self.startingMember = true;
+        if (self.isRunningInKubernetes === true) {
+            self.displayInsight(self.federationConfiguredInK8s ? "addOrRemoveServerK8sFederation" : "addOrRemoveServerK8s");
+        }
+        else {
+            self.startingMember = true;
+            $http.get('/service/start-member').then(function(response) {
+                self.startingMember = false;
+                self.displayInsightIfEnabled('serverStarted');
+            });
+        }
+    };
 
-        $http.get('/service/start-member').then(function(response) {
-            self.startingMember = false;
-            self.displayInsightIfEnabled('serverStarted');
-        });
+    // ---- the function to display insight for functions that may vary when running in k8s ----
+
+    self.displayInsightK8sAware = function(target) {
+        if (self.isRunningInKubernetes) {
+            if (target === "addServer") {
+                self.displayInsight("addOrRemoveServerK8s");
+            }
+        }
+        else {
+            self.displayInsight(target);
+        }
     };
 
     // ---- the function to stop an existing cluster member for a given cluster ----
 
     self.stopMember = function(memberId) {
-        $http.get('/service/stop-member/' + memberId).then(function(response) {
-            self.displayInsightIfEnabled('serverStopped');
-        });
+        if (self.isRunningInKubernetes === true) {
+            self.displayInsight(self.federationConfiguredInK8s ? "addOrRemoveServerK8sFederation" : "addOrRemoveServerK8s");
+        }
+        else {
+            $http.get('/service/stop-member/' + memberId).then(function(response) {
+                self.displayInsightIfEnabled('serverStopped');
+            });
+        }
     };
 
     // ---- the function to control secondary cluster ----
@@ -509,6 +568,26 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "header":  "Coherence Demonstration",
            "content": "fragments/welcome.html"
        };
+       self.insightContent['shutdown'] = {
+           "header":  "Shutdown Coherence Demonstration",
+           "content": "fragments/shutdown.html"
+       };
+       self.insightContent['addOrRemoveServerK8s'] = {
+           "header":  "Add or Remove Server",
+           "content": "fragments/addOrRemoveServerK8s.html"
+       };
+       self.insightContent['addOrRemoveServerK8sFederation'] = {
+           "header":  "Add or Remove Server - Federation in Kubernetes Enabled",
+           "content": "fragments/addOrRemoveServerK8sFederation.html"
+       };
+       self.insightContent['shutdownFederationInK8s'] = {
+           "header":  "Coherence Demonstration Shutdown - Federation in Kubernetes Enabled",
+           "content": "fragments/shutdownFederationInK8s.html"
+       };
+       self.insightContent['demoShutdown'] = {
+           "header":  "Coherence Demonstration Shutdown",
+           "content": "fragments/demoShutdown.html"
+       };
     };
 
     // ---- the function to close the splash screen
@@ -525,38 +604,65 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.startSecondary = function() {
         self.secondaryCluster = 'starting';
         self.displayNotification('Starting secondary cluster...','info', false);
-        $http.get('/service/start-secondary').then(function(response) {
-            self.secondaryCluster = 'enabled';
-            self.localClusterName = self.primaryClusterName;
-            self.federationControlLabel = self.STOP_FEDERATION;
 
-            // automatically start federation as it will be paused
-            self.federationOperation('start');
-            self.displayNotification('Secondary cluster started','success', true);
+        self.secondaryCluster       = 'enabled';
+        self.localClusterName       = self.primaryClusterName;
+        self.federationControlLabel = self.STOP_FEDERATION;
 
-            self.currentBytesSent = 0;
-            self.bytesSentData    = [];
-            self.lastBytesSent    = -1;
+        // don't start new DefaultCache server if we are in K8s
+        if (self.isRunningInKubernetes && self.federationConfiguredInK8s) {
+            self.startFederationInternal();
+        }
+        else {
+            $http.get('/service/start-secondary').then(function(response) {
+                // automatically start federation as it will be paused
+                self.startFederationInternal();
+            });
+        }
+    };
 
-            self.displayInsightIfEnabled('federationStarted');
-        });
+    // ---- the function to start federation internally ----
+
+    self.startFederationInternal = function() {
+        self.federationOperation('start');
+        self.displayNotification('Secondary cluster started','success', true);
+
+        self.currentBytesSent = 0;
+        self.bytesSentData    = [];
+        self.lastBytesSent    = -1;
+
+        self.displayInsightIfEnabled('federationStarted');
     };
 
     // ---- the function to stop a secondary cluster ----
 
     self.stopSecondary = function() {
+
         self.secondaryCluster = 'stopping';
         self.displayNotification('Stopping secondary cluster...','info', false);
-        $http.get('/service/stop-member/secondary').then(function(response) {
-            self.secondaryCluster       = 'disabled';
-            self.federationControlLabel = self.START_FEDERATION;
-            self.localClusterName       = '';
 
-            // pause replication
-            self.federationOperation('pause');
-            self.displayNotification('Secondary cluster stopped','success', true);
-            self.displayInsightIfEnabled('federationStopped');
-        });
+        // don't start new DefaultCache server if we are in K8s
+        if (self.isRunningInKubernetes && self.federationConfiguredInK8s) {
+            self.pauseFederationInternal();
+        }
+        else {
+            $http.get('/service/stop-member/secondary').then(function(response) {
+                self.pauseFederationInternal();
+            });
+        }
+    };
+
+    // ---- the function to pause federation internally ----
+
+    self.pauseFederationInternal = function() {
+        self.secondaryCluster       = 'disabled';
+        self.federationControlLabel = self.START_FEDERATION;
+        self.localClusterName       = '';
+
+        // pause replication
+        self.federationOperation('pause');
+        self.displayNotification('Secondary cluster stopped','success', true);
+        self.displayInsightIfEnabled('federationStopped');
     };
 
     // ---- the function to open the secondary cluster window
@@ -591,7 +697,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         });
     };
 
-    // ---- the function to start developer tools ----
+    // ---- the function to start
+        // developer tools ----
 
     self.startDeveloper = function(command) {
         // default to continue processing command. Only shutdown has confirmation
@@ -604,9 +711,19 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.displayNotification('Clearing all trades...', 'info', false);
         }
         else if (command === 'shutdown') {
-            continueCommand = $window.confirm('Are you sure you want to shutdown the Demo?');
+            if (self.isRunningInKubernetes === true) {
+                self.displayInsight(self.federationConfiguredInK8s ? 'shutdownFederationInK8s' : 'shutdown');
+                return;
+            }
+            else {
+                continueCommand = $window.confirm('Are you sure you want to shutdown the Demo?');
+            }
         }
+
         if (continueCommand) {
+            if (command === "shutdown") {
+                self.displayInsight("demoShutdown");
+            }
             $http.get('/service/developer/' + command).then(function(response) {
                 if (command === 'populate' || command === 'clear') {
                     self.displayNotification('Operation completed','success', true);
@@ -622,7 +739,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     // ---- the function to suspend or resume federation  ----
 
     self.toggleFederationState = function() {
-       if (self.federationStateLabel == self.SUSPEND_FEDERATION) {
+       if (self.federationStateLabel === self.SUSPEND_FEDERATION) {
            self.federationOperation('pause');
            self.federationStateLabel = self.RESUME_FEDERATION;
            self.displayNotification('Replication Paused', 'success', true);
@@ -725,5 +842,5 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.loadInsightContent();
 
     // schedule application state to be refreshed
-    self.refreshPromise = $interval(self.refresh, 1500);
+    self.refreshPromise = $interval(self.refresh, 5000);
 }]);

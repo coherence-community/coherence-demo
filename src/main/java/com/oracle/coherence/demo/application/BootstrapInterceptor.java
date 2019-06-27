@@ -52,7 +52,7 @@ public class BootstrapInterceptor implements EventInterceptor<LifecycleEvent>
                 // cater for case where user has overridden default port via -Dhttp.port=xxxx
                 String sPort = System.getProperty("http.port");
                 String sHost = System.getProperty("http.hostname");
-                String sURL  = "http://127.0.0.1:" + (sPort == null ? "8080" : sPort) + "/application/index.html";
+                String sURL  = "http://" + (sHost == null ? "127.0.0.1" : sHost) + ":" + (sPort == null ? "8080" : sPort) + "/application/index.html";
 
                 // open the default web browser to start the front-end
                 try
