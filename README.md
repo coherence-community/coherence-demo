@@ -10,7 +10,7 @@ showcases Coherence general features, scalability capabilities as well as new 12
 * Java 8 Support
 
 This application can either be run `locally`, or via `Kubernetes` using 
-the [Coherence Operator](https://github.com/oracle/coherence-operator).
+the [Oracle Coherence Operator](https://github.com/oracle/coherence-operator).
 
 When running locally, the application results in a single self-contained jar as well as javadoc and source.
 
@@ -123,7 +123,7 @@ ensure you carry out the following:
 * Check Software and Runtime Prerequisites
 
   Ensure you meet the `Software and Runtime Prerequisites` in the 
-  [Coherence Operator Quickstart Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#prerequisites).
+  [Oracle Coherence Operator Quick Start Guide](https://oracle.github.io/coherence-operator/docs/quickstart.html#prerequisites).
 
 * Add the Helm repository 
 
@@ -166,7 +166,7 @@ ensure you carry out the following:
 ## Running the Demo application
 
 The Coherence Demo can be run locally, or via Kubernetes using 
-the [Coherence Operator](https://github.com/oracle/coherence-operator).
+the [Oracle Coherence Operator](https://github.com/oracle/coherence-operator).
 
 ### Running Locally
 
@@ -252,8 +252,13 @@ If you wish to use a cluster name with a space you must enclose it in quotes.
 > **Note:** If you wish you enable Federation when running on Kubernetes, please
 > follow steps 1,2 & 3 below and continue with instructions [Here](#enabling-federation-on-kubernetes).
    
-The following will install and run the application using Coherence Operator in a namespace
+The following will install and run the application using the Oracle Coherence Operator in a namespace
 called `coherence-demo-ns`.
+
+This architecture consists of the following helm chart installs:
+* Oracle Coherence Operator
+* Coherence Cluster - storage-enabled Coherence servers
+* Coherence Application Tier - storage-disabled with Grizzly HTTP Server
 
 1. Create the demonstration namespace
 
@@ -287,7 +292,7 @@ called `coherence-demo-ns`.
    
 1. Build and (optionally) push the sidecar Docker image  
 
-   The Coherence Operator requires a sidecar Docker image to be built container the classes and
+   The Oracle Coherence Operator requires a sidecar Docker image to be built container the classes and
    configuration files required by this application.
    
    Ensure that you have Docker running locally and issue the following:
@@ -303,7 +308,7 @@ called `coherence-demo-ns`.
    > push the above image to your repository accessible to that cluster. You will also need to 
    > prefix the image name in your `helm` commands below.
    
-1. Install the Coherence Operator chart
+1. Install the Oracle Coherence Operator
 
    ```bash
    $ helm install \
@@ -334,13 +339,13 @@ called `coherence-demo-ns`.
    ```bash
    $ helm install \
       --namespace coherence-demo-ns \
-      --name coherence-demo \
+      --name coherence-demo-storage \
       --set clusterSize=1 \
-      --set cluster=primary-cluster \
+      --set cluster=PrimaryCluster \
       --set imagePullSecrets=coherence-demo-secret \
       --set store.cacheConfig=cache-config.xml \
       --set store.pof.config=pof-config.xml \
-      --set store.javaOpts="-Dprimary.cluster=primary-cluster"  \
+      --set store.javaOpts="-Dwith.http=false" \
       --set store.maxHeap=512m \
       --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
       coherence/coherence
@@ -363,20 +368,38 @@ called `coherence-demo-ns`.
 
    ```bash
    NAME                 READY   STATUS    RESTARTS   AGE
-   coherence-demo-0     1/1     Running   0          4m
+   coherence-demo-storage-0     1/1     Running   0          4m
    ``` 
    
    If the above pod does not show as `Running`, you can use the following to diagnose why
    the pod has not started correctly.
    
    ```bash
-   $ kubectl describe pod coherence-demo-0 -n coherence-demo-ns
+   $ kubectl describe pod coherence-demo-storage-0 -n coherence-demo-ns
    ```
+   
+1. Install the Application Tier
+
+   ```bash
+   $ helm install \
+      --namespace coherence-demo-ns \
+      --name coherence-demo-app \
+      --set clusterSize=1 \
+      --set cluster=PrimaryCluster \
+      --set imagePullSecrets=coherence-demo-secret \
+      --set store.cacheConfig=cache-config.xml \
+      --set store.pof.config=pof-config.xml \
+      --set store.wka=coherence-demo-storage-headless \
+      --set store.javaOpts="-Dcoherence.distributed.localstorage=false"  \
+      --set store.maxHeap=512m \
+      --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
+      coherence/coherence
+   ```  
    
 1. Port forward the HTTP port
 
    ```bash
-   $ kubectl port-forward --namespace coherence-demo-ns coherence-demo-0 8080:8080
+   $ kubectl port-forward --namespace coherence-demo-ns coherence-demo-app-0 8080:8080
    ```  
    
 1. Access the application
@@ -387,7 +410,7 @@ called `coherence-demo-ns`.
 
 1. Scaling the application using `kubectl`
 
-   When running the application in Kubernates, the `Add Server` and `Remove Server` buttons are not available.
+   When running the application in Kubernetes, the `Add Server` and `Remove Server` buttons are not available.
    You need to use kubectl to scale the application.
    
    Scale the application to 2 nodes using:
@@ -401,7 +424,7 @@ called `coherence-demo-ns`.
 You must use Coherence 12.2.1.4.0 or above for Federation to work within Kubernetes.
 
 The setup for this example uses 2 Coherence clusters in the same Kubernetes cluster. If you wish 
-to use Federation across Kubernetes cluster please see the [Coherence Operator Samples](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples).
+to use Federation across Kubernetes cluster please see the [Oracle Coherence Operator Samples](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples).
 
 * Primary Cluster
   * Release name: cluster-1
@@ -409,6 +432,9 @@ to use Federation across Kubernetes cluster please see the [Coherence Operator S
 * Secondary Cluster
   * Release name: cluster-2
   * Cluster name: SecondaryCluster
+
+> **Note**: For this Federation example, we simplify the install (for demo purposes only) by 
+>utilizing the storage-enabled pods to also serve the HTTP requests.
 
 1. Build the Sidecar image
 
@@ -496,7 +522,7 @@ Carry out the following commands to delete the chart installed in this sample.
 **Without Federation**
 
 ```bash
-$ helm delete coherence-operator coherence-demo --purge
+$ helm delete coherence-operator coherence-demo-storage coherence-demo-app --purge
 ```
 
 **With Federation**
