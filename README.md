@@ -95,7 +95,7 @@ mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar      -DpomFile
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/12.2.1/coherence-rest.12.2.1.pom
 ```
 
-If you are using Coherence 12.2.1.4.0 and later version, run the following commands:
+If you are using Coherence 12.2.1.4.0 or later version, run the following commands:
 ```bash
 $ mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-grizzly.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-grizzly/12.2.1/coherence-http-grizzly.12.2.1.pom
 ```
@@ -121,9 +121,9 @@ ensure the following requirements:
    $ helm repo update
    ```
 
-### Pull Coherence Docker Image
+### Get Coherence Docker Image
 
-Pull the Coherence Docker image from the Oracle Container Registry:
+Get the Coherence Docker image from the Oracle Container Registry:
 
 1. In a web browser, navigate to [Oracle Container Registry](https://container-registry.oracle.com) and click Sign In.
 2. Enter your Oracle credentials or create an account if you don't have one.
@@ -132,7 +132,7 @@ Pull the Coherence Docker image from the Oracle Container Registry:
 5. On the Oracle Coherence page, select the language from the drop-down list and click **Continue**.
 6. Click **Accept** on the Oracle Standard Terms and Conditions page.
 
-The image will be pulled automatically when you install the chart for the first time.
+This action is required to pull the image correctly for the first time. Subsequently, the image will be pulled automatically using the Kubernetes secret.
 
 ### Enable Kubernetes in Docker
 
@@ -205,7 +205,7 @@ your local machine.
 
 **Default Cluster Names**
 
-When starting up the application, the timezone is analyzed and default names are selected for the primary and secondary cluster (see Launcher.java). If you want to customize the name, do the following:
+When starting up the application, the timezone is analyzed and default names are selected for the primary and secondary cluster (see [Launcher.java](https://github.com/coherence-community/coherence-demo/tree/master/src/main/java/com/oracle/coherence/demo/application/Launcher.java)). If you want to customize the name, do the following:
 
 ```bash
 $ java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-3.0.0-SNAPSHOT.jar
@@ -305,9 +305,7 @@ Build and push the sidecar Docker image(optional). The Oracle Coherence Operator
    ```bash
    --set coherence.image=container-registry.oracle.com/middleware/coherence:12.2.1.4.0
    ```
-   Because we use stateful sets, the coherence cluster will start one pod at a time.
-
-   Use `kubectl get pods -n coherence-demo-ns` to ensure that all the pods are running. All three storage-coherence-0/1/2 pods must be running and ready as shown:
+   Use `kubectl get pods -n coherence-demo-ns` to ensure that the pod is running. The pod storage-coherence-0 must be running and ready as shown:
 
    ```bash
    NAME                 READY   STATUS    RESTARTS   AGE
