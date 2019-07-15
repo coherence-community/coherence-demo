@@ -26,7 +26,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4 and a number of other fr
     + [Environment Variables](#environment-variables)
     + [Coherence JARs](#coherence-jars)
     + [Kubernetes Prerequisites](#kubernetes-prerequisites)
-    + [Pull Coherence Docker Image](#pull-coherence-docker-image)
+    + [Get Coherence Docker Image](#pull-coherence-docker-image)
     + [Enable Kubernetes in Docker](#enable-kubernetes-in-docker)
   * [Run the Application](#run-the-application)
     + [Run the Application Locally](#run-the-application-locally)
@@ -132,7 +132,7 @@ Get the Coherence Docker image from the Oracle Container Registry:
 5. On the Oracle Coherence page, select the language from the drop-down list and click **Continue**.
 6. Click **Accept** on the Oracle Standard Terms and Conditions page.
 
-This action is required to pull the image correctly for the first time. Subsequently, the image will be pulled automatically using the Kubernetes secret.
+This action is required to allow the image to be pulled automatically when required using the Kubernetes secret.
 
 ### Enable Kubernetes in Docker
 
