@@ -56,11 +56,11 @@
       </participant>
     </participants>
     <topology-definitions>
-      <active-passive>
+      <active-active>
         <name>Active</name>
         <active system-property="primary.cluster">PrimaryCluster</active>
         <active system-property="secondary.cluster">SecondaryCluster</active>
-      </active-passive>
-  </topology-definitions>
+      </active-active>
+    </topology-definitions>
   </federation-config>
 </coherence>
