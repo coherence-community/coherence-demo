@@ -31,7 +31,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4 and a number of other fr
   * [Run the Application](#run-the-application)
     + [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
-    + [Run the Application on Kubernetes (Coherence 12.2.1.3.x)](#run-the-application-on-kubernetes--coherence-12213x-)
+    + [Run the Application on Kubernetes (Coherence 12.2.1.3.x)](#run-the-application-on-kubernetes-coherence-12213x)
     + [Enable Federation on Kubernetes](#enable-federation-on-kubernetes)
     + [Uninstalling the Charts](#uninstalling-the-charts)
   * [References](#references)
