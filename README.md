@@ -381,7 +381,7 @@ called `coherence-demo-ns`. Create the demonstration namespace:
    namespace/sample-coherence-ns created
    ```
 2. **Create Secret** </br>
-   Create a secret for pulling the images from private repositories. For this application, create a secret named `coehrence-demo-secret` in the namespace `coherence-demo-ns`.
+   Create a secret for pulling the images from private repositories. For this application, create a secret named `coherence-demo-secret` in the namespace `coherence-demo-ns`.
    ```bash
    $ kubectl create secret docker-registry coherence-demo-secret \
         --namespace coherence-demo-ns \
