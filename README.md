@@ -53,12 +53,12 @@ To run the demonstration application, you must have the following software insta
 
 2. Maven 3.5.4 or later version installed and configured.
 
-3. Oracle Coherence 12.2.1.3.0 or later version installed.
+3. Oracle Coherence 12.2.1.4.0 or later version installed.
 
    You can download it from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
 
    If you want to demonstrate the Coherence VisualVM plug-in, follow the instructions to install:
-   https://docs.oracle.com/middleware/12213/coherence/manage/using-jmx-manage-oracle-coherence.htm#COHMG5583
+   https://docs.oracle.com/en/middleware/fusion-middleware/coherence/12.2.1.4/manage/using-jmx-manage-oracle-coherence.html
 4. VisualVM is not included in JDK 11. You can download and install VisualVM from [https://visualvm.github.io](https://visualvm.github.io). You must provide `-Dvisualvm.executable` to point to the VisualVM executable.
 5. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
@@ -93,11 +93,7 @@ For Linux/UNIX/Mac OS:
 ```bash
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar      -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/12.2.1/coherence.12.2.1.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/12.2.1/coherence-rest.12.2.1.pom
-```
-
-If you are using Coherence 12.2.1.4.0 or later version, run the following commands:
-```bash
-$ mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-grizzly.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-grizzly/12.2.1/coherence-http-grizzly.12.2.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-grizzly.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-grizzly/12.2.1/coherence-http-grizzly.12.2.1.pom
 ```
 
 For Windows OS:
@@ -105,6 +101,7 @@ For Windows OS:
 ```bash
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar      -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\12.2.1\coherence.12.2.1.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\12.2.1\coherence-rest.12.2.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-grizzly.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-grizzly\12.2.1\coherence-http-grizzly.12.2.1.pom
 ```
 
 ### Kubernetes Prerequisites

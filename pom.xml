@@ -10,7 +10,7 @@
 
   <properties>
     <bedrock.version>5.0.11</bedrock.version>
-    <coherence.version>12.2.1-3-0</coherence.version>
+    <coherence.version>12.2.1-4-0</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <grizzly.version>2.3.8</grizzly.version>
     <jackson.version>2.9.9</jackson.version>
