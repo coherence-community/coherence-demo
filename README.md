@@ -109,13 +109,14 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-grizzly.jar 
 To run the application in Kubernetes using the Coherence Operator, you must
 ensure the following requirements:
 
-* Check [Software Requirements](https://github.com/oracle/coherence-operator/blob/gh-pages/docs/quickstart.md#software-requirements) and [Runtime Environment Requirements](https://github.com/oracle/coherence-operator/blob/gh-pages/docs/quickstart.md#runtime-environment-requirements) in the *Quick Start Guide*.
+* Ensure you have been able to install the Coherence Operator using the  [Quick Start Guide](https://oracle.github.io/coherence-operator/docs/2.0.0/#/about/03_quickstart).
 
 * Add the Helm repository. Execute the following commands to create a `coherence` helm repository:
 
   ```bash
-   $ helm repo add coherence https://oracle.github.io/coherence-operator/charts
-   $ helm repo update
+   helm repo add coherence https://oracle.github.io/coherence-operator/charts
+   
+   helm repo update
    ```
 
 ### Get Coherence Docker Image
@@ -142,11 +143,13 @@ The Coherence Demonstration Application can be run locally or through Kubernetes
 ### Run the Application Locally
 
 Build the application using Maven:
+   
+```bash
+mvn clean install
+```
 
-   ```bash
-   $ mvn clean install
-   ```
- The `target` directory contains a list of files:
+The `target` directory contains a list of files:
+
 ```bash
  coherence-demo-{version}-SNAPSHOT.jar          - Executable JAR file, see instructions below
  coherence-demo-{version}-SNAPSHOT-javadoc.jar  - javadoc
@@ -156,14 +159,13 @@ Build the application using Maven:
 Run the JAR file in the `target` directory:
 
 ```bash
-$ java -jar target/coherence-demo-3.0.0-SNAPSHOT.jar
+java -jar target/coherence-demo-3.0.1-SNAPSHOT.jar
 ```
 If you are using JDK 11, use the following argument to start the VisualVM while running the JAR file:
 ```bash
-java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm -jar target/coherence-demo-3.0.0-SNAPSHOT.jar
+java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm -jar target/coherence-demo-3.0.1-SNAPSHOT.jar
 ```
 `-Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm` in the command points to the path of the VisualVM executable.
-
 
 A Coherence Cache server and HTTP server are started on port 8080 for serving REST and application data. When the Cache server starts, the application loads on the default web browser at http://127.0.0.1:8080/application/index.html.
 
@@ -195,7 +197,7 @@ To shut down the application, select **Shutdown** option from the **Tools** menu
 The default HTTP hostname is 127.0.0.1 and default port is 8080. To modify these you can add the `http.hostname` or `http.port` properties on startup:
 
 ```bash
-$ java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-3.0.0-SNAPSHOT.jar
+java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-3.0.1-SNAPSHOT.jar
 ```
 By changing the `http.hostname` you can access the application outside of
 your local machine.
@@ -205,11 +207,11 @@ your local machine.
 When starting up the application, the timezone is analyzed and default names are selected for the primary and secondary cluster (see [Launcher.java](https://github.com/coherence-community/coherence-demo/tree/master/src/main/java/com/oracle/coherence/demo/application/Launcher.java)). If you want to customize the name, do the following:
 
 ```bash
-$ java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-3.0.0-SNAPSHOT.jar
+java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-3.0.1-SNAPSHOT.jar
 ```
 If you want to use a cluster name with a space, you must enclose it in quotes.
 
-### Run the Application on Kubernetes (Coherence 12.2.1.3.x)
+### Run the Application on Kubernetes
 
 The steps to run the application on Kubernetes comprises the following Helm chart installs:
 * Oracle Coherence Operator
@@ -219,18 +221,20 @@ The steps to run the application on Kubernetes comprises the following Helm char
 > **Note:** If you want to enable Federation when running on Kubernetes, see [Enable Federation on Kubernetes](#enable-federation-on-kubernetes).
 
 
-1. **Create Namespace**</br>
-   Run the application using the Oracle Coherence Operator in a namespace
-called `coherence-demo-ns`. Create the demonstration namespace:
+1. **Create Namespace**
+
+   Run the application using the Oracle Coherence Operator in a namespace called `coherence-demo-ns`. Create the demonstration namespace:
    ```bash
-   $ kubectl create namespace coherence-demo-ns
+   kubectl create namespace coherence-demo-ns
 
    namespace/sample-coherence-ns created
-   ```
-2. **Create Secret** </br>
+   ```   
+   
+2. **Create Secret**
+
    Create a secret for pulling the images from private repositories. For this application, create a secret named `coehrence-demo-secret` in the namespace `coherence-demo-ns`.
    ```bash
-   $ kubectl create secret docker-registry coherence-demo-secret \
+   kubectl create secret docker-registry coherence-demo-secret \
         --namespace coherence-demo-ns \
         --docker-server=your-docker-server \
         --docker-username=your-docker-username \
@@ -240,119 +244,161 @@ called `coherence-demo-ns`. Create the demonstration namespace:
    > **Note**: By default, the Docker details must be your Oracle Container Registry details.
 
    See [https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) for more information.
-3. **Build and Push Sidecar Docker Image**</br>
-Build and push the sidecar Docker image(optional). The Oracle Coherence Operator requires a sidecar Docker image to be built containing the classes and configuration files required by the application.
 
-  Ensure that you have Docker running locally and execute the following command:
+3. **Build and Push Sidecar Docker Image**
+
+   Build and push the sidecar Docker image(optional). The Oracle Coherence Operator requires a sidecar Docker image to be built containing the classes and configuration files required by the application.
+
+   Ensure that you have Docker running locally and execute the following command:
 
    ```bash
-   $ mvn clean install -P docker
+   mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo-sidecar:3.0.0-SNAPSHOT` which contains cache configuration and Java classes to be added to the classpath at runtime.
+   This creates an image named `coherence-demo-sidecar:3.0.1-SNAPSHOT` which contains cache configuration and Java classes to be added to the classpath at runtime.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the sidecar Docker image to your repository accessible to that cluster. You also need to prefix the image name in your `helm` commands below.
 
-4. **Install the Oracle Coherence Operator**</br>
-  Install the operator using `helm`:
+4. **Install the Oracle Coherence Operator**
+   
+   Install the operator using `helm`:
 
    ```bash
-   $ helm install \
+   helm install \
       --namespace coherence-demo-ns \
-      --set imagePullSecrets=coherence-demo-secret \
+      --set imagePullSecrets[0].name=coherence-demo-secret \
       --name coherence-operator \
-      --set "targetNamespaces={coherence-demo-ns}" \
       coherence/coherence-operator
    ```
    Confirm the creation of the chart:
 
    ```bash
-   $ helm ls
-   NAME              	REVISION	UPDATED                 	STATUS  	CHART                   	APP VERSION	NAMESPACE               
-   coherence-operator	1       	Fri May 24 14:39:15 2019	DEPLOYED	coherence-operator-0.9.4	0.9.4      	coherence-demo-ns
+   helm ls
+   
+   NAME              	REVISION	UPDATED                 	STATUS  	CHART                   	APP VERSION	NAMESPACE        
+   coherence-operator	1       	Mon Oct 28 13:19:20 2019	DEPLOYED	coherence-operator-2.0.0	2.0.0      	coherence-demo-ns
+  
+   kubectl get pods -n coherence-demo-ns
+   NAME                                 READY   STATUS    RESTARTS   AGE
+   coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          2m12s
+   ```                             
+   
+   To enable EFK (Elasticsearch, Fluentd and Kibana) integration to capture logs, see [here](https://oracle.github.io/coherence-operator/docs/2.0.0/#/logging/020_logging).
+   
+   To enable metrics capture, see [here](https://oracle.github.io/coherence-operator/docs/2.0.0/#/metrics/020_metrics)
 
-   $ kubectl get pods -n coherence-demo-ns
-   NAME                                  READY   STATUS    RESTARTS   AGE
-   coherence-operator-5d4dc4546c-4c925   1/1     Running   0          50s
-   ```
+5. **Install the Coherence Cluster**
 
-   To enable log capture or metrics, see [here](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples) for the list of samples.
+   The Coherence cluster comprises of 2 roles:
+   
+   * storage - contains the storage-enabled tier which stores application data
+   * http - contains a stroage-disabled http server which serves the application 
 
-5. **Install the Coherence Cluster**</br>
-  Install the Coherence cluster:
+   Create a file called `demo-cluster.yaml` containing the following:
+   
+   ```yaml
+   apiVersion: coherence.oracle.com/v1
+   kind: CoherenceCluster
+   metadata:
+     name: primary-cluster
+   spec:
+     jvm:   
+       memory:
+         heapSize: 512m 
+     imagePullSecrets:
+       - name: coherence-example-secret 
+     ports:
+       - name: metrics
+         port: 9612
+     coherence:
+       metrics:
+         enabled: false  
+       cacheConfig: cache-config.xml
+     logging:
+       fluentd:
+         enabled: false    
+     application:
+       image: coherence-demo-sidecar:3.0.1-SNAPSHOT
+     #
+     # Individual cluster roles
+     #
+     roles:
+       - role: storage
+         replicas: 1  
+         jvm:
+           args:
+             - "-Dwith.http=false"  
+             - "-Dprimary.cluster=primary-cluster"
+       - role: http
+         replicas: 1  
+         jvm:
+           args:
+             - "-Dprimary.cluster=primary-cluster"
+         ports:
+           - name: http
+             port: 8080  
+         coherence:
+           storageEnabled: false
+   ```                       
+   
+   > Note: You can set `metrics.enabled` or `fluentd.enabled` to true if you have enabled this for the Coherence Operator install.
 
    ```bash
-   $ helm install \
-      --namespace coherence-demo-ns \
-      --name coherence-demo-storage \
-      --set clusterSize=1 \
-      --set cluster=PrimaryCluster \
-      --set imagePullSecrets=coherence-demo-secret \
-      --set store.cacheConfig=cache-config.xml \
-      --set store.pof.config=pof-config.xml \
-      --set store.javaOpts="-Dwith.http=false" \
-      --set store.maxHeap=512m \
-      --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
-      coherence/coherence
-   ```
-   > **Note:** By default, the latest version of the chart is used. You can add `--version 1.0.0` to select a specific version. For example, 1.0.0 is used in the command.
-
-   You can also choose a specific version of the Coherence Docker image by specifying the following in the `helm install` command:
+   kubectl create --namespace coherence-demo-ns -f demo-cluster.yaml
+   ```                                                              
+  
+   Use `kubectl get pods -n coherence-demo-ns` to ensure that the pod is running. 
+   The pod primary-cluster-storage-0 must be running and ready as shown:
 
    ```bash
-   --set coherence.image=container-registry.oracle.com/middleware/coherence:12.2.1.4.0
+   NAME                                 READY   STATUS    RESTARTS   AGE
+   coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          33m
+   primary-cluster-http-0               1/1     Running   0          3m2s
+   primary-cluster-storage-0            1/1     Running   0          3m4s
    ```
-   Use `kubectl get pods -n coherence-demo-ns` to ensure that the pod is running. The pod storage-coherence-0 must be running and ready as shown:
-
-   ```bash
-   NAME                 READY   STATUS    RESTARTS   AGE
-   coherence-demo-storage-0     1/1     Running   0          4m
-   ```
+   
    If the pod does not show as `Running`, you can use the following command to diagnose and troubleshoot the pod:
 
    ```bash
-   $ kubectl describe pod coherence-demo-storage-0 -n coherence-demo-ns
+   kubectl describe pod primary-cluster-storage-0 -n coherence-demo-ns
    ```
 
-6. **Install the Application Tier**</br>
-  Install the application tier using the following command:
+6. **Port Forward the HTTP Port**
 
    ```bash
-   $ helm install \
-      --namespace coherence-demo-ns \
-      --name coherence-demo-app \
-      --set clusterSize=1 \
-      --set cluster=PrimaryCluster \
-      --set imagePullSecrets=coherence-demo-secret \
-      --set store.cacheConfig=cache-config.xml \
-      --set store.pof.config=pof-config.xml \
-      --set store.wka=coherence-demo-storage-headless \
-      --set store.javaOpts="-Dcoherence.distributed.localstorage=false"  \
-      --set store.maxHeap=512m \
-      --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
-      coherence/coherence
+   kubectl port-forward --namespace coherence-demo-ns primary-cluster-http-0  8080:8080
    ```  
 
-7. **Port Forward the HTTP Port**
-
-   ```bash
-   $ kubectl port-forward --namespace coherence-demo-ns coherence-demo-app-0 8080:8080
-   ```  
-
-8. **Access the Application**</br>
+7. **Access the Application**</br>
 
    Use the following URL to access the application home page:
 
    [http://127.0.0.1:8080/application/index.html](http://127.0.0.1:8080/application/index.html)  
 
-9. **Scale the Appication**</br>
-  Scale the application using `kubectl`. When running the application in Kubernetes, the **Add Server** and **Remove Server** options are not available. You need to use `kubectl` to scale the application.
+8. **Scale the Application**
 
-   Scale the application to two nodes:
+   When running the application in Kubernetes, the **Add Server** and **Remove Server** options are not available. You need to use `kubectl` to scale the application.
+
+   Scale the application to three nodes by editing `demo-cluster.yaml` and changing 
+   the `replicas` value for the `storage` role to 3. Then apply using
 
    ```bash
-   $ kubectl scale statefulsets coherence-demo --namespace coherence-demo-ns --replicas=2
-   ```
+   kubectl apply --namespace coherence-demo-ns -f demo-cluster.yaml
+   ```          
+   
+   Use `kubectl get pods -n coherence-demo-ns` to view the progress.
+   
+9. **Scale the Application down**
+
+   Scale the application to one node by editing `demo-cluster.yaml` and changing 
+   the `replicas` value for the `storage` role to 1. Then apply using
+
+   ```bash
+   kubectl apply --namespace coherence-demo-ns -f demo-cluster.yaml
+   ```  
+   
+   Use `kubectl get pods -n coherence-demo-ns` to view the scale down progress which is
+   carried out in a safe manner to ensure no data is lost.        
 
 ### Enable Federation on Kubernetes
 
@@ -361,67 +407,120 @@ You must use Oracle Coherence 12.2.1.4.0 or later for Federation to work within 
 The setup for this example uses two Coherence clusters in the same Kubernetes cluster. If you want to use Federation across Kubernetes cluster, see the [Oracle Coherence Operator Samples](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples).
 
 * Primary Cluster
-  * Release name: cluster-1
-  * Cluster name: PrimaryCluster
+  * Cluster name: primary-cluster
 * Secondary Cluster
-  * Release name: cluster-2
-  * Cluster name: SecondaryCluster
+  * Cluster name: secondary-cluster
 
 > **Note**: For this Federation example, the installation is simplified by using the storage-enabled pods to also serve the HTTP requests.
 
-1. **Create Namespace**</br>
-   Run the application using the Oracle Coherence Operator in a namespace
-called `coherence-demo-ns`. Create the demonstration namespace:
+1. **Create Namespace**
+
+   Run the application using the Oracle Coherence Operator in a namespace called `coherence-demo-ns`. Create the demonstration namespace:
    ```bash
-   $ kubectl create namespace coherence-demo-ns
+   kubectl create namespace coherence-demo-ns
 
    namespace/sample-coherence-ns created
-   ```
-2. **Create Secret** </br>
+   ```  
+   
+2. **Create Secret**
+
    Create a secret for pulling the images from private repositories. For this application, create a secret named `coherence-demo-secret` in the namespace `coherence-demo-ns`.
+   
    ```bash
-   $ kubectl create secret docker-registry coherence-demo-secret \
+   kubectl create secret docker-registry coherence-demo-secret \
         --namespace coherence-demo-ns \
         --docker-server=your-docker-server \
         --docker-username=your-docker-username \
         --docker-email=your-email-address \
         --docker-password=your-docker-password
-   ```
+   ```                
+   
    > **Note**: By default, the Docker details must be your Oracle Container Registry details.
    See [https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) for more information.
 
 3. Build the sidecar image:
 
    ```bash
-   $ mvn clean install -P coherence12214,docker -Dcoherence.version=12.2.1-4-0
+   mvn clean install -P docker
    ```         
    > **Note:** The `coherence.version` must be set to your installed Coherence version.
 
 4. Install the **Primary** cluster:
 
+   Create a file called `primary-cluster.yaml` containing the following:
+   
+   ```yaml
+   apiVersion: coherence.oracle.com/v1
+   kind: CoherenceCluster
+   metadata:
+     name: primary-cluster
+   spec:
+     jvm:
+       memory:
+         heapSize: 512m 
+     imagePullSecrets:
+       - name: coherence-example-secret 
+     ports:
+       - name: metrics
+         port: 9612      
+       - name: federation
+         port: 40000
+     coherence:
+       metrics:
+         enabled: false 
+       cacheConfig: cache-config.xml
+     logging:
+       fluentd:
+         enabled: false    
+     application:
+       image: coherence-demo-sidecar:3.0.1-SNAPSHOT
+     #
+     # Individual cluster roles
+     #
+     roles:
+       - role: storage
+         replicas: 2  
+         jvm:
+           args:
+             - "-Dwith.http=false"   
+             - "-Dprimary.cluster=primary-cluster"
+             - "-Dprimary.cluster.port=40000"
+             - "-Dprimary.cluster.host=primary-cluster-wka"
+             - "-Dsecondary.cluster=secondary-cluster"
+             - "-Dsecondary.cluster.port=40000"
+             - "-Dsecondary.cluster.host=secondary-cluster-wka"
+       - role: http
+         replicas: 1   
+         jvm:
+           args:
+             - "-Dprimary.cluster=primary-cluster"   
+             - "-Dprimary.cluster.host=primary-cluster-wka"
+             - "-Dsecondary.cluster=secondary-cluster"  
+             - "-Dsecondary.cluster.host=secondary-cluster-wka"
+         ports:
+           - name: http
+             port: 8080  
+         coherence:
+           storageEnabled: false
+   ```                       
+   
    ```bash
-   $ helm install \
-      --namespace coherence-demo-ns \
-      --name cluster-1 \
-      --set clusterSize=1 \
-      --set cluster=PrimaryCluster \
-      --set imagePullSecrets=coherence-demo-secret \
-      --set store.cacheConfig=cache-config-12214.xml \
-      --set store.overrideConfig=tangosol-coherence-override-12214.xml \
-      --set store.pof.config=pof-config.xml \
-      --set store.maxHeap=512m \
-      --set store.javaOpts="-Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \
-      --set store.ports.federation=40000 \
-      --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
-      --set coherence.image=your-12.2.1.4.0-Coherence-image \
-      coherence/coherence
-   ```   
-   Replace `your-12.2.1.4.0-Coherence-image` with a Coherence 12.2.1.4.0 image such as `container-registry.oracle.com/middleware/coherence:12.2.1.4.0` when it is released.
+   kubectl create --namespace coherence-demo-ns -f primary-cluster.yaml
+   ```                                                              
+  
+   Use `kubectl get pods -n coherence-demo-ns` to ensure that the pods are running. 
 
+   ```bash
+   NAME                                 READY   STATUS    RESTARTS   AGE
+   coherence-operator-cd9b646d5-tzf2j   1/1     Running   0          58m
+   primary-cluster-http-0               1/1     Running   0          74s
+   primary-cluster-storage-0            1/1     Running   0          76s
+   ```
+   
 5. Port forward the Primary Cluster - Port **8088**
 
    ```bash
-   $ kubectl port-forward --namespace coherence-demo-ns cluster-1-coherence-0 8080:8080
+   kubectl port-forward --namespace coherence-demo-ns primary-cluster-http-0 8080:8080
    ```
    Use the following URL to access the application home page:
 
@@ -429,27 +528,87 @@ called `coherence-demo-ns`. Create the demonstration namespace:
 
 6. Install the **Secondary** cluster
 
+   Create a file called `secondary-cluster.yaml` containing the following:
+   
+   ```yaml
+   apiVersion: coherence.oracle.com/v1
+   kind: CoherenceCluster
+   metadata:
+     name: secondary-cluster
+   spec:
+     jvm:
+       memory:
+         heapSize: 512m 
+     imagePullSecrets:
+       - name: coherence-example-secret 
+     ports:
+       - name: metrics
+         port: 9612      
+       - name: federation
+         port: 40000
+     coherence:
+       metrics:
+        enabled: false
+     logging:
+       fluentd:
+         enabled: false    
+     application:
+       image: coherence-demo-sidecar:3.0.1-SNAPSHOT
+     #
+     # Individual cluster roles
+     #
+     roles:
+       - role: storage
+         replicas: 2  
+         jvm:
+           args:
+             - "-Dwith.http=false"   
+             - "-Dwith.data=false"
+             - "-Dprimary.cluster=primary-cluster"
+             - "-Dprimary.cluster.port=40000"
+             - "-Dprimary.cluster.host=primary-cluster-wka"
+             - "-Dsecondary.cluster=secondary-cluster"
+             - "-Dsecondary.cluster.port=40000"
+             - "-Dsecondary.cluster.host=secondary-cluster-wka"
+         coherence:
+           cacheConfig: cache-config.xml
+       - role: http
+         replicas: 1   
+         jvm:
+           args:
+             - "-Dprimary.cluster=primary-cluster"   
+             - "-Dprimary.cluster.host=primary-cluster-wka"
+             - "-Dsecondary.cluster=secondary-cluster"  
+             - "-Dsecondary.cluster.host=secondary-cluster-wka"
+         ports:
+           - name: http
+             port: 8080  
+         coherence:
+           cacheConfig: cache-config.xml
+           storageEnabled: false
+   ```                       
+   
    ```bash
-   $ helm install \
-      --namespace coherence-demo-ns \
-      --name cluster-2 \
-      --set clusterSize=1 \
-      --set cluster=SecondaryCluster \
-      --set imagePullSecrets=coherence-demo-secret \
-      --set store.cacheConfig=cache-config-12214.xml \
-      --set store.overrideConfig=tangosol-coherence-override-12214.xml \
-      --set store.pof.config=pof-config.xml \
-      --set store.javaOpts="-Dwith.data=false -Dprimary.cluster=PrimaryCluster -Dprimary.cluster.port=40000 -Dprimary.cluster.host=cluster-1-coherence-headless -Dsecondary.cluster=SecondaryCluster -Dsecondary.cluster.port=40000 -Dsecondary.cluster.host=cluster-2-coherence-headless"  \
-      --set store.ports.federation=40000 \
-      --set userArtifacts.image=coherence-demo-sidecar:3.0.0-SNAPSHOT \
-      --set coherence.image=your-12.2.1.4.0-Coherence-image \
-      coherence/coherence
-   ```   
+   kubectl create --namespace coherence-demo-ns -f primary-cluster.yaml
+   ```                                                              
+  
+   Use `kubectl get pods -n coherence-demo-ns` to ensure that the pods are running. 
+
+   ```bash
+   NAME                                 READY   STATUS    RESTARTS   AGE
+   coherence-operator-cd9b646d5-tzf2j   1/1     Running   0          78m
+   primary-cluster-http-0               1/1     Running   0          2m
+   primary-cluster-storage-0            1/1     Running   0          2m
+   primary-cluster-storage-1            1/1     Running   0          2ms
+   secondary-cluster-http-0             1/1     Running   0          70s
+   secondary-cluster-storage-0          1/1     Running   0          72s
+   secondary-cluster-storage-1          1/1     Running   0          72s
+   ```
 
 7. Port forward the Secondary Cluster - Port **8090**
 
    ```bash
-   $ kubectl port-forward --namespace coherence-demo-ns cluster-2-coherence-0 8090:8080
+   kubectl port-forward --namespace coherence-demo-ns secondary-cluster-http-0  8090:8080
    ```
    Use the following URL to access the application home page:
 
@@ -469,18 +628,24 @@ Execute the following commands to delete the chart installed in this sample:
 **Without Federation**
 
 ```bash
-$ helm delete coherence-operator coherence-demo-storage coherence-demo-app --purge
+kubectl delete --namespace coherence-demo-ns -f primary-cluster.yaml    
 ```
 
 **With Federation**
 
 ```bash
-$ helm delete coherence-operator cluster-1 cluster-2 --purge
+kubectl delete --namespace coherence-demo-ns -f primary-cluster.yaml    
+
+kubectl delete --namespace coherence-demo-ns -f secondary-cluster.yaml   
 ```
 
 Before starting another sample, ensure that all the pods are removed from the previous sample.
 
-If you want to remove the `coherence-operator`, then include it in the `helm delete` command.
+If you want to remove the `coherence-operator`, the use the following:
+
+```bash
+helm delete coherence-operator --purge
+```
 
 
 ## References

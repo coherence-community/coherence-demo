@@ -117,8 +117,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     self.startingMember         = false;
     self.secondaryCluster       = 'disabled';
-    self.primaryClusterName     = 'PrimaryCluster';
-    self.secondaryClusterName   = 'SecondaryCluster';
+    self.primaryClusterName     = 'primary-cluster';
+    self.secondaryClusterName   = 'secondary-cluster';
     self.localClusterName       = '';
     self.federationControlLabel = self.START_FEDERATION;
     self.federationStateLabel   = self.SUSPEND_FEDERATION;
