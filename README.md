@@ -213,13 +213,13 @@ If you want to use a cluster name with a space, you must enclose it in quotes.
 
 ### Run the Application on Kubernetes
 
-The steps to run the application on Kubernetes comprises the following Helm chart installs:
-* Oracle Coherence Operator
-* Coherence Cluster - storage-enabled Coherence servers
-* Coherence Application Tier - storage-disabled with Grizzly HTTP Server
+The steps to run the application on Kubernetes comprises the following:
+* Oracle Coherence Operator Helm Chart
+* Use `kubectl` to install the Coherence cluster which comprises of 2 roles:
+** storage-enabled Coherence servers
+** storage-disabled application with Grizzly HTTP Server
 
 > **Note:** If you want to enable Federation when running on Kubernetes, see [Enable Federation on Kubernetes](#enable-federation-on-kubernetes).
-
 
 1. **Create Namespace**
 
@@ -292,7 +292,7 @@ The steps to run the application on Kubernetes comprises the following Helm char
    The Coherence cluster comprises of 2 roles:
    
    * storage - contains the storage-enabled tier which stores application data
-   * http - contains a stroage-disabled http server which serves the application 
+   * http - contains a storage-disabled http server which serves the application 
 
    Create a file called `demo-cluster.yaml` containing the following:
    
