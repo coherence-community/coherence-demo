@@ -216,8 +216,8 @@ If you want to use a cluster name with a space, you must enclose it in quotes.
 The steps to run the application on Kubernetes comprises the following:
 * Oracle Coherence Operator Helm Chart
 * Use `kubectl` to install the Coherence cluster which comprises of 2 roles:
-** storage-enabled Coherence servers
-** storage-disabled application with Grizzly HTTP Server
+  * storage-enabled Coherence servers
+  * storage-disabled application with Grizzly HTTP Server
 
 > **Note:** If you want to enable Federation when running on Kubernetes, see [Enable Federation on Kubernetes](#enable-federation-on-kubernetes).
 
