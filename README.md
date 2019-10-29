@@ -14,7 +14,7 @@ When you run the application locally, it results in a single self-contained JAR,
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4 and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
-> **Note:** To run this demonstration locally, you require Oracle Coherence 12.2.1.3.0 version.
+> **Note:** To run this demonstration, you require Oracle Coherence 12.2.1.4.0 version or above.
 
 ## Table of Contents
 
@@ -278,7 +278,8 @@ The steps to run the application on Kubernetes comprises the following:
    NAME              	REVISION	UPDATED                 	STATUS  	CHART                   	APP VERSION	NAMESPACE        
    coherence-operator	1       	Mon Oct 28 13:19:20 2019	DEPLOYED	coherence-operator-2.0.0	2.0.0      	coherence-demo-ns
   
-   kubectl get pods -n coherence-demo-ns
+   kubectl get pods -n coherence-demo-ns 
+   
    NAME                                 READY   STATUS    RESTARTS   AGE
    coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          2m12s
    ```                             
@@ -366,7 +367,7 @@ The steps to run the application on Kubernetes comprises the following:
 6. **Port Forward the HTTP Port**
 
    ```bash
-   kubectl port-forward --namespace coherence-demo-ns primary-cluster-http-0  8080:8080
+   kubectl port-forward --namespace coherence-demo-ns primary-cluster-http-0 8080:8080
    ```  
 
 7. **Access the Application**</br>
@@ -397,9 +398,12 @@ The steps to run the application on Kubernetes comprises the following:
    kubectl apply --namespace coherence-demo-ns -f demo-cluster.yaml
    ```  
    
-   Use `kubectl get pods -n coherence-demo-ns` to view the scale down progress which is
-   carried out in a safe manner to ensure no data is lost.        
-
+   Use `kubectl get pods -n coherence-demo-ns` to view the scale down progress.
+   
+   > Note: The Coherence Operator ensures that all scale operations are 
+   > carried out in a safe manner (checking service statusHA values) to ensure no data is lost. 
+   > You can confirm this by checking the number of positions are the same as before the scale-down was initiated.                                                                                                                                                                                                                                                                                                                                                                                   
+   
 ### Enable Federation on Kubernetes
 
 You must use Oracle Coherence 12.2.1.4.0 or later for Federation to work within Kubernetes.
