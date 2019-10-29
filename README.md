@@ -33,7 +33,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4 and a number of other fr
       - [Modify the Defaults](#modify-the-defaults)
     + [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
     + [Enable Federation on Kubernetes](#enable-federation-on-kubernetes)
-    + [Uninstalling the Charts](#uninstalling-the-charts)
+    + [Uninstalling the Coherence Operator](#uninstalling-the-coherence-operator)
   * [References](#references)
 
 ## Prerequisites
@@ -404,6 +404,14 @@ The steps to run the application on Kubernetes comprises the following:
    > carried out in a safe manner (checking service statusHA values) to ensure no data is lost. 
    > You can confirm this by checking the number of positions are the same as before the scale-down was initiated.                                                                                                                                                                                                                                                                                                                                                                                   
    
+10. Uninstall the Coherence Cluster
+
+    Use the following to uninstall the Coherence cluster.
+    
+    ```bash
+    kubectl delete --namespace coherence-demo-ns -f primary-cluster.yaml    
+    ```
+   
 ### Enable Federation on Kubernetes
 
 You must use Oracle Coherence 12.2.1.4.0 or later for Federation to work within Kubernetes.
@@ -625,17 +633,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
    In the Primary Cluster, select **Start Federation** from **Federation** menu.
    Access the Secondary Cluster dashboard and you can see the data appearing from the Primary Cluster.   
 
-### Uninstalling the Charts
-
-Execute the following commands to delete the chart installed in this sample:
-
-**Without Federation**
-
-```bash
-kubectl delete --namespace coherence-demo-ns -f primary-cluster.yaml    
-```
-
-**With Federation**
+10. Uninstall the Coherence Clusters
 
 ```bash
 kubectl delete --namespace coherence-demo-ns -f primary-cluster.yaml    
@@ -644,6 +642,8 @@ kubectl delete --namespace coherence-demo-ns -f secondary-cluster.yaml
 ```
 
 Before starting another sample, ensure that all the pods are removed from the previous sample.
+
+### Uninstalling the Coherence Operator
 
 If you want to remove the `coherence-operator`, the use the following:
 
@@ -657,7 +657,7 @@ helm delete coherence-operator --purge
 For more information about Oracle Coherence, see the following links:
 
 * Download Coherence - [http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html](http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html)
-* Coherence Documentation - [https://docs.oracle.com/middleware/12213/coherence/docs.htm](https://docs.oracle.com/middleware/12213/coherence/docs.htm)
+* Coherence Documentation - [https://docs.oracle.com/en/middleware/fusion-middleware/coherence/12.2.1.4/index.html](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/12.2.1.4/index.html)
 * Coherence Community - [http://coherence.oracle.com/](http://coherence.oracle.com/)
 * Coherence Operator GitHub Page - [https://github.com/oracle/coherence-operator](https://github.com/oracle/coherence-operator)
-* Coherence Operator Documentation - [https://oracle.github.io/coherence-operator/](https://oracle.github.io/coherence-operator/)
+* Coherence Operator Documentation (2.0.0) - [https://oracle.github.io/coherence-operator/docs/2.0.0](https://oracle.github.io/coherence-operator/docs/2.0.0)
