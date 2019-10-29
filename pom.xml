@@ -268,7 +268,9 @@
     <profile>
       <id>stand-alone</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>!docker</name>
+        </property>
       </activation>
       <build>
         <plugins>
@@ -295,12 +297,10 @@
                         <Implementation-Description>Demonstration
                         </Implementation-Description>
                         <Implementation-Vendor>Oracle</Implementation-Vendor>
-                        <Implementation-Version>${actual.coherence.version}
-                        </Implementation-Version>
+                        <Implementation-Version>${actual.coherence.version}</Implementation-Version>
                         <Implementation-Build>demo</Implementation-Build>
                         <Specification-Vendor>Oracle</Specification-Vendor>
-                        <Specification-Version>${actual.coherence.version}
-                        </Specification-Version>
+                        <Specification-Version>${actual.coherence.version}</Specification-Version>
                       </manifestEntries>
                     </transformer>
                   </transformers>
