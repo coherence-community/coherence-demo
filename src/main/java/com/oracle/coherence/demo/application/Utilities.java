@@ -116,8 +116,8 @@ public class Utilities
      */
     public static boolean isRunningInKubernetes()
         {
-        return System.getenv("COHERENCE_OPERATOR_SERVICE_SERVICE_HOST") != null &&
-               System.getenv("COHERENCE_OPERATOR_SERVICE_SERVICE_PORT") != null;
+        return System.getenv("KUBERNETES_SERVICE_HOST") != null &&
+               System.getenv("KUBERNETES_SERVICE_PORT") != null;
         }
 
 

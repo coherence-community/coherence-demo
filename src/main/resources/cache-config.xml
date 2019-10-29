@@ -3,7 +3,7 @@
 <!--
  * File: cache-config.xml
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2019 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -23,7 +23,17 @@
               xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd">
 
     <defaults>
-      <serializer>pof</serializer>
+     <serializer>
+          <instance>
+             <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
+             <init-params>
+                <init-param>
+                   <param-type>String</param-type>
+                   <param-value>pof-config.xml</param-value>
+                </init-param>
+             </init-params>
+          </instance>
+       </serializer>
     </defaults>
 
     <!-- Interceptor to bootstrap the demo application -->
@@ -60,6 +70,17 @@
                 </local-scheme>
             </backing-map-scheme>
             <autostart>true</autostart>
+            <address-provider>
+                <local-address>
+                    <address system-property="coherence.extend.address"></address>
+                    <port system-property="coherence.federation.port">40000</port>
+                </local-address>
+            </address-provider>
+            <topologies>
+                <topology>
+                    <name>Active</name>
+                </topology>
+            </topologies>
         </federated-scheme>
 
         <invocation-scheme>
@@ -71,7 +92,7 @@
             <service-name>ExtendHttpProxyService</service-name>
             <acceptor-config>
                 <http-acceptor>
-                    <class-name>com.tangosol.coherence.rest.server.GrizzlyHttpServer</class-name>
+                    <class-name>com.tangosol.coherence.http.grizzly.GrizzlyHttpServer</class-name>
                     <local-address>
                         <address system-property="http.hostname">127.0.0.1</address>
                         <port system-property="http.port">8080</port>

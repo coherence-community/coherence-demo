@@ -16,9 +16,7 @@
 # under the License.
 #
 
-FROM oraclelinux:7-slim
-RUN mkdir -p /files/lib
-RUN mkdir -p /files/conf
-COPY files/lib files/lib/
-COPY files/conf files/conf/
+FROM scratch
+COPY files/lib/ /app/lib/
+COPY files/conf/ /app/conf/
 
