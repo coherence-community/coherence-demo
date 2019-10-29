@@ -635,17 +635,17 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 
 10. Uninstall the Coherence Clusters
 
-```bash
-kubectl delete --namespace coherence-demo-ns -f primary-cluster.yaml    
+    ```bash
+    kubectl delete --namespace coherence-demo-ns -f primary-cluster.yaml    
 
-kubectl delete --namespace coherence-demo-ns -f secondary-cluster.yaml   
-```
+    kubectl delete --namespace coherence-demo-ns -f secondary-cluster.yaml   
+    ```
 
 Before starting another sample, ensure that all the pods are removed from the previous sample.
 
 ### Uninstalling the Coherence Operator
 
-If you want to remove the `coherence-operator`, the use the following:
+To remove the `coherence-operator`, the use the following:
 
 ```bash
 helm delete coherence-operator --purge
