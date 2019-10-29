@@ -278,7 +278,7 @@ The steps to run the application on Kubernetes comprises the following:
    NAME              	REVISION	UPDATED                 	STATUS  	CHART                   	APP VERSION	NAMESPACE        
    coherence-operator	1       	Mon Oct 28 13:19:20 2019	DEPLOYED	coherence-operator-2.0.0	2.0.0      	coherence-demo-ns
   
-   kubectl get pods -n coherence-demo-ns 
+   kubectl get pods --namespace coherence-demo-ns 
    
    NAME                                 READY   STATUS    RESTARTS   AGE
    coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          2m12s
@@ -348,7 +348,7 @@ The steps to run the application on Kubernetes comprises the following:
    kubectl create --namespace coherence-demo-ns -f demo-cluster.yaml
    ```                                                              
   
-   Use `kubectl get pods -n coherence-demo-ns` to ensure that the pod is running. 
+   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pod is running. 
    The pod primary-cluster-storage-0 must be running and ready as shown:
 
    ```bash
@@ -361,7 +361,7 @@ The steps to run the application on Kubernetes comprises the following:
    If the pod does not show as `Running`, you can use the following command to diagnose and troubleshoot the pod:
 
    ```bash
-   kubectl describe pod primary-cluster-storage-0 -n coherence-demo-ns
+   kubectl describe pod primary-cluster-storage-0 --namespace coherence-demo-ns
    ```
 
 6. **Port Forward the HTTP Port**
@@ -387,7 +387,7 @@ The steps to run the application on Kubernetes comprises the following:
    kubectl apply --namespace coherence-demo-ns -f demo-cluster.yaml
    ```          
    
-   Use `kubectl get pods -n coherence-demo-ns` to view the progress.
+   Use `kubectl get pods --namespace coherence-demo-ns` to view the progress.
    
 9. **Scale the Application down**
 
@@ -398,7 +398,7 @@ The steps to run the application on Kubernetes comprises the following:
    kubectl apply --namespace coherence-demo-ns -f demo-cluster.yaml
    ```  
    
-   Use `kubectl get pods -n coherence-demo-ns` to view the scale down progress.
+   Use `kubectl get pods --namespace coherence-demo-ns` to view the scale down progress.
    
    > Note: The Coherence Operator ensures that all scale operations are 
    > carried out in a safe manner (checking service statusHA values) to ensure no data is lost. 
@@ -520,7 +520,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
    kubectl create --namespace coherence-demo-ns -f primary-cluster.yaml
    ```                                                              
   
-   Use `kubectl get pods -n coherence-demo-ns` to ensure that the pods are running. 
+   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pods are running. 
 
    ```bash
    NAME                                 READY   STATUS    RESTARTS   AGE
@@ -601,10 +601,10 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
    ```                       
    
    ```bash
-   kubectl create --namespace coherence-demo-ns -f primary-cluster.yaml
+   kubectl create --namespace coherence-demo-ns -f secondary-cluster.yaml
    ```                                                              
   
-   Use `kubectl get pods -n coherence-demo-ns` to ensure that the pods are running. 
+   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pods are running. 
 
    ```bash
    NAME                                 READY   STATUS    RESTARTS   AGE
@@ -620,7 +620,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 7. Port forward the Secondary Cluster - Port **8090**
 
    ```bash
-   kubectl port-forward --namespace coherence-demo-ns secondary-cluster-http-0  8090:8080
+   kubectl port-forward --namespace coherence-demo-ns secondary-cluster-http-0 8090:8080
    ```
    Use the following URL to access the application home page:
 
