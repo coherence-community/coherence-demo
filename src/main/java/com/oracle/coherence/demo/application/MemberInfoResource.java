@@ -19,18 +19,21 @@
 package com.oracle.coherence.demo.application;
 
 import com.oracle.coherence.demo.invocables.GetMemberInfo;
+
 import com.oracle.coherence.demo.model.MemberInfo;
 import com.oracle.coherence.demo.model.Trade;
+
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.DistributedCacheService;
 import com.tangosol.net.InvocationService;
 import com.tangosol.net.Member;
 import com.tangosol.net.NamedCache;
-import com.tangosol.util.UUID;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+
 import javax.ws.rs.core.Response;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -43,17 +46,24 @@ import java.util.Set;
 @Path("/member-info")
 public class MemberInfoResource
 {
+    /**
+     * Return {@link MemberInfo} on each {@link Member} of the cluster.
+     *
+     * @return {@link MemberInfo} on each {@link Member} of the cluster
+     */
     @GET
     public Response getResource()
     {
-        NamedCache<UUID, Trade> trades            = Utilities.getTradesCache();
-        InvocationService       invocationService = (InvocationService) CacheFactory.getService("InvocationService");
+        NamedCache<String, Trade> trades            = Utilities.getTradesCache();
+        InvocationService         invocationService = (InvocationService)
+                CacheFactory.getService("InvocationService");
 
         // determine the storage enabled members for the membership query
         Set<Member> storageEnabledMembers =
             ((DistributedCacheService) trades.getCacheService()).getOwnershipEnabledMembers();
 
         // determine the member information
+        //noinspection unchecked
         Map<Member, MemberInfo> results =
             (Map<Member, MemberInfo>) invocationService.query(new GetMemberInfo(trades.getCacheName()),
                                                               storageEnabledMembers);

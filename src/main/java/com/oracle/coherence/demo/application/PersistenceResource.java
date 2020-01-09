@@ -20,13 +20,14 @@ package com.oracle.coherence.demo.application;
 
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
+
 import com.tangosol.net.management.Registry;
 
-import javax.management.MBeanException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
@@ -35,9 +36,16 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
  * A JAX-RS resource providing the ability to control persistence by issuing
  * the following commands:
  * <ul>
- *     <li>createSnapshot - Create a snapshot with the name SNAPSHOT_NAME. If the snapshot already exists it will be removed first</li>
- *     <li>removeSnapshot - Remove a snapshot with the name SNAPSHOT_NAME.</li>
- *     <li>recoverSnapshot - Recover a snapshot with the name SNAPSHOT_NAME.</li>
+ *     <li>
+ *         createSnapshot - Create a snapshot with the name SNAPSHOT_NAME. If the snapshot already exists it will
+ *         be removed first
+ *     </li>
+ *     <li>
+ *         removeSnapshot - Remove a snapshot with the name SNAPSHOT_NAME.
+ *     </li>
+ *     <li>
+ *         recoverSnapshot - Recover a snapshot with the name SNAPSHOT_NAME.
+ *     </li>
  * </ul>
  *
  * @author Tim Middleton
@@ -55,12 +63,30 @@ public class PersistenceResource
      */
     private static final String SNAPSHOT_NAME = "CoherenceDemoSnapshot";
 
-
+    /**
+     * Invoke the specified persistence resource command.
+     * <p>
+     * Available commands are:
+     * <ul>
+     *     <li>
+     *         createSnapshot {@code ->} creates a snapshot
+     *     </li>
+     *     <li>
+     *         removeSnapshot {@code ->} removes a snapshot
+     *     </li>
+     *     <li>
+     *         recoverSnapshot {@code ->} recover a cache for an existing snapshot
+     *     </li>
+     * </ul>
+     *
+     * @param command  the command to invoke
+     *
+     * @return {@link Response#ok}, a {@code 404} if the command isn't found
+     */
     @GET
     @Path("{command}")
     @Produces({TEXT_PLAIN})
-    @SuppressWarnings("unchecked")
-    public Response stopMember(@PathParam("command") String command) throws InterruptedException, MBeanException
+    public Response getResource(@PathParam("command") String command)
     {
         Cluster  cluster  = CacheFactory.getCluster();
         Registry registry = cluster.getManagement();
@@ -90,11 +116,10 @@ public class PersistenceResource
                 {
                     response = "Snapshot does not exist";
                 }
-
                 break;
 
             default :
-                return Response.status(404).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
 
             return Response.ok(response).build();
@@ -108,10 +133,8 @@ public class PersistenceResource
      * Remove the snapshot.
      *
      * @param helper  PersistenceToolsHelper used to remove the snapshot
-     *
-     * @throws MBeanException if any errors
      */
-    private void removeSnapshot(PersistenceHelper helper) throws MBeanException
+    private void removeSnapshot(PersistenceHelper helper)
     {
         if (helper.snapshotExists(SERVICE_NAME, SNAPSHOT_NAME))
         {

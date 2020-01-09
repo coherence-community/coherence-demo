@@ -79,12 +79,12 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     // application constants
     self.MAXIMUM_AGGREGATION_TICKS = 20;
-    self.MAXIMUM_SERVERS    = 5;
-    self.START_FEDERATION   = 'Start';
-    self.STOP_FEDERATION    = 'Stop';
-    self.SUSPEND_FEDERATION = 'Pause';
-    self.RESUME_FEDERATION  = 'Resume';
-    self.MAX_SPARKLINE      = 15;
+    self.MAXIMUM_SERVERS           = 5;
+    self.START_FEDERATION          = 'Start';
+    self.STOP_FEDERATION           = 'Stop';
+    self.SUSPEND_FEDERATION        = 'Pause';
+    self.RESUME_FEDERATION         = 'Resume';
+    self.MAX_SPARKLINE             = 15;
 
     var KB = 1024;
     var MB = KB * KB;
@@ -92,20 +92,20 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     var TB = GB * KB;
 
     // define initial states for the application (these will be refreshed asynchronously)
-    self.positions = 0;
-    self.valuation = 0;
-    self.symbolNames = [];
-    self.symbolFrequency = {};
-    self.symbolCount = {};
-    self.memberInfo  = [];
-    self.currentPrice = {};
-    self.lastPrice   = {};
-    self.priceChange = {};
-    self.firstRefresh = true;
-    self.currentBytesSent = 0;
-    self.lastBytesSent    = -1;
-    self.bytesSentData    = [];
-    self.totalFrequency   = 0;
+    self.positions         = 0;
+    self.valuation         = 0;
+    self.symbolNames       = [];
+    self.symbolFrequency   = {};
+    self.symbolCount       = {};
+    self.memberInfo        = [];
+    self.currentPrice      = {};
+    self.lastPrice         = {};
+    self.priceChange       = {};
+    self.firstRefresh      = true;
+    self.currentBytesSent  = 0;
+    self.lastBytesSent     = -1;
+    self.bytesSentData     = [];
+    self.totalFrequency    = 0;
     self.lastStatusMessage = '';
     self.displayStatus     = false;
     self.averageQueryTime  = 0;
@@ -115,26 +115,26 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         useIndexes: true
         };
 
-    self.startingMember         = false;
-    self.secondaryCluster       = 'disabled';
-    self.primaryClusterName     = 'primary-cluster';
-    self.secondaryClusterName   = 'secondary-cluster';
-    self.localClusterName       = '';
-    self.federationControlLabel = self.START_FEDERATION;
-    self.federationStateLabel   = self.SUSPEND_FEDERATION;
-    self.persistenceResult      = 'N/A';
-    self.valuationDirection     = 'N/A';
-    self.insightLabel           = 'Disable Insight';
-    self.insightEnabled         = true;
-    self.insightContent         = [];
-    self.isRunningInKubernetes  = false;
-    self.isThisPrimaryCluster   = false;
+    self.startingMember            = false;
+    self.secondaryCluster          = 'disabled';
+    self.primaryClusterName        = 'primary-cluster';
+    self.secondaryClusterName      = 'secondary-cluster';
+    self.localClusterName          = '';
+    self.federationControlLabel    = self.START_FEDERATION;
+    self.federationStateLabel      = self.SUSPEND_FEDERATION;
+    self.persistenceResult         = 'N/A';
+    self.valuationDirection        = 'N/A';
+    self.insightLabel              = 'Disable Insight';
+    self.insightEnabled            = true;
+    self.insightContent            = [];
+    self.isRunningInKubernetes     = false;
+    self.isThisPrimaryCluster      = false;
     self.federationConfiguredInK8s = false;
-    self.coherenceVersion       = undefined;
-    self.coherenceVersionAsInt  = 0;
-    self.thisClusterName        = undefined;
-    self.lastMemberCount        = undefined;
-    self.runningMode            = "";
+    self.coherenceVersion          = undefined;
+    self.coherenceVersionAsInt     = 0;
+    self.thisClusterName           = undefined;
+    self.lastMemberCount           = undefined;
+    self.runningMode               = "";
 
     self.displayingSplash = false;
 
@@ -382,6 +382,104 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         });
     };
 
+    // ---- the function to enable/disable tracing for a specific member ----
+
+    self.toggleTracing = function (memberInfo) {
+      $http.post(encodeURI('/management/coherence/cluster/members/' + memberInfo.id),
+                 {"tracingSamplingRatio": memberInfo.tracingEnabled ? -1.0 : 1.0})
+    };
+
+     // ---- the function to render the options to enable/disable tracing on the primary cluster ----
+
+    self.tracingOptions = function() {
+        var options    = {};
+        var memberInfo = self.memberInfo;
+
+        var tracingClusterWide = memberInfo.map(function(member) {
+                                     return member.tracingEnabled;
+                                 }).reduce(function (acc, tracingEnabled) {
+                                     return acc & tracingEnabled;
+                                 }, true);
+
+        if (tracingClusterWide) {
+            options["Disable Tracing for Cluster"] = "disable-cluster";
+        } else {
+            options["Enable Tracing for Cluster"] = "enable-cluster";
+        }
+
+        if (self.lastMemberCount > 1) {
+            var tracingOdd = memberInfo.filter(function (member) {
+                                 return member.roleName.endsWith("Odd");
+                             }).map(function (member) {
+                                 return member.tracingEnabled;
+                             }).reduce(function (sum, tracingEnabled) {
+                                 return sum & tracingEnabled;
+                             }, true);
+
+            var tracingEven = memberInfo.filter(function (member) {
+                                  return member.roleName.endsWith("Even");
+                              }).map(function (member) {
+                                  return member.tracingEnabled;
+                              }).reduce(function (acc, tracingEnabled) {
+                                  return acc & tracingEnabled;
+                              }, true);
+
+            if (tracingEven) {
+                options["Disable Tracing for Even Members"] = "disable-even";
+            } else {
+                options["Enable Tracing for Even Members"] = "enable-even";
+            }
+
+            if (tracingOdd) {
+                options["Disable Tracing for Odd Members"] = "disable-odd";
+            } else {
+                options["Enable Tracing for Odd Members"] = "enable-odd";
+            }
+        }
+
+        return options;
+    };
+
+    // ---- the function to enable/disable tracing on the primary cluster ----
+
+    self.tracingSelected = function () {
+        var postData = {
+            "role":         "",
+            "tracingRatio": -1.0
+        };
+
+        if (self.selectedOption.endsWith("even")) {
+            postData.role = "CoherenceDemoServerEven"
+        } else if (self.selectedOption.endsWith("odd")) {
+            postData.role = "CoherenceDemoServerOdd"
+        }
+
+        if (self.selectedOption.startsWith("enable")) {
+            postData.tracingRatio = 1.0;
+        }
+
+        $http.post(encodeURI('/management/coherence/cluster/configureTracing/'), postData).then(
+            function () {
+                $('#tracingModal').modal('hide');
+                self.selectedOption = null;
+            });
+    }
+
+    self.configureTracing = function() {
+        self.modalContent = $sce.trustAsHtml('<p>Loading...</p>');
+        // using XHR so we can more easily compose html rather than using strings
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', "fragments/tracing.html", true);
+        xhr.onreadystatechange = function() {
+          if (this.readyState !== 4 || this.status !== 200) {
+            return;
+          }
+          self.modalContent = $sce.trustAsHtml(this.responseText);
+          $("#tracingModal").modal();
+        };
+        xhr.send();
+    }
+
     // ---- the function to start a new cluster member ----
 
     self.startMember = function() {
@@ -563,6 +661,14 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
        self.insightContent['jvisualvm'] = {
            "header":  "JVisualVM Plugin",
            "content": "fragments/jvisualvm.html"
+       };
+       self.insightContent['tracingEnabled'] = {
+           "header": "OpenTracing Support Enabled",
+           "content": "fragments/tracingEnabled.html"
+       };
+       self.insightContent['tracingDisabled'] = {
+         "header": "OpenTracing Support Disabled",
+         "content": "fragments/tracingDisabled.html"
        };
        self.insightContent['welcome'] = {
            "header":  "Coherence Demonstration",

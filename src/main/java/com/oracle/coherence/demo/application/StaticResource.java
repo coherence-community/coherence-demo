@@ -18,14 +18,18 @@
 
 package com.oracle.coherence.demo.application;
 
+import com.tangosol.net.CacheFactory;
 import com.tangosol.util.Base;
 import com.tangosol.util.Resources;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+
 import javax.ws.rs.core.Response;
+
 import java.io.IOException;
+
 import java.net.URL;
 
 /**
@@ -39,11 +43,19 @@ public class StaticResource
     /**
      * The base folder containing static resources on the class path.
      */
-    private static String BASE_FOLDER = "web";
+    private static final String BASE_FOLDER = "web";
 
 
-    @GET
-    public Response getResource(@PathParam("resource") String resource)
+/**
+ * Serve static web content.
+ *
+ * @param resource the static resource
+ *
+ * @return a successful response if the resource is found, a 404 otherwise, and an error if the resource is
+ *         found but cannot be served
+ */
+@GET
+public Response getResource(@PathParam("resource") String resource)
     {
         // construct the resource path relative to the base folder
         String resourcePath = BASE_FOLDER + '/' + resource;
@@ -59,7 +71,9 @@ public class StaticResource
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            CacheFactory.log("Unexpected error service static resource " + resourcePath);
+            CacheFactory.log(e);
+            return Response.serverError().build();
         }
     }
 }

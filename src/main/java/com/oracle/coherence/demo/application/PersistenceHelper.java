@@ -19,13 +19,15 @@
 package com.oracle.coherence.demo.application;
 
 import com.oracle.common.base.Blocking;
+
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
+
 import com.tangosol.net.management.MBeanServerProxy;
 import com.tangosol.net.management.Registry;
+
 import com.tangosol.util.Base;
 
-import javax.management.MBeanException;
 import java.util.Arrays;
 
 /**
@@ -51,18 +53,21 @@ public class PersistenceHelper
     public static final String REMOVE_SNAPSHOT = "removeSnapshot";
 
     /**
-     * JMX operation to archive a snapshot
+     * JMX operation to archive a snapshot.
      */
+    @SuppressWarnings("unused")
     public static final String ARCHIVE_SNAPSHOT = "archiveSnapshot";
 
     /**
-     * JMX operation to retrieve an archived snapshot
+     * JMX operation to retrieve an archived snapshot.
      */
+    @SuppressWarnings("unused")
     public static final String RETRIEVE_ARCHIVED_SNAPSHOT = "retrieveArchivedSnapshot";
 
     /**
-     * JMX operation to remove an archived snapshot
+     * JMX operation to remove an archived snapshot.
      */
+    @SuppressWarnings("unused")
     public static final String REMOVE_ARCHIVED_SNAPSHOT = "removeArchivedSnapshot";
 
     /**
@@ -88,12 +93,12 @@ public class PersistenceHelper
     /**
      * MBean server proxy for JMX operations and attribute retrieval.
      */
-    private MBeanServerProxy mbsProxy;
+    private final MBeanServerProxy mbsProxy;
 
     /**
      * Management Registry for the cluster.
      */
-    private Registry registry;
+    private final Registry registry;
 
 
     /**
@@ -148,6 +153,7 @@ public class PersistenceHelper
      *
      * @return a {@link String}[] of archived snapshots for the given service
      */
+    @SuppressWarnings("unused")
     public String[] listArchivedSnapshots(String serviceName)
     {
         return (String[]) mbsProxy.invoke(ensureGlobalName(getMBeanName(serviceName)),
@@ -162,6 +168,7 @@ public class PersistenceHelper
      *
      * @param serviceName the service to resume
      */
+    @SuppressWarnings("unused")
     public void resumeService(String serviceName)
     {
         mbsProxy.invoke(Registry.CLUSTER_TYPE,
@@ -176,6 +183,7 @@ public class PersistenceHelper
      *
      * @param serviceName the service to suspend
      */
+    @SuppressWarnings("unused")
     public void suspendService(String serviceName)
     {
         mbsProxy.invoke(Registry.CLUSTER_TYPE,
@@ -200,12 +208,10 @@ public class PersistenceHelper
      * @param operation    the operation to execute
      * @param snapshot     the snapshot name
      * @param serviceName  the name of the service to execute operation on
-     *
-     * @throws MBeanException if any MBean related errors
      */
     public void invokeOperationWithWait(String operation,
                                         String snapshot,
-                                        String serviceName) throws MBeanException
+                                        String serviceName)
     {
         try
         {
@@ -236,8 +242,8 @@ public class PersistenceHelper
     /**
      * Validate that a snapshot exists for a given service.
      *
-     * @param serviceName  the service name to check
-     * @param snapshotName the snapshot name to check
+     * @param serviceName   the service name to check
+     * @param snapshotName  the snapshot name to check
      *
      * @return true if the snapshot exists for the service
      */
@@ -246,9 +252,9 @@ public class PersistenceHelper
     {
         try
         {
-            String[] asnapshots = listSnapshots(serviceName);
+            String[] aSnapshots = listSnapshots(serviceName);
 
-            return asnapshots != null && Arrays.asList(asnapshots).contains(snapshotName);
+            return aSnapshots != null && Arrays.asList(aSnapshots).contains(snapshotName);
         }
         catch (Exception e)
         {
@@ -263,7 +269,7 @@ public class PersistenceHelper
      * @param registry  registry to use
      * @param beanName  the MBean to wait for
      *
-     * @throws InterruptedException if the Mbean is not registered
+     * @throws InterruptedException if the MBean is not registered
      */
     public static void waitForRegistration(Registry registry,
                                            String   beanName) throws InterruptedException
@@ -299,7 +305,7 @@ public class PersistenceHelper
     /**
      * Return a global name for the given MBean Name.
      *
-     * @param name  the MBean to get global name for.
+     * @param name  the MBean to get the global name for
      *
      * @return the global name.
      */

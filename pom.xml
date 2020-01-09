@@ -9,14 +9,22 @@
   <version>3.0.1-SNAPSHOT</version>
 
   <properties>
+    <!-- dependency versions -->
     <bedrock.version>5.0.11</bedrock.version>
-    <coherence.version>12.2.1-4-0</coherence.version>
+    <coherence.version>14.1.1-0-0</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
-    <grizzly.version>2.3.8</grizzly.version>
-    <jackson.version>2.10.0</jackson.version>
-    <jersey.version>2.22.2</jersey.version>
-    <java.version>1.8</java.version>
+    <derby.version>10.14.2.0</derby.version>
+    <eclipselink.version>2.7.5</eclipselink.version>
+    <jackson.version>2.10.1</jackson.version>
+    <jaeger.version>1.1.0</jaeger.version>
+    <jaxrs.version>2.1.6</jaxrs.version>
+    <jersey.version>2.29</jersey.version>
     <javax.activation.version>1.2.0</javax.activation.version>
+    <netty.version>4.1.32.Final</netty.version>
+    <opentracing.jdbc.version>0.2.10</opentracing.jdbc.version>
+
+    <!-- maven configuration -->
+    <java.version>1.8</java.version>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
     <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
@@ -41,6 +49,18 @@
     </dependency>
 
     <dependency>
+      <groupId>com.oracle.toplink</groupId>
+      <artifactId>coherence-jpa</artifactId>
+      <version>${coherence.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.oracle.coherence</groupId>
+      <artifactId>coherence-management</artifactId>
+      <version>${coherence.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.oracle.coherence</groupId>
       <artifactId>coherence-rest</artifactId>
       <version>${coherence.version}</version>
@@ -54,8 +74,14 @@
 
     <dependency>
       <groupId>com.oracle.coherence</groupId>
-      <artifactId>coherence-http-grizzly</artifactId>
+      <artifactId>coherence-http-netty</artifactId>
       <version>${coherence.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.oracle.coherence</groupId>
+          <artifactId>coherence</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- oracle bedrock -->
@@ -65,23 +91,26 @@
       <version>${bedrock.version}</version>
     </dependency>
 
-    <!-- grizzly -->
+    <!-- derby database -->
     <dependency>
-      <groupId>org.glassfish.grizzly</groupId>
-      <artifactId>grizzly-framework</artifactId>
-      <version>${grizzly.version}</version>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>${derby.version}</version>
     </dependency>
 
+    <!-- derby jdbc driver -->
     <dependency>
-      <groupId>org.glassfish.grizzly</groupId>
-      <artifactId>grizzly-http</artifactId>
-      <version>${grizzly.version}</version>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbyclient</artifactId>
+      <version>${derby.version}</version>
     </dependency>
 
+    <!-- eclispelink -->
     <dependency>
-      <groupId>org.glassfish.grizzly</groupId>
-      <artifactId>grizzly-http-server</artifactId>
-      <version>${grizzly.version}</version>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>eclipselink</artifactId>
+      <version>${eclipselink.version}</version>
+      <scope>compile</scope>
     </dependency>
 
     <!-- jackson -->
@@ -115,6 +144,20 @@
       <version>${jackson.version}</version>
     </dependency>
 
+    <!-- jaeger/opentracing -->
+    <dependency>
+      <groupId>io.jaegertracing</groupId>
+      <artifactId>jaeger-client</artifactId>
+      <version>${jaeger.version}</version>
+    </dependency>
+
+    <!-- jax-ws -->
+    <dependency>
+      <groupId>jakarta.ws.rs</groupId>
+      <artifactId>jakarta.ws.rs-api</artifactId>
+      <version>${jaxrs.version}</version>
+    </dependency>
+
     <!-- jersey -->
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
@@ -125,6 +168,12 @@
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-server</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.inject</groupId>
+      <artifactId>jersey-hk2</artifactId>
       <version>${jersey.version}</version>
     </dependency>
 
@@ -152,10 +201,18 @@
       <version>${jersey.version}</version>
     </dependency>
 
+    <!-- opentracing jdbc -->
     <dependency>
-      <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-grizzly2-http</artifactId>
-      <version>${jersey.version}</version>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-jdbc</artifactId>
+      <version>${opentracing.jdbc.version}</version>
+    </dependency>
+
+    <!-- netty -->
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>${netty.version}</version>
     </dependency>
   </dependencies>
 

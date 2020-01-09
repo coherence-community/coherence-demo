@@ -2,19 +2,16 @@
 
 ## Overview
 
-This document describes how to build and run the Coherence Demonstration application. The application showcases Coherence general features, scalability capabilities, and new features of 12.2.1 version including:
+This document describes how to build and run the Coherence Demonstration application. The application showcases Coherence general features, scalability capabilities, and new features of 14.1.1.0 version including:
 
 * Cache Persistence
 * Federation
 * Java 8 Support
-
-You can run the Coherence demonstration application either locally or through Kubernetes using the [Oracle Coherence Operator](https://github.com/oracle/coherence-operator).
+* OpenTracing Support
 
 When you run the application locally, it results in a single self-contained JAR, javadoc and source.
 
-The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4 and a number of other frameworks. The UI interacts with Coherence using the REST API.
-
-> **Note:** To run this demonstration, you require Oracle Coherence 12.2.1.4.0 version or above.
+The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
 ## Table of Contents
 
@@ -25,15 +22,9 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4 and a number of other fr
     + [General Prerequisites](#general-prerequisites)
     + [Environment Variables](#environment-variables)
     + [Coherence JARs](#coherence-jars)
-    + [Kubernetes Prerequisites](#kubernetes-prerequisites)
-    + [Get Coherence Docker Image](#get-coherence-docker-image)
-    + [Enable Kubernetes in Docker](#enable-kubernetes-in-docker)
-  * [Run the Application](#run-the-application)
-    + [Run the Application Locally](#run-the-application-locally)
+  * [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
-    + [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
-    + [Enable Federation on Kubernetes](#enable-federation-on-kubernetes)
-    + [Uninstalling the Coherence Operator](#uninstalling-the-coherence-operator)
+  * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
   * [References](#references)
 
 ## Prerequisites
@@ -53,12 +44,12 @@ To run the demonstration application, you must have the following software insta
 
 2. Maven 3.5.4 or later version installed and configured.
 
-3. Oracle Coherence 12.2.1.4.0 or later version installed.
+3. Oracle Coherence 14.1.1.0.0 or later version installed.
 
    You can download it from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
 
    If you want to demonstrate the Coherence VisualVM plug-in, follow the instructions to install:
-   https://docs.oracle.com/en/middleware/fusion-middleware/coherence/12.2.1.4/manage/using-jmx-manage-oracle-coherence.html
+   https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.1.0/manage/using-jmx-manage-oracle-coherence.html
 4. VisualVM is not included in JDK 11. You can download and install VisualVM from [https://visualvm.github.io](https://visualvm.github.io). You must provide `-Dvisualvm.executable` to point to the VisualVM executable.
 5. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
@@ -86,64 +77,68 @@ set PATH=%JAVA_HOME%\bin;%PATH%
 
 ### Coherence JARs
 
-You must have Coherence and Coherence-REST installed into your local maven repository. If not, execute the following commands with the version number of Coherence that you have installed in your configuration.
+You must have Coherence, Coherence-REST, and Coherence-JPA installed into your local maven repository. If not, execute the following commands with the version number of Coherence that you have installed in your configuration.
 
 For Linux/UNIX/Mac OS:
 
 ```bash
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar      -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/12.2.1/coherence.12.2.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/12.2.1/coherence-rest.12.2.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-grizzly.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-grizzly/12.2.1/coherence-http-grizzly.12.2.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/14.1.1/coherence.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-management.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.1/coherence-management.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/14.1.1/coherence-rest.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.1/coherence-http-netty.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-jpa.jar -DpomFile=<coherence-jpa \(see below\)>.pom
 ```
 
 For Windows OS:
 
 ```bash
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar      -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\12.2.1\coherence.12.2.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\12.2.1\coherence-rest.12.2.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-grizzly.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-grizzly\12.2.1\coherence-http-grizzly.12.2.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\14.1.1\coherence.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-management.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.1.1\coherence-management.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\14.1.1\coherence-rest.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.1.1\coherence-http-netty.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-jpa.jar -DpomFile=<coherence-jpa \(see below\)>.pom
 ```
 
-### Kubernetes Prerequisites
+For Coherence-JPA, use the following pom:
 
-To run the application in Kubernetes using the Coherence Operator, you must
-ensure the following requirements:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.oracle.toplink</groupId>
+  <artifactId>coherence-jpa</artifactId>
+  <version>14.1.1.0-0-0</version>
+</project>
+```
 
-* Ensure you have been able to install the Coherence Operator using the  [Quick Start Guide](https://oracle.github.io/coherence-operator/docs/2.0.0/#/about/03_quickstart).
+### OpenTracing Prerequisites
 
-* Add the Helm repository. Execute the following commands to create a `coherence` helm repository:
+Prior to running the demo, start the Jaeger OpenTracing implementation:
 
-  ```bash
-   helm repo add coherence https://oracle.github.io/coherence-operator/charts
-   
-   helm repo update
-   ```
+```bash
+docker run -d --name jaeger \
+        -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
+        -p 5775:5775/udp \
+        -p 6831:6831/udp \
+        -p 6832:6832/udp \
+        -p 5778:5778 \
+        -p 16686:16686 \
+        -p 14268:14268 \
+        -p 9411:9411 \
+        jaegertracing/all-in-one:1.13
+```
 
-### Get Coherence Docker Image
+Navigate to [http://localhost:16686](http://localhost:16686) in order to access the Jaeger UI.
 
-Get the Coherence Docker image from the Oracle Container Registry:
-
-1. In a web browser, navigate to [Oracle Container Registry](https://container-registry.oracle.com) and click Sign In.
-2. Enter your Oracle credentials or create an account if you don't have one.
-3. Search for coherence in the Search Oracle Container Registry field.
-4. Click `coherence` in the search result list.
-5. On the Oracle Coherence page, select the language from the drop-down list and click **Continue**.
-6. Click **Accept** on the Oracle Standard Terms and Conditions page.
-
-This action is required to allow the image to be pulled automatically when required using the Kubernetes secret.
-
-### Enable Kubernetes in Docker
-
-Ensure that your local Kubernetes is enabled. If you are running Docker using Docker Desktop, select **Enable Kubernetes** in the Settings menu.
-
-## Run the Application
-
-The Coherence Demonstration Application can be run locally or through Kubernetes using the [Oracle Coherence Operator](https://github.com/oracle/coherence-operator).
+Note: If Jaeger is already running in your environment locally, you can skip this step.  If Jaeger is available
+at a different location, specify the `JAEGER_ENDPOINT` JVM property when starting the demo to override the default
+location.
 
 ### Run the Application Locally
 
 Build the application using Maven:
-   
+
 ```bash
 mvn clean install
 ```
@@ -651,13 +646,10 @@ To remove the `coherence-operator`, the use the following:
 helm delete coherence-operator --purge
 ```
 
-
 ## References
 
 For more information about Oracle Coherence, see the following links:
 
 * Download Coherence - [http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html](http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html)
-* Coherence Documentation - [https://docs.oracle.com/en/middleware/fusion-middleware/coherence/12.2.1.4/index.html](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/12.2.1.4/index.html)
+* Coherence Documentation - [https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.1.0/index.html](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.1.0/index.html)
 * Coherence Community - [http://coherence.oracle.com/](http://coherence.oracle.com/)
-* Coherence Operator GitHub Page - [https://github.com/oracle/coherence-operator](https://github.com/oracle/coherence-operator)
-* Coherence Operator Documentation (2.0.0) - [https://oracle.github.io/coherence-operator/docs/2.0.0](https://oracle.github.io/coherence-operator/docs/2.0.0)

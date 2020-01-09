@@ -140,6 +140,10 @@
                         <li><a href="#" ng-click="startDeveloper('clear')"><i class="fa fa-remove fa-fw"></i> Clear Cache</a></li>
                         <li><a href="#" ng-click="startDeveloper('populate')"><i class="fa fa-repeat fa-fw"></i> Populate Cache</a></li>
                         <li><a href="#" ng-click="addTrades()"><i class="fa fa-plus fa-fw"></i> Add Trades</a></li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#" ng-click="configureTracing()"><i class="fa fa-eye fa-fw"></i> Configure Tracing</a>
+                        </li>
                         <li class="divider" ng-show="clusterName != secondaryClusterName"></li>
                         <li><a href="#" ng-click="startDeveloper('shutdown')"  ng-show="clusterName != secondaryClusterName">
                             <i class="fa fa-sign-out fa-fw"></i> Shutdown</a>
@@ -172,6 +176,29 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-success" ng-click="closeSplashScreen('dontDisplaySplash')" ng-show="displayingSplash">Don't Show This Again</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="tracingModal" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Configure Tracing</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p ng-bind-html="modalContent"></p>
+                        <label for="tracingSelect">Select Action:</label>
+                        <select name="tracingSelect"
+                                ng-change="tracingSelected()"
+                                ng-model="selectedOption"
+                                ng-options="x for (x, y) in tracingOptions()">
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -342,28 +369,33 @@
                                         <tr>
                                             <td style="width: 40px">Actions</td>
                                             <td>Servers</td>
+                                            <td>Role</td>
+                                            <td style="width: 95px" align="right">Tracing</td>
                                             <td style="width: 95px" align="right">Memory</td>
                                         </tr>
                                     </thead>
 
                                     <tbody>
                                         <tr ng-repeat="member in memberInfo track by member.id" class="status-pending">
-                                            <td align="center" ng-if="$first"><span><i class="fa fa-dashboard"></i></span></td>
-                                            <td align="center" ng-if="!$first">
+                                            <td align="center">
                                                 <div class="btn-group">
                                                     <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i></button>
                                                     <ul class="dropdown-menu">
-                                                        <li><a href ng-click="stopMember(member.id)">Stop Server</a></li>
+                                                        <li><a href ng-click="toggleTracing(member)">
+                                                            {{ member.tracingEnabled ? "Disable" : "Enable" }} Tracing
+                                                        </a></li>
+                                                        <li ng-if="!$first"><a href ng-click="stopMember(member.id)">Stop Server</a></li>
                                                     </ul>
                                                 </div>
                                             </td>
 
                                             <td>Server {{ member.id }} <span ng-if="$first">(Dashboard)</span></td>
-                                            <td align="right">{{ member.totalMemory - member.freeMemory | memory}}</td>
+                                            <td>{{ member.roleName }}</td>
+                                            <td align="right">{{ member.tracingEnabled ? 'ENABLED' : 'DISABLED'}}</td>
+                                            <td align="right">{{ member.totalMemory - member.freeMemory | memory }}</td>
                                         </tr>
                                         <tr><td colspan="4">&nbsp;</td></tr>
                                     </tbody>
-
                                 </table>
                             </div>
                         </div>

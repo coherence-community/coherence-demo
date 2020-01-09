@@ -18,6 +18,7 @@
 
 package com.oracle.coherence.demo.invocables;
 
+import com.oracle.coherence.demo.application.Utilities;
 import com.oracle.coherence.demo.model.MemberInfo;
 
 import com.tangosol.io.pof.PofReader;
@@ -31,9 +32,7 @@ import com.tangosol.net.ExtensibleConfigurableCacheFactory;
 import com.tangosol.net.Member;
 import com.tangosol.net.NamedCache;
 
-import static com.oracle.coherence.demo.application.Utilities.PRICE_CACHE_TYPE;
 import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE;
-import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE_TYPE;
 
 import java.io.IOException;
 
@@ -56,8 +55,9 @@ public class GetMemberInfo extends AbstractInvocable implements PortableObject
 
 
     /**
-     * Constructs a {@link GetMemberInfo} (for serialization)
+     * Constructs a {@link GetMemberInfo} (for serialization).
      */
+    @SuppressWarnings("unused")
     public GetMemberInfo()
     {
     }
@@ -75,14 +75,15 @@ public class GetMemberInfo extends AbstractInvocable implements PortableObject
     }
 
 
+    @SuppressWarnings("rawtypes")
     @Override
     public void run()
     {
         // calculate number of entries for the specified named cache
         int entryCount = 0;
-        NamedCache namedCache = CacheFactory.getTypedCache(cacheName,
-                                                           TRADE_CACHE.equals(cacheName)
-                                                           ? TRADE_CACHE_TYPE : PRICE_CACHE_TYPE);
+        NamedCache namedCache = TRADE_CACHE.equals(cacheName)
+                                    ? Utilities.getTradesCache()
+                                    : Utilities.getPricesCache();
 
         if (namedCache != null)
         {
