@@ -20,7 +20,7 @@
     <jaxrs.version>2.1.6</jaxrs.version>
     <jersey.version>2.29</jersey.version>
     <javax.activation.version>1.2.0</javax.activation.version>
-    <netty.version>4.1.32.Final</netty.version>
+    <netty.version>4.1.42.Final</netty.version>
     <opentracing.jdbc.version>0.2.10</opentracing.jdbc.version>
 
     <!-- maven configuration -->
