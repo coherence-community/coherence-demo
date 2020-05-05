@@ -2,16 +2,21 @@
 
 ## Overview
 
-This document describes how to build and run the Coherence Demonstration application. The application showcases Coherence general features, scalability capabilities, and new features of 14.1.1.0 version including:
+This document describes how to build and run the Coherence Demonstration application. 
+The application showcases Coherence general features, scalability capabilities, and new 
+features of 14.1.1.0 version including:
 
 * Cache Persistence
-* Federation
+* Federation (Commercial feature only)
 * Java 8 Support
 * OpenTracing Support
 
 When you run the application locally, it results in a single self-contained JAR, javadoc and source.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
+
+> Note: This demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) and
+> as a consequence the commercial-only feature "Federation" is only available if you compile using the `-Pcommercial` profile.  
 
 ## Table of Contents
 
@@ -21,7 +26,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
   * [Prerequisites](#prerequisites)
     + [General Prerequisites](#general-prerequisites)
     + [Environment Variables](#environment-variables)
-    + [Coherence JARs](#coherence-jars)
+    + [Coherence JARs (Grid Edition](#coherence-jars)
   * [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
   * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
@@ -33,11 +38,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 
 To run the demonstration application, you must have the following software installed:
 
-1. Java 8 or 11 SE Development Kit or Runtime environment.
-
-   You can download JDK 8 from:
-   - [Java SE Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-   - [JAVA SE Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
+1. Java 11 SE Development Kit or Runtime environment.
 
    You can download JDK 11 from:
    - [Java SE Development Kit 11 Downloads](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
@@ -49,8 +50,10 @@ To run the demonstration application, you must have the following software insta
    You can download it from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
 
    If you want to demonstrate the Coherence VisualVM plug-in, follow the instructions to install:
-   https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.1.0/manage/using-jmx-manage-oracle-coherence.html
+   https://docs.oracle.com/en/middleware/standalone/coherence/14.1.1.0/manage/using-jmx-manage-oracle-coherence.html
+
 4. VisualVM is not included in JDK 11. You can download and install VisualVM from [https://visualvm.github.io](https://visualvm.github.io). You must provide `-Dvisualvm.executable` to point to the VisualVM executable.
+
 5. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
 For more information about browser compatibility, see https://code.angularjs.org/1.4.1/docs/misc/faq.
@@ -59,7 +62,7 @@ For more information about browser compatibility, see https://code.angularjs.org
 
 ### Environment Variables
 
-Ensure that the following environment variables are set in your configuation:
+Ensure that the following environment variables are set in your configuration:
 
 * `JAVA_HOME` -- This variable must point to the location of the JDK version supported by the Oracle Coherence version that you use. Ensure that the path is set accordingly:</br>
 For Linux/UNIX OS:
@@ -75,9 +78,11 @@ set PATH=%JAVA_HOME%\bin;%PATH%
 
 * `MAVEN_HOME` -- If `mvn` command is not set in your PATH variable, then set `MAVEN_HOME` directed to the `bin` folder of Maven installation and then add `MAVEN_HOME\bin` to your PATH variable list.
 
-### Coherence JARs
+### Coherence JARs (Grid Edition Only)
 
-You must have Coherence, Coherence-REST, and Coherence-JPA installed into your local maven repository. If not, execute the following commands with the version number of Coherence that you have installed in your configuration.
+If you are going to run using the Coherence Grid Edition, you must have Coherence, Coherence-REST, 
+and Coherence-JPA installed into your local maven repository. 
+If not, execute the following commands with the version number of Coherence that \you have installed in your configuration.
 
 For Linux/UNIX/Mac OS:
 
@@ -101,7 +106,7 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-jpa.jar -DpomFile
 
 ### OpenTracing Prerequisites
 
-Prior to running the demo, start the Jaeger OpenTracing implementation:
+If you wish to demonstrate OpenTracing, then prior to running the demo, start the Jaeger OpenTracing implementation:
 
 ```bash
 docker run -d --name jaeger \
@@ -141,11 +146,12 @@ The `target` directory contains a list of files:
 Run the JAR file in the `target` directory:
 
 ```bash
-java -jar target/coherence-demo-3.0.1-SNAPSHOT.jar
+java -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
 ```
-If you are using JDK 11, use the following argument to start the VisualVM while running the JAR file:
+
+Use the following argument to start the VisualVM while running the JAR file:
 ```bash
-java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm -jar target/coherence-demo-3.0.1-SNAPSHOT.jar
+java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
 ```
 `-Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm` in the command points to the path of the VisualVM executable.
 
@@ -159,6 +165,9 @@ The following features are available to demonstrate in the application:
 * Enable or disable indexes for queries.
 * Add additional data, clear the cache or populate the cache from the **Tools** menu.
 * Start VisualVM from the **Tools** menu.
+* Show OpenTracing Support
+
+Federation Features - Grid Edition Only
 * Start a secondary cluster from the **Federation** menu.
 * Pause and resume replication to secondary cluster.
 * Issue replicate all to secondary cluster.
@@ -179,7 +188,7 @@ To shut down the application, select **Shutdown** option from the **Tools** menu
 The default HTTP hostname is 127.0.0.1 and default port is 8080. To modify these you can add the `http.hostname` or `http.port` properties on startup:
 
 ```bash
-java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-3.0.1-SNAPSHOT.jar
+java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-4.0.0-SNAPSHOT.jar
 ```
 By changing the `http.hostname` you can access the application outside of
 your local machine.
@@ -189,7 +198,7 @@ your local machine.
 When starting up the application, the timezone is analyzed and default names are selected for the primary and secondary cluster (see [Launcher.java](https://github.com/coherence-community/coherence-demo/tree/master/src/main/java/com/oracle/coherence/demo/application/Launcher.java)). If you want to customize the name, do the following:
 
 ```bash
-java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-3.0.1-SNAPSHOT.jar
+java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-4.0.0-SNAPSHOT.jar
 ```
 If you want to use a cluster name with a space, you must enclose it in quotes.
 
@@ -237,7 +246,7 @@ The steps to run the application on Kubernetes comprises the following:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo-sidecar:3.0.1-SNAPSHOT` which contains cache configuration and Java classes to be added to the classpath at runtime.
+   This creates an image named `coherence-demo-sidecar:4.0.0-SNAPSHOT` which contains cache configuration and Java classes to be added to the classpath at runtime.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the sidecar Docker image to your repository accessible to that cluster. You also need to prefix the image name in your `helm` commands below.
 
@@ -301,7 +310,7 @@ The steps to run the application on Kubernetes comprises the following:
        fluentd:
          enabled: false    
      application:
-       image: coherence-demo-sidecar:3.0.1-SNAPSHOT
+       image: coherence-demo-sidecar:4.0.0-SNAPSHOT
      #
      # Individual cluster roles
      #
@@ -394,7 +403,7 @@ The steps to run the application on Kubernetes comprises the following:
     kubectl delete --namespace coherence-demo-ns -f primary-cluster.yaml    
     ```
    
-### Enable Federation on Kubernetes
+### Enable Federation on Kubernetes (Grid Edition Only)
 
 You must use Oracle Coherence 12.2.1.4.0 or later for Federation to work within Kubernetes.
 
@@ -435,7 +444,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 3. Build the sidecar image:
 
    ```bash
-   mvn clean install -P docker
+   mvn clean install -P docker, grid
    ```         
    > **Note:** The `coherence.version` must be set to your installed Coherence version.
 
@@ -467,7 +476,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
        fluentd:
          enabled: false    
      application:
-       image: coherence-demo-sidecar:3.0.1-SNAPSHOT
+       image: coherence-demo-sidecar:4.0.0-SNAPSHOT
      #
      # Individual cluster roles
      #
@@ -547,7 +556,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
        fluentd:
          enabled: false    
      application:
-       image: coherence-demo-sidecar:3.0.1-SNAPSHOT
+       image: coherence-demo-sidecar:4.0.0-SNAPSHOT
      #
      # Individual cluster roles
      #

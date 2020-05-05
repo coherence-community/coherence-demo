@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<!--
+ * File: tangosol-coherence-override.xml
+ *
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ *
+ * You may not use this file except in compliance with the Universal Permissive
+ * License (UPL), Version 1.0 (the "License.")
+ *
+ * You may obtain a copy of the License at https://opensource.org/licenses/UPL.
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
+-->
+
+<!--
+  Grid Edition version of the override file which includes Federation.
+-->
+<coherence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
+           xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd"
+           xml-override="../common/tangosol-coherence-override.xml">
+
+  <!-- To enable jmx connections -->
+  <management-config>
+    <managed-nodes system-property="coherence.management">all</managed-nodes>
+  </management-config>
+
+  <!--
+    Define a federation configuration for PrimaryCluster and SecondaryCluster
+    where the default topology is Active-Active.
+    -->
+  <federation-config>
+    <participants>
+      <participant>
+        <name system-property="primary.cluster">PrimaryCluster</name>
+        <initial-action>start</initial-action>
+        <remote-addresses>
+          <socket-address>
+            <address system-property="primary.cluster.host">127.0.0.1</address>
+            <port    system-property="primary.cluster.port">7574</port>
+          </socket-address>
+        </remote-addresses>
+      </participant>
+      <participant>
+        <name system-property="secondary.cluster">SecondaryCluster</name>
+        <initial-action>pause</initial-action>
+        <remote-addresses>
+          <socket-address>
+            <address system-property="secondary.cluster.host">127.0.0.1</address>
+            <port    system-property="secondary.cluster.port">7575</port>
+          </socket-address>
+        </remote-addresses>
+      </participant>
+    </participants>
+    <topology-definitions>
+      <active-active>
+        <name>Active</name>
+        <active system-property="primary.cluster">PrimaryCluster</active>
+        <active system-property="secondary.cluster">SecondaryCluster</active>
+      </active-active>
+    </topology-definitions>
+  </federation-config>
+</coherence>

@@ -80,14 +80,15 @@ public class DeveloperResource
     {
         Map<String, Object> mapEnv =  new HashMap<>();
 
-        String sClusterName = CacheFactory.ensureCluster().getClusterName();
+        String clusterName = CacheFactory.ensureCluster().getClusterName();
 
         mapEnv.put("runningInKubernetes",       Utilities.isRunningInKubernetes());
         mapEnv.put("coherenceVersion",          Utilities.getCoherenceVersion());
         mapEnv.put("coherenceVersionAsInt",     Utilities.getCoherenceVersionAsInt());
-        mapEnv.put("primaryCluster",            sClusterName.equals(PRIMARY_CLUSTER));
+        mapEnv.put("primaryCluster",            clusterName.equals(PRIMARY_CLUSTER));
         mapEnv.put("federationConfiguredInK8s", Utilities.isFederationConfiguredInK8s());
-        mapEnv.put("thisClusterName",           sClusterName);
+        mapEnv.put("thisClusterName",           clusterName);
+        mapEnv.put("coherenceEdition",          CacheFactory.getEdition());
 
         return Response.status(Response.Status.OK).entity(mapEnv).build();
     }
