@@ -86,7 +86,7 @@ mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COH
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-management.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.1/coherence-management.14.1.1.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/14.1.1/coherence-rest.14.1.1.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.1/coherence-http-netty.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-jpa.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-jpa/14.1.1/coherence-jpa.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-jpa.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/toplink/coherence-jpa/14.1.1/coherence-jpa-14.1.1.pom
 ```
 
 For Windows OS:
@@ -96,7 +96,7 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%CO
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-management.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.1.1\coherence-management.14.1.1.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\14.1.1\coherence-rest.14.1.1.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.1.1\coherence-http-netty.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-jpa.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-jpa\14.1.1\coherence-jpa.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-jpa.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\toplink\coherence-jpa\14.1.1\coherence-jpa.14.1.1.pom
 ```
 
 ### OpenTracing Prerequisites
