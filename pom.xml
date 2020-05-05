@@ -53,30 +53,30 @@
     </dependency>
 
     <dependency>
-      <groupId>com.oracle.coherence</groupId>
+      <groupId>${coherence.group.id}</groupId>
       <artifactId>coherence-management</artifactId>
       <version>${coherence.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>com.oracle.coherence</groupId>
+      <groupId>${coherence.group.id}</groupId>
       <artifactId>coherence-rest</artifactId>
       <version>${coherence.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>com.oracle.coherence</groupId>
+          <groupId>${coherence.group.id}</groupId>
           <artifactId>coherence</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>com.oracle.coherence</groupId>
+      <groupId>${coherence.group.id}</groupId>
       <artifactId>coherence-http-netty</artifactId>
       <version>${coherence.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>com.oracle.coherence</groupId>
+          <groupId>${coherence.group.id}</groupId>
           <artifactId>coherence</artifactId>
         </exclusion>
       </exclusions>
