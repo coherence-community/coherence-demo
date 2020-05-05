@@ -18,12 +18,13 @@
 
 package com.oracle.coherence.demo.application;
 
+import com.tangosol.coherence.management.RestManagement;
 import com.tangosol.coherence.rest.server.DefaultResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
 
 /**
- * Defined the configured REST services for a the Coherence Demo application.
+ * Defined the configured REST services for the Coherence Demo application.
  *
  * @author Brian Oliver
  */
@@ -44,12 +45,13 @@ public class ServiceResourceConfig extends DefaultResourceConfig
         register(DeveloperResource.class);
         register(PersistenceResource.class);
         register(ManagementResource.class);
+        register(TracingFilter.class);
     }
 
 
     @Override
     protected void registerRootResource()
     {
-        // we don't what a root resource
+        // we don't want a root resource
     }
 }

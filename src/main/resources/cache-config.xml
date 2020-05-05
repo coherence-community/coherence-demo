@@ -47,13 +47,13 @@
 
     <caching-scheme-mapping>
         <cache-mapping>
-            <cache-name>trades</cache-name>
+            <cache-name>Trade</cache-name>
             <scheme-name>federated-scheme</scheme-name>
-            <key-type>com.tangosol.util.UUID</key-type>
+            <key-type>java.lang.String</key-type>
             <value-type>com.oracle.coherence.demo.model.Trade</value-type>
         </cache-mapping>
         <cache-mapping>
-            <cache-name>prices</cache-name>
+            <cache-name>Price</cache-name>
             <scheme-name>federated-scheme</scheme-name>
             <key-type>java.lang.String</key-type>
             <value-type>com.oracle.coherence.demo.model.Price</value-type>
@@ -64,10 +64,41 @@
         <federated-scheme>
             <scheme-name>federated-scheme</scheme-name>
             <backing-map-scheme>
-                <local-scheme>
-                    <unit-calculator>BINARY</unit-calculator>
-                    <expiry-delay>0</expiry-delay>
-                </local-scheme>
+                <read-write-backing-map-scheme>
+                    <internal-cache-scheme>
+                        <local-scheme/>
+                    </internal-cache-scheme>
+                    <write-max-batch-size>5000</write-max-batch-size>
+                    <!-- Define the cache scheme. -->
+                    <cachestore-scheme>
+                        <class-scheme>
+                            <class-name>
+                                com.tangosol.coherence.jpa.JpaCacheStore
+                            </class-name>
+                            <init-params>
+                                <!-- This param is the entity name. -->
+                                <init-param>
+                                    <param-type>java.lang.String</param-type>
+                                    <param-value>{cache-name}</param-value>
+                                </init-param>
+
+                                <!-- This param is the fully qualified entity class. -->
+                                <init-param>
+                                    <param-type>java.lang.String</param-type>
+                                    <param-value>com.oracle.coherence.demo.model.{cache-name}</param-value>
+                                </init-param>
+
+                                <!-- This param should match the value of the -->
+                                <!-- persistence unit name in persistence.xml. -->
+                                <init-param>
+                                    <param-type>java.lang.String</param-type>
+                                    <param-value>demo</param-value>
+                                </init-param>
+                            </init-params>
+                        </class-scheme>
+                    </cachestore-scheme>
+                    <write-delay>2s</write-delay>
+                </read-write-backing-map-scheme>
             </backing-map-scheme>
             <autostart>true</autostart>
             <address-provider>
@@ -92,7 +123,7 @@
             <service-name>ExtendHttpProxyService</service-name>
             <acceptor-config>
                 <http-acceptor>
-                    <class-name>com.tangosol.coherence.http.grizzly.GrizzlyHttpServer</class-name>
+                    <class-name>com.tangosol.coherence.http.netty.NettyHttpServer</class-name>
                     <local-address>
                         <address system-property="http.hostname">127.0.0.1</address>
                         <port system-property="http.port">8080</port>
@@ -120,6 +151,13 @@
                         <context-path>/application</context-path>
                         <instance>
                             <class-name>com.oracle.coherence.demo.application.ApplicationResourceConfig</class-name>
+                        </instance>
+                    </resource-config>
+
+                    <!-- Management over REST -->
+                    <resource-config>
+                        <instance>
+                            <class-name>com.tangosol.coherence.management.internal.ManagementResourceConfig</class-name>
                         </instance>
                     </resource-config>
                 </http-acceptor>

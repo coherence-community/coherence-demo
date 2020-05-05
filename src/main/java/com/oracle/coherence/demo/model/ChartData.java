@@ -45,10 +45,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class ChartData implements PortableObject
 {
+    @SuppressWarnings("unused")
     private static final long serialVersionUID = -4557078639768809864L;
 
     /**
-     * POF index for instant attribute.
+     * POF index for instant attribute access.
      */
     private static final int INSTANT = 0;
 
@@ -141,6 +142,7 @@ public class ChartData implements PortableObject
     /**
      * Default Constructor (required and used only by {@link PortableObject}).
      */
+    @SuppressWarnings("unused")
     public ChartData()
     {
         // required for Serializable and PortableObject
@@ -150,7 +152,7 @@ public class ChartData implements PortableObject
     /**
      * Construct a {@link ChartData}.
      *
-     * @param instant             time at which the sample was takend
+     * @param instant             time at which the sample was taken
      * @param positionCount       number of positions present
      * @param symbols             symbols that are present
      * @param symbolFrequency     frequency of each of the symbols
@@ -187,6 +189,7 @@ public class ChartData implements PortableObject
      *
      * @return the time
      */
+    @SuppressWarnings("unused")
     public long getInstant()
     {
         return instant;
@@ -198,6 +201,7 @@ public class ChartData implements PortableObject
      *
      * @return the number of positions
      */
+    @SuppressWarnings("unused")
     public int getPositionCount()
     {
         return positionCount;
@@ -220,6 +224,7 @@ public class ChartData implements PortableObject
      *
      * @return the symbol frequency
      */
+    @SuppressWarnings("unused")
     public Map<String, Long> getSymbolFrequency()
     {
         return symbolFrequency;
@@ -231,6 +236,7 @@ public class ChartData implements PortableObject
      *
      * @return the symbol price
      */
+    @SuppressWarnings("unused")
     public Map<String, Double> getSymbolPrice()
     {
         return symbolPrice;
@@ -242,6 +248,7 @@ public class ChartData implements PortableObject
      *
      * @return symbol count
      */
+    @SuppressWarnings("unused")
     public Map<String, Integer> getSymbolCount()
     {
         return symbolCount;
@@ -253,6 +260,7 @@ public class ChartData implements PortableObject
      *
      * @return the original valuation
      */
+    @SuppressWarnings("unused")
     public double getOriginalValuation()
     {
         return originalValuation;
@@ -264,6 +272,7 @@ public class ChartData implements PortableObject
      *
      * @return the list of {@link MemberInfo}
      */
+    @SuppressWarnings("unused")
     public List<MemberInfo> getMemberInfo()
     {
         return memberInfo;
@@ -275,6 +284,7 @@ public class ChartData implements PortableObject
      *
      * @return the duration
      */
+    @SuppressWarnings("unused")
     public long getAggregationDuration()
     {
         return aggregationDuration;

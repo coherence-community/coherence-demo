@@ -22,11 +22,13 @@ import com.oracle.bedrock.runtime.coherence.CoherenceCacheServer;
 
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Member;
+
 import com.tangosol.util.ResourceRegistry;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+
 import javax.ws.rs.core.Response;
 
 /**
@@ -36,15 +38,25 @@ import javax.ws.rs.core.Response;
  */
 @Path("/stop-member")
 public class StopMemberResource
+        extends AbstractClusterMemberResource
 {
+    /**
+     * Stops the specified cluster member.
+     *
+     * @param memberId  the member ID
+     *
+     * @return an empty response
+     */
     @GET
     @Path("{memberId}")
     public Response stopMember(@PathParam("memberId") String memberId)
     {
-        // use the resource registry to locate the CoherenceCacheServer to shutdown
+        // use the resource registry to locate the CoherenceCacheServer to stop
         ResourceRegistry     registry = CacheFactory.getConfigurableCacheFactory().getResourceRegistry();
 
         CoherenceCacheServer server   = registry.getResource(CoherenceCacheServer.class, memberId);
+
+        releaseMemberToStableIdAssociation(memberId);
 
         if (server != null)
         {

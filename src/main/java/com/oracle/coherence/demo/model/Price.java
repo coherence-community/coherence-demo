@@ -24,6 +24,10 @@ import com.tangosol.io.pof.PortableObject;
 
 import java.io.IOException;
 
+import javax.persistence.Entity;
+
+import javax.persistence.Id;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,10 +38,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Brian Oliver
  * @author Tim Middleton
  */
+@Entity
 @XmlRootElement(name = "price")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class Price implements PortableObject
 {
+    @SuppressWarnings("unused")
     private static final long serialVersionUID = -2557678549268609664L;
 
     /**
@@ -51,8 +57,9 @@ public class Price implements PortableObject
     private static final int PRICE = 1;
 
     /**
-     * The symbol (ticker code) of the equity for the {@link Price}
+     * The symbol (ticker code) of the equity for the {@link Price}.
      */
+    @Id
     private String symbol;
 
     /**

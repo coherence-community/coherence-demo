@@ -26,6 +26,9 @@ import com.tangosol.util.UUID;
 
 import java.io.IOException;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,10 +38,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Brian Oliver
  */
+@Entity
 @XmlRootElement(name = "trade")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class Trade implements PortableObject
 {
+    @SuppressWarnings("unused")
     private static final long serialVersionUID = -2557078539268609864L;
 
     /**
@@ -62,12 +67,13 @@ public class Trade implements PortableObject
     private static final int PRICE = 3;
 
     /**
-     * The unique identifier for the {@link Trade}.
+     * The unique identifier for this trade.
      */
-    private UUID id;
+    @Id
+    private String id;
 
     /**
-     * The symbol (ticker code) of the equity for the {@link Trade}
+     * The symbol (ticker code) of the equity for the {@link Trade}.
      */
     private String symbol;
 
@@ -102,7 +108,7 @@ public class Trade implements PortableObject
                  int    amount,
                  double price)
     {
-        this.id     = new UUID();
+        this.id     = new UUID().toString();
         this.symbol = symbol;
         this.amount = amount;
         this.price  = price;
@@ -114,7 +120,7 @@ public class Trade implements PortableObject
      *
      * @return the identifier
      */
-    public UUID getId()
+    public String getId()
     {
         return id;
     }
@@ -178,7 +184,7 @@ public class Trade implements PortableObject
     @Override
     public void readExternal(PofReader reader) throws IOException
     {
-        id     = reader.readObject(ID);
+        id     = reader.readString(ID);
         symbol = reader.readString(SYMBOL);
         amount = reader.readInt(AMOUNT);
         price  = reader.readDouble(PRICE);
@@ -188,7 +194,7 @@ public class Trade implements PortableObject
     @Override
     public void writeExternal(PofWriter writer) throws IOException
     {
-        writer.writeObject(ID, id);
+        writer.writeString(ID, id);
         writer.writeString(SYMBOL, symbol);
         writer.writeInt(AMOUNT, amount);
         writer.writeDouble(PRICE, price);

@@ -23,6 +23,7 @@ import com.oracle.bedrock.util.Pair;
 import com.tangosol.net.DefaultCacheServer;
 
 import java.time.ZoneId;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -46,7 +47,7 @@ import java.util.Map;
  *     java -Dhttp.hostname=my-host-name.com -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
  * </pre>
  * <p>
- * To change the cluster names from defaults  use:
+ * To change the cluster names from defaults, use:
  * <pre>
  *     java -Dprimary.cluster=Boston -Dsecondary.cluster=NewYork -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
  * </pre>
@@ -54,84 +55,116 @@ import java.util.Map;
  *
  * @author Brian Oliver
  */
-public class Launcher
+public final class Launcher
 {
     /**
-     * System property to override primary name.
+     * System property to override the primary cluster name.
      */
     public static final String PRIMARY_CLUSTER_PROPERTY = "primary.cluster";
 
     /**
-     * System property to override secondary name.
+     * System property to override the secondary cluster name.
      */
     public static final String SECONDARY_CLUSTER_PROPERTY = "secondary.cluster";
 
     /**
-     * Cluster port for primary cluster.
+     * Default Jaeger tracing endpoint if not overridden by user.
      */
+    public static final String DEFAULT_JAEGER_ENDPOINT = "http://localhost:14268/api/traces";
+
+    /**
+     * System property to define the Jaeger service name (as it will be displayed in the UI).
+     */
+    public static final String JAEGER_SERVICE_NAME_PROPERTY = "JAEGER_SERVICE_NAME";
+
+    /**
+     * System property to define the Jaeger tracing endpoint.  If not explicitly overridden,
+     * the value will default to {@value DEFAULT_JAEGER_ENDPOINT}.
+     */
+    public static final String JAEGER_ENDPOINT_PROPERTY = "JAEGER_ENDPOINT";
+
+
+    /**
+     * Cluster port for the primary cluster.
+     */
+    @SuppressWarnings("unused")
     public static final int PRIMARY_PORT = 7574;
 
     /**
-     * Cluster port for secondary cluster.
+     * Cluster port for the secondary cluster.
      */
     public static final int SECONDARY_PORT = 7575;
 
     /**
-     * Default cluster name for primary cluster
+     * Default cluster name for the primary cluster.
      */
     private static String PRIMARY_DEFAULT;
 
     /**
      *
-     * Default cluster name for secondary cluster.
+     * Default cluster name for the secondary cluster.
      */
     private static String SECONDARY_DEFAULT;
 
     /**
      * Map containing defaults for cluster names based upon Timezone.
      */
-    private static Map<String, Pair<String, String>> mapZones;
+    private static final Map<String, Pair<String, String>> MAP_ZONES;
 
 
     static
     {
         // initialize the list of default cluster names
-        mapZones = new HashMap<>();
+        MAP_ZONES = new HashMap<>();
 
-        mapZones.put("Australia/Melbourne", new Pair<>("Melbourne", "Perth"));
-        mapZones.put("Australia/Sydney", new Pair<>("Sydney", "Singapore"));
-        mapZones.put("Australia/Perth", new Pair<>("Perth", "Sydney"));
+        MAP_ZONES.put("Australia/Melbourne", new Pair<>("Melbourne", "Perth"));
+        MAP_ZONES.put("Australia/Sydney", new Pair<>("Sydney", "Singapore"));
+        MAP_ZONES.put("Australia/Perth", new Pair<>("Perth", "Sydney"));
 
-        mapZones.put("Asia/Singapore", new Pair<>("Singapore", "London"));
-        mapZones.put("Singapore", new Pair<>("Singapore", "London"));
-        mapZones.put("Asia/Shanghai", new Pair<>("Shanghai", "Beijing"));
-        mapZones.put("Asia/Dubai", new Pair<>("Dubai", "Beijing"));
-        mapZones.put("Asia/Hong_Kong", new Pair<>("Hong Kong", "Sydney"));
-        mapZones.put("Asia/Kuala_Lumpur", new Pair<>("Kuala Lumpur", "London"));
-        mapZones.put("Asia/Tokyo", new Pair<>("Tokyo", "London"));
-        mapZones.put("Asia/Kolkata", new Pair<>("Bangalore", "New Delhi"));
+        MAP_ZONES.put("Asia/Singapore", new Pair<>("Singapore", "London"));
+        MAP_ZONES.put("Singapore", new Pair<>("Singapore", "London"));
+        MAP_ZONES.put("Asia/Shanghai", new Pair<>("Shanghai", "Beijing"));
+        MAP_ZONES.put("Asia/Dubai", new Pair<>("Dubai", "Beijing"));
+        MAP_ZONES.put("Asia/Hong_Kong", new Pair<>("Hong Kong", "Sydney"));
+        MAP_ZONES.put("Asia/Kuala_Lumpur", new Pair<>("Kuala Lumpur", "London"));
+        MAP_ZONES.put("Asia/Tokyo", new Pair<>("Tokyo", "London"));
+        MAP_ZONES.put("Asia/Kolkata", new Pair<>("Bangalore", "New Delhi"));
 
-        mapZones.put("America/Buenos_Aires", new Pair<>("Buenos Aires", "London"));
-        mapZones.put("America/Denver", new Pair<>("Denver", "New York"));
-        mapZones.put("America/Los_Angeles", new Pair<>("Los Angeles", "New York"));
-        mapZones.put("America/New_York", new Pair<>("New York", "London"));
-        mapZones.put("America/Vancouver", new Pair<>("Vancouver", "Montreal"));
+        MAP_ZONES.put("America/Buenos_Aires", new Pair<>("Buenos Aires", "London"));
+        MAP_ZONES.put("America/Denver", new Pair<>("Denver", "New York"));
+        MAP_ZONES.put("America/Los_Angeles", new Pair<>("Los Angeles", "New York"));
+        MAP_ZONES.put("America/New_York", new Pair<>("New York", "London"));
+        MAP_ZONES.put("America/Vancouver", new Pair<>("Vancouver", "Montreal"));
 
-        mapZones.put("US/Central", new Pair<>("Chicago", "New York"));
-        mapZones.put("US/Eastern", new Pair<>("Boston", "London"));
+        MAP_ZONES.put("US/Central", new Pair<>("Chicago", "New York"));
+        MAP_ZONES.put("US/Eastern", new Pair<>("Boston", "London"));
 
-        mapZones.put("Europe/London", new Pair<>("London", "New York"));
-        mapZones.put("Europe/Moscow", new Pair<>("Moscow", "London"));
-        mapZones.put("Europe/Paris", new Pair<>("Paris", "New York"));
-        mapZones.put("Europe/Istanbul", new Pair<>("Istanbul", "London"));
-        mapZones.put("Europe/Rome", new Pair<>("Italy", "London"));
-        mapZones.put("Europe/Madrid", new Pair<>("Madrid", "Singapore"));
+        MAP_ZONES.put("Europe/London", new Pair<>("London", "New York"));
+        MAP_ZONES.put("Europe/Moscow", new Pair<>("Moscow", "London"));
+        MAP_ZONES.put("Europe/Paris", new Pair<>("Paris", "New York"));
+        MAP_ZONES.put("Europe/Istanbul", new Pair<>("Istanbul", "London"));
+        MAP_ZONES.put("Europe/Rome", new Pair<>("Italy", "London"));
+        MAP_ZONES.put("Europe/Madrid", new Pair<>("Madrid", "Singapore"));
 
-        mapZones.put("Japan", new Pair<>("Tokyo", "London"));
+        MAP_ZONES.put("Japan", new Pair<>("Tokyo", "London"));
     }
 
+    // ----- constructors ---------------------------------------------------
 
-    public static void main(String[] args) throws Exception
+    /**
+     * Instances not allowed.
+     */
+    private Launcher()
+        {
+        throw new IllegalStateException("illegal instantiation");
+        }
+
+    /**
+     * Entry point for the demo application.
+     *
+     * @param args  unused
+     */
+    public static void main(String[] args)
     {
         // set JVisualVM refresh time to 5 seconds for demo purposes only
         System.setProperty("com.oracle.coherence.jvisualvm.refreshtime", "5");
@@ -141,12 +174,15 @@ public class Launcher
 
         System.setProperty("coherence.role", "CoherenceDemoLauncher");
 
-        // specify to ignore new 2 server SE strategy
+        // specify to ignore new 2server SE strategy
         System.setProperty("coherence.distribution.2server", "false");
 
         // use WKA
         System.setProperty("coherence.wka", "127.0.0.1");
         System.setProperty("coherence.ttl", "0");
+
+        // management over REST
+        System.setProperty("coherence.management.http", "all");
 
         // enable http serving
         System.setProperty("with.http", "true");
@@ -154,13 +190,20 @@ public class Launcher
         // setup some reasonable defaults for ClusterNames based upon timezone
         chooseDefaults();
 
-        // set properties for cluster names so they are passed to other processes
+        // set properties for cluster names, so they are passed to other processes
         System.setProperty(PRIMARY_CLUSTER_PROPERTY, System.getProperty(PRIMARY_CLUSTER_PROPERTY, PRIMARY_DEFAULT));
         System.setProperty(SECONDARY_CLUSTER_PROPERTY,
                            System.getProperty(SECONDARY_CLUSTER_PROPERTY, SECONDARY_DEFAULT));
 
         // set cluster name
         System.setProperty("coherence.cluster", System.getProperty(PRIMARY_CLUSTER_PROPERTY));
+
+        // set properties necessary for Jaeger to function
+        System.setProperty(JAEGER_SERVICE_NAME_PROPERTY,
+                           "Coherence Demo (" + System.getProperty(PRIMARY_CLUSTER_PROPERTY) + ')');
+
+        System.setProperty(JAEGER_ENDPOINT_PROPERTY,
+                           System.getProperty(JAEGER_ENDPOINT_PROPERTY, DEFAULT_JAEGER_ENDPOINT));
 
         // start the Default Cache Server
         DefaultCacheServer.main(args);
@@ -179,7 +222,7 @@ public class Launcher
                            + locale.getLanguage() + ", Zone: " + zone);
 
         // try direct matches first
-        Pair<String, String> entry = mapZones.get(zone);
+        Pair<String, String> entry = MAP_ZONES.get(zone);
 
         if (entry != null)
         {

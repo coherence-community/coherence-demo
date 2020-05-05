@@ -13,3 +13,12 @@ hs_err_pid*
 
 # IDE
 .idea/
+*.iml
+
+# Build artifacts
+dependency-reduced-pom.xml
+target
+
+# Runtime artifacts
+derby.log
+memory

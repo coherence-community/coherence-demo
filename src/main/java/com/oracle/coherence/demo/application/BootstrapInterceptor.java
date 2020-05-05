@@ -19,10 +19,13 @@
 package com.oracle.coherence.demo.application;
 
 import com.tangosol.net.CacheFactory;
+
 import com.tangosol.net.events.EventInterceptor;
+
 import com.tangosol.net.events.application.LifecycleEvent;
 
-import java.awt.*;
+import java.awt.Desktop;
+
 import java.net.URI;
 
 /**
@@ -40,7 +43,7 @@ public class BootstrapInterceptor implements EventInterceptor<LifecycleEvent>
             if (CacheFactory.getCluster().getLocalMember().getId() == 1)
             {
                 // only load if with.data=true, which is defaulted to true
-                // with.data is set to false on startup of secondary cluster for federation
+                // with.data is set to false on the start of the secondary cluster for federation
                 if ("true".equals(System.getProperty("with.data", "true")))
                 {
                     // create initial data for the demo
@@ -52,7 +55,8 @@ public class BootstrapInterceptor implements EventInterceptor<LifecycleEvent>
                 // cater for case where user has overridden default port via -Dhttp.port=xxxx
                 String sPort = System.getProperty("http.port");
                 String sHost = System.getProperty("http.hostname");
-                String sURL  = "http://" + (sHost == null ? "127.0.0.1" : sHost) + ":" + (sPort == null ? "8080" : sPort) + "/application/index.html";
+                String sURL  = "http://" + (sHost == null ? "127.0.0.1" : sHost) + ':'
+                               + (sPort == null ? "8080" : sPort) + "/application/index.html";
 
                 // open the default web browser to start the front-end
                 try

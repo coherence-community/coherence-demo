@@ -24,14 +24,16 @@ import com.oracle.bedrock.runtime.LocalPlatform;
 
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
-import com.tangosol.util.UUID;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+
 import javax.ws.rs.core.Response;
+
 import java.io.File;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,10 +42,10 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 /**
- * A JAX-RS resource providing Provides developer related commands.
+ * A JAX-RS resource providing Provides developer-related commands.
  * <p>
  * <strong>Note:</strong> This is an example only and does not include security
- * security capabilities to protect REST end-points. <p>Adding security via supported
+ * capabilities to protect REST end-points. <p>Adding security via supported
  * methods would be highly recommended if you were to utilize this pattern.
  *
  * @author Tim Middleton
@@ -51,19 +53,26 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 @Path("/developer")
 public class DeveloperResource
 {
+    /**
+     * Platform file separator.
+     */
     private static final String SEP = File.separator;
 
     /**
      * Name of primary cluster.
      */
-    private static final String primaryCluster = System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY);
+    private static final String PRIMARY_CLUSTER = System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY);
 
     /**
      * Name of secondary cluster.
      */
-    private static final String secondaryCluster = System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY);
+    private static final String SECONDARY_CLUSTER = System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY);
 
-
+    /**
+     * Return the environment information for this Coherence cluster.
+     *
+     * @return the result as JSON
+     */
     @GET
     @Produces({APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
     @Path("environment")
@@ -76,14 +85,20 @@ public class DeveloperResource
         mapEnv.put("runningInKubernetes",       Utilities.isRunningInKubernetes());
         mapEnv.put("coherenceVersion",          Utilities.getCoherenceVersion());
         mapEnv.put("coherenceVersionAsInt",     Utilities.getCoherenceVersionAsInt());
-        mapEnv.put("primaryCluster",            sClusterName.equals(primaryCluster));
+        mapEnv.put("primaryCluster",            sClusterName.equals(PRIMARY_CLUSTER));
         mapEnv.put("federationConfiguredInK8s", Utilities.isFederationConfiguredInK8s());
         mapEnv.put("thisClusterName",           sClusterName);
 
         return Response.status(Response.Status.OK).entity(mapEnv).build();
     }
 
-
+    /**
+     * Insert a number of positions based on the input argument.
+     *
+     * @param count  the number of positions to create
+     *
+     * @return {@link Response#ok}
+     */
     @GET
     @Path("insert/{count}")
     public Response getResourceInsert(@PathParam("count") int count)
@@ -94,9 +109,16 @@ public class DeveloperResource
     }
 
 
+     /**
+      * Adds or removes indexes based in input arguments.
+      *
+      * @param enabled  flag determining whether to add or remove the indexes
+      *
+      * @return {@link Response#ok}
+      */
     @GET
     @Path("indexes/{enabled}")
-    public Response getResourceINdexes(@PathParam("enabled") boolean enabled)
+    public Response getResourceIndexes(@PathParam("enabled") boolean enabled)
     {
         if (enabled)
         {
@@ -111,6 +133,37 @@ public class DeveloperResource
     }
 
 
+    /**
+     * Invoke the specified developer resource command.
+     * <p>
+     * Available commands are:
+     * <ul>
+     *     <li>
+     *         jvisualvm {@code ->} launches JVisualVM
+     *     </li>
+     *     <li>
+     *         populate {@code ->} populates the stock positions
+     *     </li>
+     *     <li>
+     *         clear {@code ->} clears the trade cache
+     *     </li>
+     *     <li>
+     *         shutdown {@code ->} terminates the cluster
+     *     </li>
+     *     <li>
+     *         hostname {@code ->} returns the current value of the {@code http.hostname} system property
+     *     </li>
+     *     <li>
+     *         clusterNames {@code ->} returns a composite of the two federated demo clusters in the
+     *         format of {@code <PRIMARY_CLUSTER_NAME>:<SECONDARY_CLUSTER_NAME>}
+     *     </li>
+     * </ul>
+     *
+     * @param command  the command to invoke
+     *
+     * @return {@link Response#ok}, a {@code 404} if the command isn't found, or an error response
+     *         if an exception is raised
+     */
     @GET
     @Path("{command}")
     @Produces({TEXT_PLAIN})
@@ -120,16 +173,16 @@ public class DeveloperResource
 
         try
         {
-            NamedCache<UUID, Trade> trades = Utilities.getTradesCache();
+            NamedCache<String, Trade> trades = Utilities.getTradesCache();
 
             switch (command)
             {
             case "jvisualvm" :
                 // If -Dvisualvm.executable has been set then use the default for the JVM.
                 // VisualVM was removed from the JDK in 9
-                String sVisualVM = Utilities.VISUALVM.isEmpty() ?
-                                   System.getProperty("java.home") + SEP + ".." + SEP + "bin" + SEP + "jvisualvm" :
-                                   Utilities.VISUALVM;
+                String sVisualVM = Utilities.VISUALVM.isEmpty()
+                                   ? System.getProperty("java.home") + SEP + ".." + SEP + "bin" + SEP + "jvisualvm"
+                                   : Utilities.VISUALVM;
                 LocalPlatform.get().launch(sVisualVM);
                 break;
 
@@ -151,11 +204,11 @@ public class DeveloperResource
                 break;
 
             case "clusterNames" :
-                response = new String(primaryCluster + ':' + secondaryCluster);
+                response = PRIMARY_CLUSTER + ':' + SECONDARY_CLUSTER;
                 break;
 
             default :
-                throw new RuntimeException("Invalid request: " + command);
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
         }
         catch (Exception e)
