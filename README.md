@@ -16,8 +16,9 @@ When you run the application locally, it results in a single self-contained JAR,
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
 > Note: This demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) and
-> as a consequence the commercial-only feature "Federation" is only available if you include the `-P grid-edition` option for all Maven commands.
-> Click [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to run using Coherence Grid Edition. 
+> as a consequence the commercial-only feature "Federation" is not available by default. 
+> 
+> Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition. 
 
 ## Table of Contents
 
