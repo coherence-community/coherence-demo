@@ -16,7 +16,8 @@ When you run the application locally, it results in a single self-contained JAR,
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
 > Note: This demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) and
-> as a consequence the commercial-only feature "Federation" is only available if you compile using the `-P grid-edition` profile.  
+> as a consequence the commercial-only feature "Federation" is only available if you include the `-P grid-edition` option for all Maven commands.
+> Click [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to run using Coherence Grid Edition. 
 
 ## Table of Contents
 
@@ -602,7 +603,7 @@ you must carry out the following steps.
 
 ### Download Oracle Coherence 14.1.1.0.0 or later.
 
-   You can download it from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
+   You can download Coherence from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
 
    If you want to demonstrate the Coherence VisualVM plug-in, follow the instructions to install:
    https://docs.oracle.com/en/middleware/standalone/coherence/14.1.1.0/manage/using-jmx-manage-oracle-coherence.html
@@ -628,9 +629,7 @@ set PATH=%JAVA_HOME%\bin;%PATH%
 
 ### Install Coherence JARs into your Maven repository
 
-If you are going to run using the Coherence Grid Edition, you must have Coherence, Coherence-REST, 
-and Coherence-JPA installed into your local maven repository. 
-If not, execute the following commands with the version number of Coherence that \you have installed in your configuration.
+Install Coherence, Coherence-REST, and Coherence-JPA installed into your local maven repository. 
 
 For Linux/UNIX/Mac OS:
 
