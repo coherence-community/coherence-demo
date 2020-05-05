@@ -7,7 +7,7 @@ The application showcases Coherence general features, scalability capabilities, 
 features of 14.1.1.0 version including:
 
 * Cache Persistence
-* Federation (Commercial feature only)
+* Federation (Grid Edition feature only)
 * Java 8 Support
 * OpenTracing Support
 
@@ -16,7 +16,7 @@ When you run the application locally, it results in a single self-contained JAR,
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
 > Note: This demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) and
-> as a consequence the commercial-only feature "Federation" is only available if you compile using the `-Pcommercial` profile.  
+> as a consequence the commercial-only feature "Federation" is only available if you compile using the `-P grid-edition` profile.  
 
 ## Table of Contents
 
@@ -30,6 +30,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
   * [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
   * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
+  * [Run the Demonstration using Coherence Grid Edition](#run-the-demonstration-using-coherence-grid-edition)
   * [References](#references)
 
 ## Prerequisites
@@ -40,69 +41,20 @@ To run the demonstration application, you must have the following software insta
 
 1. Java 11 SE Development Kit or Runtime environment.
 
-   You can download JDK 11 from:
-   - [Java SE Development Kit 11 Downloads](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+   You can download JDK 11 from [Java SE Development Kit 11 Downloads](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
 
-2. Maven 3.5.4 or later version installed and configured.
+1. Maven 3.5.4 or later version installed and configured.
 
-3. Oracle Coherence 14.1.1.0.0 or later version installed.
-
-   You can download it from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
-
-   If you want to demonstrate the Coherence VisualVM plug-in, follow the instructions to install:
-   https://docs.oracle.com/en/middleware/standalone/coherence/14.1.1.0/manage/using-jmx-manage-oracle-coherence.html
-
-4. VisualVM is not included in JDK 11. You can download and install VisualVM from [https://visualvm.github.io](https://visualvm.github.io). You must provide `-Dvisualvm.executable` to point to the VisualVM executable.
-
-5. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
+1. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
-For more information about browser compatibility, see https://code.angularjs.org/1.4.1/docs/misc/faq.
+
+   For more information about browser compatibility, see https://code.angularjs.org/1.4.1/docs/misc/faq.
+
+1. (Optional) VisualVM is not included in JDK 11. You can download and install VisualVM from [https://visualvm.github.io](https://visualvm.github.io). 
+   You must provide `-Dvisualvm.executable` to point to the VisualVM executable.
 
 > **Note**: All code compiles to JDK 8 bytecode for compatibility with Coherence releases.
 
-### Environment Variables
-
-Ensure that the following environment variables are set in your configuration:
-
-* `JAVA_HOME` -- This variable must point to the location of the JDK version supported by the Oracle Coherence version that you use. Ensure that the path is set accordingly:</br>
-For Linux/UNIX OS:
-```bash
-export PATH=$JAVA_HOME/bin:$PATH
-```
-For Windows OS:
-```bash
-set PATH=%JAVA_HOME%\bin;%PATH%
-```
-
-* `COHERENCE_HOME` -- This variable must point to the `\coherence` directory of your Coherence installation. This is required for the Maven `install-file` commands.
-
-* `MAVEN_HOME` -- If `mvn` command is not set in your PATH variable, then set `MAVEN_HOME` directed to the `bin` folder of Maven installation and then add `MAVEN_HOME\bin` to your PATH variable list.
-
-### Coherence JARs (Grid Edition Only)
-
-If you are going to run using the Coherence Grid Edition, you must have Coherence, Coherence-REST, 
-and Coherence-JPA installed into your local maven repository. 
-If not, execute the following commands with the version number of Coherence that \you have installed in your configuration.
-
-For Linux/UNIX/Mac OS:
-
-```bash
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/14.1.1/coherence.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-management.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.1/coherence-management.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/14.1.1/coherence-rest.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.1/coherence-http-netty.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-jpa.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/toplink/coherence-jpa/14.1.1/coherence-jpa-14.1.1.pom
-```
-
-For Windows OS:
-
-```bash
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\14.1.1\coherence.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-management.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.1.1\coherence-management.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\14.1.1\coherence-rest.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.1.1\coherence-http-netty.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-jpa.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\toplink\coherence-jpa\14.1.1\coherence-jpa.14.1.1.pom
-```
 
 ### OpenTracing Prerequisites
 
@@ -444,7 +396,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 3. Build the sidecar image:
 
    ```bash
-   mvn clean install -P docker, grid
+   mvn clean install -P docker, grid-edition
    ```         
    > **Note:** The `coherence.version` must be set to your installed Coherence version.
 
@@ -641,6 +593,68 @@ To remove the `coherence-operator`, the use the following:
 ```bash
 helm delete coherence-operator --purge
 ```
+
+## Run the Demonstration using Coherence Grid Edition
+
+If you wish to demonstrate the Federation feature, which is only available in Coherence Grid Edition, 
+you must carry out the following steps.
+
+
+### Download Oracle Coherence 14.1.1.0.0 or later.
+
+   You can download it from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
+
+   If you want to demonstrate the Coherence VisualVM plug-in, follow the instructions to install:
+   https://docs.oracle.com/en/middleware/standalone/coherence/14.1.1.0/manage/using-jmx-manage-oracle-coherence.html
+
+
+### Set the Environment Variables
+
+Ensure that the following environment variables are set in your configuration:
+
+* `JAVA_HOME` -- This variable must point to the location of the JDK version supported by the Oracle Coherence version that you use. Ensure that the path is set accordingly:</br>
+For Linux/UNIX OS:
+```bash
+export PATH=$JAVA_HOME/bin:$PATH
+```
+For Windows OS:
+```bash
+set PATH=%JAVA_HOME%\bin;%PATH%
+```
+
+* `COHERENCE_HOME` -- This variable must point to the `\coherence` directory of your Coherence installation. This is required for the Maven `install-file` commands.
+
+* `MAVEN_HOME` -- If `mvn` command is not set in your PATH variable, then set `MAVEN_HOME` directed to the `bin` folder of Maven installation and then add `MAVEN_HOME\bin` to your PATH variable list.
+
+### Install Coherence JARs into your Maven repository
+
+If you are going to run using the Coherence Grid Edition, you must have Coherence, Coherence-REST, 
+and Coherence-JPA installed into your local maven repository. 
+If not, execute the following commands with the version number of Coherence that \you have installed in your configuration.
+
+For Linux/UNIX/Mac OS:
+
+```bash
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/14.1.1/coherence.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-management.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.1/coherence-management.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/14.1.1/coherence-rest.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.1/coherence-http-netty.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-jpa.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/toplink/coherence-jpa/14.1.1/coherence-jpa-14.1.1.pom
+```
+
+For Windows OS:
+
+```bash
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\14.1.1\coherence.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-management.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.1.1\coherence-management.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\14.1.1\coherence-rest.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.1.1\coherence-http-netty.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-jpa.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\toplink\coherence-jpa\14.1.1\coherence-jpa.14.1.1.pom
+```
+
+### Build using the `grid-edition` profile
+
+When you issue the 
 
 ## References
 
