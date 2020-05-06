@@ -1,7 +1,7 @@
 /*
  * File: controllers.js
  *
- * Copyright (c) 2019 Oracle and/or its affiliates.
+ * Copyright (c) 2019,2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -129,9 +129,11 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.insightContent            = [];
     self.isRunningInKubernetes     = false;
     self.coherenceEdition          = undefined;
+    self.coherenceEditionFull      = undefined;
     self.isThisPrimaryCluster      = false;
     self.federationConfiguredInK8s = false;
     self.coherenceVersion          = undefined;
+    self.javaVersion               = undefined;
     self.coherenceVersionAsInt     = 0;
     self.thisClusterName           = undefined;
     self.lastMemberCount           = undefined;
@@ -162,6 +164,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.federationConfiguredInK8s = response.data.federationConfiguredInK8s;
         self.thisClusterName           = response.data.thisClusterName;
         self.coherenceEdition          = response.data.coherenceEdition;
+        self.coherenceEditionFull      = response.data.coherenceEditionFull;
+        self.javaVersion               = response.data.javaVersion;
 
         self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
         
@@ -486,7 +490,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
           $("#tracingModal").modal();
         };
         xhr.send();
-    }
+    };
 
     // ---- the function to start a new cluster member ----
 
@@ -544,7 +548,13 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                     self.stopSecondary();
                 }
             }
-            }
+        }
+    };
+
+    // ---- the function to show about information ----
+
+    self.about = function() {
+        $("#aboutModal").modal();
     };
 
     // ---- the function to toggle insight mode ----

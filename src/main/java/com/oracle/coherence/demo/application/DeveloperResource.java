@@ -81,6 +81,7 @@ public class DeveloperResource
         Map<String, Object> mapEnv =  new HashMap<>();
 
         String clusterName = CacheFactory.ensureCluster().getClusterName();
+        String edition     = CacheFactory.getEdition();
 
         mapEnv.put("runningInKubernetes",       Utilities.isRunningInKubernetes());
         mapEnv.put("coherenceVersion",          Utilities.getCoherenceVersion());
@@ -88,7 +89,9 @@ public class DeveloperResource
         mapEnv.put("primaryCluster",            clusterName.equals(PRIMARY_CLUSTER));
         mapEnv.put("federationConfiguredInK8s", Utilities.isFederationConfiguredInK8s());
         mapEnv.put("thisClusterName",           clusterName);
-        mapEnv.put("coherenceEdition",          CacheFactory.getEdition());
+        mapEnv.put("coherenceEdition",          edition);
+        mapEnv.put("coherenceEditionFull",      ("CE".equals(edition) ? "Community" : "Grid") + " Edition");
+        mapEnv.put("javaVersion",               System.getProperty("java.version"));
 
         return Response.status(Response.Status.OK).entity(mapEnv).build();
     }

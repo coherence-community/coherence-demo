@@ -152,6 +152,10 @@
                         <li><a href="#" ng-click="toggleInsightMode()"  ng-show="clusterName != secondaryClusterName">
                             <i class="fa fa-info fa-fw"></i>{{ insightLabel }}</a>
                         </li>
+                        <li class="divider"  ng-show="clusterName != secondaryClusterName"></li>
+                        <li><a href="#" ng-click="about()"  ng-show="clusterName != secondaryClusterName">
+                            <i class="fa fa-info fa-fw"></i>About</a>
+                        </li>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
@@ -196,6 +200,39 @@
                                 ng-model="selectedOption"
                                 ng-options="x for (x, y) in tracingOptions()">
                         </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="aboutModal" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">About the Coherence Demonstration</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <strong>Coherence Edition:</strong> {{coherenceEdition}} ({{coherenceEditionFull}})
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Coherence Version:</strong> {{coherenceVersion}}
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Cluster Name:</strong> {{thisClusterName}}
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Running in Kubernetes:</strong> {{isRunningInKubernetes}}
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Java Version:</strong> {{javaVersion}}
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -394,7 +431,7 @@
                                             <td align="right">{{ member.tracingEnabled ? 'ENABLED' : 'DISABLED'}}</td>
                                             <td align="right">{{ member.totalMemory - member.freeMemory | memory }}</td>
                                         </tr>
-                                        <tr><td colspan="4">&nbsp;</td></tr>
+                                        <tr><td colspan="5">&nbsp;</td></tr>
                                     </tbody>
                                 </table>
                             </div>

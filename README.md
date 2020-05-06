@@ -50,7 +50,7 @@ To run the demonstration application, you must have the following software insta
 1. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
 
-   For more information about browser compatibility, see https://code.angularjs.org/1.4.1/docs/misc/faq.
+   For more information about browser compatibility, see https://code.angularjs.org/1.7.5/docs/misc/faq.
 
 1. (Optional) VisualVM is not included in JDK 11. You can download and install VisualVM from [https://visualvm.github.io](https://visualvm.github.io). 
    You must provide `-Dvisualvm.executable` to point to the VisualVM executable.
@@ -175,7 +175,7 @@ The steps to run the application on Kubernetes comprises the following:
    namespace/sample-coherence-ns created
    ```   
    
-2. **Create Secret**
+1. **Create Secret**
 
    Create a secret for pulling the images from private repositories. For this application, create a secret named `coehrence-demo-secret` in the namespace `coherence-demo-ns`.
    ```bash
@@ -190,7 +190,14 @@ The steps to run the application on Kubernetes comprises the following:
 
    See [https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) for more information.
 
-3. **Build and Push Sidecar Docker Image**
+   For this demonstration we are using the image `container-registry.oracle.com/middleware/coherence:14.1.1.0.0`.
+
+1. **Get the Coherence Docker Image**
+
+   See [Here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#get-coherence-docker-image) for how to 
+   access the Coherence Docker image.
+
+1. **Build and Push Sidecar Docker Image**
 
    Build and push the sidecar Docker image(optional). The Oracle Coherence Operator requires a sidecar Docker image to be built containing the classes and configuration files required by the application.
 
@@ -204,7 +211,7 @@ The steps to run the application on Kubernetes comprises the following:
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the sidecar Docker image to your repository accessible to that cluster. You also need to prefix the image name in your `helm` commands below.
 
-4. **Install the Oracle Coherence Operator**
+1. **Install the Oracle Coherence Operator**
    
    Install the operator using `helm`:
 
@@ -231,9 +238,9 @@ The steps to run the application on Kubernetes comprises the following:
    
    To enable EFK (Elasticsearch, Fluentd and Kibana) integration to capture logs, see [here](https://oracle.github.io/coherence-operator/docs/2.0.0/#/logging/020_logging).
    
-   To enable metrics capture, see [here](https://oracle.github.io/coherence-operator/docs/2.0.0/#/metrics/020_metrics)
+   To enable metrics capture, see [here](https://oracle.github.io/coherence-operator/docs/2.1.1/#/metrics/020_metrics)
 
-5. **Install the Coherence Cluster**
+1. **Install the Coherence Cluster**
 
    The Coherence cluster comprises of 2 roles:
    
@@ -259,7 +266,8 @@ The steps to run the application on Kubernetes comprises the following:
      coherence:
        metrics:
          enabled: false  
-       cacheConfig: cache-config.xml
+       cacheConfig: cache-config.xml 
+       image: container-registry.oracle.com/middleware/coherence:14.1.1.0.0
      logging:
        fluentd:
          enabled: false    
@@ -309,19 +317,19 @@ The steps to run the application on Kubernetes comprises the following:
    kubectl describe pod primary-cluster-storage-0 --namespace coherence-demo-ns
    ```
 
-6. **Port Forward the HTTP Port**
+1. **Port Forward the HTTP Port**
 
    ```bash
    kubectl port-forward --namespace coherence-demo-ns primary-cluster-http-0 8080:8080
    ```  
 
-7. **Access the Application**</br>
+1. **Access the Application**</br>
 
    Use the following URL to access the application home page:
 
    [http://127.0.0.1:8080/application/index.html](http://127.0.0.1:8080/application/index.html)  
 
-8. **Scale the Application**
+1. **Scale the Application**
 
    When running the application in Kubernetes, the **Add Server** and **Remove Server** options are not available. You need to use `kubectl` to scale the application.
 
@@ -334,7 +342,7 @@ The steps to run the application on Kubernetes comprises the following:
    
    Use `kubectl get pods --namespace coherence-demo-ns` to view the progress.
    
-9. **Scale the Application down**
+1. **Scale the Application down**
 
    Scale the application to one node by editing `demo-cluster.yaml` and changing 
    the `replicas` value for the `storage` role to 1. Then apply using
@@ -349,7 +357,7 @@ The steps to run the application on Kubernetes comprises the following:
    > carried out in a safe manner (checking service statusHA values) to ensure no data is lost. 
    > You can confirm this by checking the number of positions are the same as before the scale-down was initiated.                                                                                                                                                                                                                                                                                                                                                                                   
    
-10. Uninstall the Coherence Cluster
+1. Uninstall the Coherence Cluster
 
     Use the following to uninstall the Coherence cluster.
     
@@ -398,7 +406,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 3. Build the sidecar image:
 
    ```bash
-   mvn clean install -P docker, grid-edition
+   mvn clean install -P docker,grid-edition
    ```         
    > **Note:** The `coherence.version` must be set to your installed Coherence version.
 
@@ -425,7 +433,8 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
      coherence:
        metrics:
          enabled: false 
-       cacheConfig: cache-config.xml
+       cacheConfig: cache-config.xml 
+       image: container-registry.oracle.com/middleware/coherence:14.1.1.0.0
      logging:
        fluentd:
          enabled: false    
@@ -505,7 +514,8 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
          port: 40000
      coherence:
        metrics:
-        enabled: false
+         enabled: false
+       image: container-registry.oracle.com/middleware/coherence:14.1.1.0.0
      logging:
        fluentd:
          enabled: false    
