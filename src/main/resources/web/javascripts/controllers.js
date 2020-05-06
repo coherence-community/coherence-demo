@@ -128,6 +128,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.insightEnabled            = true;
     self.insightContent            = [];
     self.isRunningInKubernetes     = false;
+    self.coherenceEdition          = undefined;
     self.isThisPrimaryCluster      = false;
     self.federationConfiguredInK8s = false;
     self.coherenceVersion          = undefined;
@@ -160,6 +161,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.isThisPrimaryCluster      = response.data.primaryCluster;
         self.federationConfiguredInK8s = response.data.federationConfiguredInK8s;
         self.thisClusterName           = response.data.thisClusterName;
+        self.coherenceEdition          = response.data.coherenceEdition;
 
         self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
         
@@ -447,6 +449,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             "role":         "",
             "tracingRatio": -1.0
         };
+        var message;
 
         if (self.selectedOption.endsWith("even")) {
             postData.role = "CoherenceDemoServerEven"
@@ -456,14 +459,19 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
         if (self.selectedOption.startsWith("enable")) {
             postData.tracingRatio = 1.0;
+            message = "Tracing enabled";
+        }
+        else {
+            message = "Tracing disabled";
         }
 
         $http.post(encodeURI('/management/coherence/cluster/configureTracing/'), postData).then(
             function () {
                 $('#tracingModal').modal('hide');
+                self.displayNotification(message, 'success', true);
                 self.selectedOption = null;
             });
-    }
+    };
 
     self.configureTracing = function() {
         self.modalContent = $sce.trustAsHtml('<p>Loading...</p>');
@@ -524,14 +532,19 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     // ---- the function to control secondary cluster ----
 
     self.toggleSecondary = function() {
-       if (self.federationControlLabel == self.START_FEDERATION) {
-            self.startSecondary();
-       }
-       else {
-           if ($window.confirm('Are you sure you want to stop Federation?')) {
-               self.stopSecondary();
-           }
-       }
+        if (self.coherenceEdition === "CE") {
+            self.displayInsight("commercial");
+        }
+        else {
+            if (self.federationControlLabel === self.START_FEDERATION) {
+                 self.startSecondary();
+            }
+            else {
+                if ($window.confirm('Are you sure you want to stop Federation?')) {
+                    self.stopSecondary();
+                }
+            }
+            }
     };
 
     // ---- the function to toggle insight mode ----
@@ -693,6 +706,10 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
        self.insightContent['demoShutdown'] = {
            "header":  "Coherence Demonstration Shutdown",
            "content": "fragments/demoShutdown.html"
+       };
+       self.insightContent['commercial'] = {
+           "header":  "Feature Requires Coherence Grid Edition",
+           "content": "fragments/commercial.html"
        };
     };
 

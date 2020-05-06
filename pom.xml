@@ -16,6 +16,7 @@
     <bedrock.version>5.0.11</bedrock.version>
     <coherence.version>14.1.1-0-1-SNAPSHOT</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
+    <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.14.2.0</derby.version>
     <eclipselink.version>2.7.5</eclipselink.version>
     <jackson.version>2.10.1</jackson.version>
@@ -367,25 +368,49 @@
       </build>
     </profile>
 
-    <!-- JDK8 specifics -->
     <profile>
-      <id>javadoc-jdk18</id>
+      <id>grid-edition</id>
       <activation>
-        <jdk>1.8</jdk>
+        <property>
+          <name>grid-edition</name>
+        </property>
       </activation>
+      <properties>
+        <coherence.group.id>com.oracle.coherence</coherence.group.id>
+      </properties>
       <build>
         <plugins>
-          <!-- attach javadoc -->
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven.javadoc.plugin.version}</version>
+            <groupId>com.coderplus.maven.plugins</groupId>
+            <artifactId>copy-rename-maven-plugin</artifactId>
+            <version>${copy.rename.maven.plugin.version}</version>
             <executions>
               <execution>
-                <id>attach-javadocs</id>
+                <id>copy-and-rename-file</id>
+                <phase>compile</phase>
                 <goals>
-                  <goal>jar</goal>
+                  <goal>rename</goal>
                 </goals>
+                <configuration>
+                  <fileSets>
+                    <fileSet>
+                      <sourceFile>
+                        ${project.build.directory}/classes/tangosol-coherence-override-grid-edition.xml
+                      </sourceFile>
+                      <destinationFile>
+                        ${project.build.directory}/classes/tangosol-coherence-override.xml
+                      </destinationFile>
+                    </fileSet>
+                    <fileSet>
+                      <sourceFile>
+                        ${project.build.directory}/classes/cache-config-grid-edition.xml
+                      </sourceFile>
+                      <destinationFile>
+                        ${project.build.directory}/classes/cache-config.xml
+                      </destinationFile>
+                    </fileSet>
+                  </fileSets>
+                </configuration>
               </execution>
             </executions>
           </plugin>

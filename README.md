@@ -654,7 +654,11 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-jpa.jar -DpomFile
 
 ### Build using the `grid-edition` profile
 
-When you issue the 
+When you issue any Mavn commands, ensure you include the `grid-edition` profile as below:
+
+```bash
+mvn clean install -P grid-edition
+```
 
 ## References
 

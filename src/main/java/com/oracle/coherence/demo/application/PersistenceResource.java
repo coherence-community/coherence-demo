@@ -54,9 +54,10 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 public class PersistenceResource
 {
     /**
-     * Name of the service we are using.
+     * Name of the federated service we are using.
      */
-    private static final String SERVICE_NAME = "FederatedCache";
+    private static final String SERVICE_NAME = CacheFactory.getEdition().equals("CE") ? "DistributedCache" : "FederatedCache";
+
 
     /**
      * Name of the snapshot to create.
