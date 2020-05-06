@@ -91,7 +91,8 @@ public class DeveloperResource
         mapEnv.put("thisClusterName",           clusterName);
         mapEnv.put("coherenceEdition",          edition);
         mapEnv.put("coherenceEditionFull",      ("CE".equals(edition) ? "Community" : "Grid") + " Edition");
-        mapEnv.put("javaVersion",               System.getProperty("java.version"));
+        mapEnv.put("javaVersion",               System.getProperty("java.version") + " " +
+                                                System.getProperty("java.vendor"));
 
         return Response.status(Response.Status.OK).entity(mapEnv).build();
     }
