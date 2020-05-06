@@ -18,7 +18,7 @@
 
 package com.oracle.coherence.demo.application;
 
-import com.oracle.common.base.Blocking;
+import com.oracle.coherence.common.base.Blocking;
 
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
