@@ -388,12 +388,12 @@
                             <span>Cluster Management {{ clusterName }}
                             </span>
                             <div class="pull-right">
-                                <span ng-show="MAXIMUM_SERVERS - memberInfo.length > 0 && !startingMember" >
-                                    <button class="btn btn-xs btn-default" ng-click="startMember()">Add Server</button>
+                                <span ng-show="!startingMember" >
+                                    <button class="btn btn-xs btn-default" ng-click="startMember()">Add Servers</button>
                                     <insight ng-click="displayInsightK8sAware('addServer')" ng-show="insightEnabled"/>
                                 </span>
 
-                                <span ng-show="startingMember">Starting Server <img src="images/spinner.gif"/>
+                                <span ng-show="startingMember">Starting Servers <img src="images/spinner.gif"/>
                                 </span>
                             </div>
                         </div>

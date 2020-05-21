@@ -79,7 +79,6 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     // application constants
     self.MAXIMUM_AGGREGATION_TICKS = 20;
-    self.MAXIMUM_SERVERS           = 5;
     self.START_FEDERATION          = 'Start';
     self.STOP_FEDERATION           = 'Stop';
     self.SUSPEND_FEDERATION        = 'Pause';
@@ -194,7 +193,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.secondaryClusterName = clusterNames[1];
 
             // display welcome insight (on primary cluster only)
-            if (self.clusterName != self.secondaryClusterName && !insightCookies.skipSplash) {
+            if (self.clusterName !== self.secondaryClusterName && !insightCookies.skipSplash) {
                  self.displayInsight('welcome');
             }
         });
@@ -259,10 +258,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
             var chartData = response.data;
 
-            // sort the symbols returned by Coherence
-            var sortedSymbolNames = chartData.symbols.sort();
-
-            self.symbolNames = sortedSymbolNames;
+            self.symbolNames = chartData.symbols.sort();;
             self.symbolsChartData = [];
             self.symbolFrequency = {};
             self.symbolCount = {};
@@ -301,8 +297,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             });
 
             // check to see if the valuation went up or down
-            self.valuationDirection = valuationTotal == self.valuation ? 'N/A' :
-                                      valuationTotal >  self.valuation ? 'up'  : 'down';
+            self.valuationDirection = valuationTotal === self.valuation ? 'N/A' :
+                                      valuationTotal >   self.valuation ? 'up'  : 'down';
 
             self.valuationStyle = 'color: ' +
                 (self.valuationDirection === 'N/A' ? "'black'" :
@@ -327,7 +323,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             var currentMemberCount = (self.memberInfo.length !== undefined ? self.memberInfo.length : 0);
 
             // check to see if member count has changed
-            if (self.lastMemberCount !== undefined && self.lastMemberCount != currentMemberCount) {
+            if (self.lastMemberCount !== undefined && self.lastMemberCount !== currentMemberCount) {
                 self.displayNotification('Member count changed from ' + self.lastMemberCount + ' to ' + currentMemberCount,'info', true);
             }
             self.lastMemberCount = currentMemberCount;
@@ -499,11 +495,14 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.displayInsight(self.federationConfiguredInK8s ? "addOrRemoveServerK8sFederation" : "addOrRemoveServerK8s");
         }
         else {
-            self.startingMember = true;
-            $http.get('/service/start-member').then(function(response) {
-                self.startingMember = false;
-                self.displayInsightIfEnabled('serverStarted');
-            });
+            var serverCount = parseInt(prompt('Enter the number of servers to start', '1')); 
+            if (isNaN(serverCount) == false) { 
+                self.startingMember = true;
+                $http.get('/service/start-member/' + serverCount).then(function(response) {
+                    self.startingMember = false;
+                    self.displayInsightIfEnabled('serverStarted');
+                });
+            }
         }
     };
 

@@ -30,8 +30,10 @@ import com.oracle.bedrock.runtime.coherence.options.ClusterPort;
 import com.oracle.bedrock.runtime.coherence.options.Logging;
 import com.oracle.bedrock.runtime.coherence.options.RoleName;
 
+import com.oracle.bedrock.runtime.java.options.JvmOptions;
 import com.oracle.bedrock.runtime.java.options.SystemProperty;
 
+import com.oracle.bedrock.runtime.options.Argument;
 import com.oracle.bedrock.runtime.options.DisplayName;
 
 import com.tangosol.net.CacheFactory;
@@ -47,7 +49,11 @@ import io.opentracing.util.GlobalTracer;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+
+import java.lang.management.ManagementFactory;
+import java.util.List;
 
 import static com.oracle.bedrock.deferred.DeferredHelper.eventually;
 import static com.oracle.bedrock.deferred.DeferredHelper.invoking;
@@ -60,7 +66,7 @@ import static com.oracle.bedrock.predicate.Predicates.greaterThan;
  *
  * @author Brian Oliver
  */
-@Path("/start-member")
+@Path("/start-member/{serverCount}")
 public class StartMemberResource
         extends AbstractClusterMemberResource
 {
@@ -70,16 +76,19 @@ public class StartMemberResource
      * @return a response indicating the status of the member creation
      */
     @GET
-    public Response createMember()
+    public Response createMember(@PathParam("serverCount") int serverCount)
     {
         Cluster cluster     = CacheFactory.getCluster();
         String  clusterName = cluster.getClusterName();
+        List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
 
-        if (cluster.getMemberSet().size() < 5)
+        for (int i = 1; i <= serverCount; i++)
         {
             // we'll use the local platform to create the new member
             LocalPlatform platform = LocalPlatform.get();
             int nStableId = getStableId();
+
+            CacheFactory.log("Starting server " + i + " of " + serverCount, CacheFactory.LOG_INFO);
 
             try
             {
@@ -103,7 +112,8 @@ public class StartMemberResource
                                         SystemProperty.of(Launcher.PRIMARY_CLUSTER_PROPERTY,
                                                           System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY)),
                                         SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
-                                                          System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)));
+                                                          System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)),
+                                        JvmOptions.include(inputArguments.toArray(new String[0])));
                 Span span = GlobalTracer.get().activeSpan();
                 Utilities.spanLog(span, "Starting new member");
 
@@ -123,18 +133,13 @@ public class StartMemberResource
                 ResourceRegistry registry = CacheFactory.getConfigurableCacheFactory().getResourceRegistry();
 
                 registry.registerResource(CoherenceCacheServer.class, memberId, server);
-
-                // return the member-id
-                return Response.ok(memberId).build();
             }
             catch (Exception e)
             {
                 return Response.noContent().build();
             }
         }
-        else
-        {
-            return Response.noContent().build();
-        }
+
+        return Response.noContent().build();
     }
 }
