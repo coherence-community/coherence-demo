@@ -30,6 +30,7 @@ import com.oracle.bedrock.runtime.coherence.options.ClusterName;
 import com.oracle.bedrock.runtime.coherence.options.ClusterPort;
 import com.oracle.bedrock.runtime.coherence.options.Logging;
 
+import com.oracle.bedrock.runtime.coherence.options.RoleName;
 import com.oracle.bedrock.runtime.console.NullApplicationConsole;
 import com.oracle.bedrock.runtime.console.SystemApplicationConsole;
 
@@ -112,6 +113,7 @@ public class StartSecondaryResource
                                                       System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
                                                                          Launcher.DEFAULT_JAEGER_ENDPOINT)),
                                     Logging.at(0),
+                                    RoleName.of("CoherenceDemoServer-" + secondaryName),
                                     ClusterPort.of(Launcher.SECONDARY_PORT),
                                     ClusterName.of(secondaryName),
                                     SystemProperty.of("with.data", "false"),
