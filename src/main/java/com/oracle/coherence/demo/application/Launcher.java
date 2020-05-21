@@ -138,6 +138,7 @@ public final class Launcher
 
         MAP_ZONES.put("US/Central", new Pair<>("Chicago", "New York"));
         MAP_ZONES.put("US/Eastern", new Pair<>("Boston", "London"));
+        MAP_ZONES.put("UTC", new Pair<>("Boston", "London"));
 
         MAP_ZONES.put("Europe/London", new Pair<>("London", "New York"));
         MAP_ZONES.put("Europe/Moscow", new Pair<>("Moscow", "London"));
@@ -218,7 +219,7 @@ public final class Launcher
         String zone   = ZoneId.systemDefault().toString();
         Locale locale = Locale.getDefault();
 
-        System.out.println("*** Locale: " + locale + ", Country=" + locale.getCountry() + ", Lang="
+        System.out.println("*** Locale: " + locale + ", Country=" + locale.getCountry() + ", Language="
                            + locale.getLanguage() + ", Zone: " + zone);
 
         // try direct matches first
