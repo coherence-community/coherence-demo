@@ -331,9 +331,10 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 1. Build the Docker image:
 
    ```bash
-   mvn clean install -P docker,grid-edition
-   ```         
-   > **Note:** The `coherence.version` must be set to your installed Coherence version.
+   mvn clean install -P docker,grid-edition -Dcoherence.version=14.1.1-0-0
+   ```
+            
+   > **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
 
 4. Install the **Primary** cluster:
 
@@ -480,11 +481,14 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -D
 
 ### Build using the `grid-edition` profile
 
-When you issue any Mavn commands, ensure you include the `grid-edition` profile as below:
+When you issue any maven commands, ensure you include the `grid-edition` profile as below:
 
 ```bash
-mvn clean install -P grid-edition
+mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
 ```
+            
+> **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
+
 
 ## References
 
