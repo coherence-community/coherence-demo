@@ -131,6 +131,7 @@ The following features are available to demonstrate in the application:
 * Add additional data, clear the cache or populate the cache from the **Tools** menu.
 * Start VisualVM from the **Tools** menu.
 * Show OpenTracing Support
+* Open raw metrics endpoint
 
 Federation Features - Grid Edition Only
 * Start a secondary cluster from the **Federation** menu.
@@ -185,32 +186,11 @@ The steps to run the application on Kubernetes comprises the following:
 
    namespace/sample-coherence-ns created
    ```   
-   
-1. **Create Secret**
-
-   Create a secret for pulling the images from private repositories. For this application, create a secret named `coehrence-demo-secret` in the namespace `coherence-demo-ns`.
-   ```bash
-   kubectl create secret docker-registry coherence-demo-secret \
-        --namespace coherence-demo-ns \
-        --docker-server=your-docker-server \
-        --docker-username=your-docker-username \
-        --docker-email=your-email-address \
-        --docker-password=your-docker-password
-   ```
-   > **Note**: By default, the Docker details must be your Oracle Container Registry details.
-
-   See [https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) for more information.
-
-   For this demonstration we are using the image `container-registry.oracle.com/middleware/coherence:14.1.1.0.0`.
-
-1. **Get the Coherence Docker Image**
-
-   See [Here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#get-coherence-docker-image) for how to 
-   access the Coherence Docker image.
 
 1. **Build and Push Docker Image**
 
-   Ensure that you have Docker running locally and execute the following command:
+   Ensure that you have Docker running locally and execute the following command which will
+   used the `jib-maven-plugin` to build a Docker time.
 
    ```bash
    mvn clean install -P docker
@@ -236,8 +216,8 @@ The steps to run the application on Kubernetes comprises the following:
    ```bash
    helm ls
    
-   NAME              	REVISION	UPDATED                 	STATUS  	CHART                   	APP VERSION	NAMESPACE        
-   coherence-operator	1       	Mon Oct 28 13:19:20 2019	DEPLOYED	coherence-operator-3.0.0	3.0.0      	coherence-demo-ns
+   NAME              	REVISION UPDATED                 STATUS     CHART                     APP VERSION  NAMESPACE        
+   coherence-operator	1       Mon Oct 28 13:19:20 2019 DEPLOYED   coherence-operator-3.0.0  3.0.0        coherence-demo-ns
   
    kubectl get pods --namespace coherence-demo-ns 
    
@@ -256,7 +236,7 @@ The steps to run the application on Kubernetes comprises the following:
    The file [demo-cluster.yaml](yaml/demo-cluster.yaml) contains the yaml to install the two 
    Coherence cluster roles.       
    
-   Issue the following command to install the Coherence cluster using the `demo-cluster.yaml`:
+   Issue the following command to install the Coherence cluster using the above yaml:
 
    ```bash
    kubectl create --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
@@ -360,7 +340,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
    The file [primary-cluster.yaml](yaml/primary-cluster.yaml) contains the yaml to install the 
    `primary-cluster` Coherence cluster.      
    
-    Issue the following command to install the Coherence cluster using the `primary-cluster.yaml`:   
+    Issue the following command to install the Coherence cluster using the above yaml:   
    
    ```bash
    kubectl create --namespace coherence-demo-ns -f yaml/primary-cluster.yaml
@@ -389,7 +369,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
     The file [secondary-cluster.yaml](yaml/secondary-cluster.yaml) contains the yaml to install the 
    `secondary-cluster` Coherence cluster.      
    
-    Issue the following command to install the Coherence cluster using the `secondary-cluster.yaml`:   
+    Issue the following command to install the Coherence cluster using the above yaml:   
               
    ```bash
    kubectl create --namespace coherence-demo-ns -f yaml/secondary-cluster.yaml
@@ -483,6 +463,7 @@ For Linux/UNIX/Mac OS:
 ```bash
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/14.1.1/coherence.14.1.1.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-management.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.1/coherence-management.14.1.1.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-metrics.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-metrics/14.1.1/coherence-metrics.14.1.1.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/14.1.1/coherence-rest.14.1.1.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.1/coherence-http-netty.14.1.1.pom
 ```
@@ -492,6 +473,7 @@ For Windows OS:
 ```bash
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\14.1.1\coherence.14.1.1.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-management.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.1.1\coherence-management.14.1.1.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-metrics.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-metrics\14.1.1\coherence-metrics.14.1.1.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\14.1.1\coherence-rest.14.1.1.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.1.1\coherence-http-netty.14.1.1.pom
 ```
