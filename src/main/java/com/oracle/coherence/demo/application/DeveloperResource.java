@@ -84,6 +84,7 @@ public class DeveloperResource
         String edition     = CacheFactory.getEdition();
 
         mapEnv.put("runningInKubernetes",       Utilities.isRunningInKubernetes());
+        mapEnv.put("metricsEnabled",            Utilities.isMetricsEnabled());
         mapEnv.put("coherenceVersion",          Utilities.getCoherenceVersion());
         mapEnv.put("coherenceVersionAsInt",     Utilities.getCoherenceVersionAsInt());
         mapEnv.put("primaryCluster",            clusterName.equals(PRIMARY_CLUSTER));

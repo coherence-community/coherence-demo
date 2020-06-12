@@ -18,7 +18,6 @@
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.14.2.0</derby.version>
-    <docker.repo></docker.repo>
     <docker.version>${project.version}</docker.version>
     <eclipselink.version>2.7.5</eclipselink.version>
     <jackson.version>2.10.1</jackson.version>

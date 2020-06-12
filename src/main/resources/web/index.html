@@ -140,6 +140,7 @@
                         <li><a href="#" ng-click="startDeveloper('clear')"><i class="fa fa-remove fa-fw"></i> Clear Cache</a></li>
                         <li><a href="#" ng-click="startDeveloper('populate')"><i class="fa fa-repeat fa-fw"></i> Populate Cache</a></li>
                         <li><a href="#" ng-click="addTrades()"><i class="fa fa-plus fa-fw"></i> Add Trades</a></li>
+                        <li><a href="#" ng-click="openMetrics()" ng-show="isMetricsEnabled && !isRunningInKubernetes"><i class="fa fa-medkit fa-fw"></i> Show Raw Metrics</a></li>
                         <li class="divider"></li>
                         <li>
                             <a href="#" ng-click="configureTracing()"><i class="fa fa-eye fa-fw"></i> Configure Tracing</a>
@@ -228,6 +229,9 @@
                             </div>
                             <div class="col-lg-7">
                                 <strong>Running in Kubernetes:</strong> {{isRunningInKubernetes}}
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Metrics Enabled:</strong> {{isMetricsEnabled}}
                             </div>
                             <div class="col-lg-7">
                                 <strong>Java Version:</strong> {{javaVersion}}

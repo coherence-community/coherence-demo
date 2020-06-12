@@ -131,6 +131,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.coherenceEditionFull      = undefined;
     self.isThisPrimaryCluster      = false;
     self.federationConfiguredInK8s = false;
+    self.isMetricsEnabled          = false;
     self.coherenceVersion          = undefined;
     self.javaVersion               = undefined;
     self.coherenceVersionAsInt     = 0;
@@ -165,6 +166,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.coherenceEdition          = response.data.coherenceEdition;
         self.coherenceEditionFull      = response.data.coherenceEditionFull;
         self.javaVersion               = response.data.javaVersion;
+        self.isMetricsEnabled          = response.data.metricsEnabled;
 
         self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
         
@@ -807,6 +809,16 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             var secondaryURL  = $location.protocol() + '://' + response.data + ':' + secondaryPort +
                            '/application/index.html#?clusterName=' + self.secondaryClusterName;
             $window.open(secondaryURL);
+        });
+    };
+
+    // ---- the function to show the raw metrics
+
+    self.openMetrics = function() {
+        // get the hostname from the server so that if we specify -Dhttp.hostname
+        // to be something other than 127.0.0.1 the secondary cluster URL will work.
+        $http.get('/service/developer/hostname').then(function(response) {
+            $window.open($location.protocol() + '://' + response.data + ':9612/metrics');
         });
     };
 

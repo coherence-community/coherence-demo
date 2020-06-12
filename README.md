@@ -3,12 +3,16 @@
 ## Overview
 
 This document describes how to build and run the Coherence Demonstration application. 
-The application showcases Coherence general features, scalability capabilities, and new 
-features of 14.1.1.0 version including:
+The application showcases Coherence general features, scalability capabilities including:
 
-* Cache Persistence
+* Clustering and Data Sharding
+* Scalability and High Availability
+* Disk-Based Persistence
+* Parallel Queries
+* Efficient Aggregation
+* In-Place Processing
 * Federation (Grid Edition feature only)
-* Java 8 Support
+* Lambda Support
 * OpenTracing Support
 
 When you run the application locally, it results in a single self-contained JAR, javadoc and source.
@@ -22,7 +26,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 
 ## Table of Contents
 
-- [Oracle Coherence Demonstration Application](#oracle-coherence-demonstration-application)
+- Oracle Coherence Demonstration Application
   * [Overview](#overview)
   * [Table of Contents](#table-of-contents)
   * [Prerequisites](#prerequisites)
@@ -46,7 +50,7 @@ To run the demonstration application, you must have the following software insta
 
    You can download JDK 11 from [Java SE Development Kit 11 Downloads](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
 
-1. Maven 3.5.4 or later version installed and configured.
+1. Maven 3.6.0 or later version installed and configured.
 
 1. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
@@ -102,6 +106,12 @@ Run the JAR file in the `target` directory:
 
 ```bash
 java -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
+```      
+
+You can use the following to run the application with the `Metrics` endpoint enabled:
+
+```bash
+java -Dcoherence.metrics.http.enabled=true -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
 ```
 
 Use the following argument to start the VisualVM while running the JAR file:
