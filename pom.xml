@@ -14,16 +14,20 @@
     
     <!-- dependency versions -->
     <bedrock.version>5.0.11</bedrock.version>
-    <coherence.version>14.1.1-0-1-SNAPSHOT</coherence.version>
+    <coherence.version>14.1.2-20-06-SNAPSHOT</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.14.2.0</derby.version>
+    <docker.repo></docker.repo>
+    <docker.version>${project.version}</docker.version>
     <eclipselink.version>2.7.5</eclipselink.version>
     <jackson.version>2.10.1</jackson.version>
     <jaeger.version>1.1.0</jaeger.version>
     <jaxrs.version>2.1.6</jaxrs.version>
     <jersey.version>2.29</jersey.version>
     <javax.activation.version>1.2.0</javax.activation.version>
+    <jib.version>2.3.0</jib.version>
+    <jib.goal>dockerBuild</jib.goal>
     <netty.version>4.1.42.Final</netty.version>
     <opentracing.jdbc.version>0.2.10</opentracing.jdbc.version>
 
@@ -57,6 +61,12 @@
     <dependency>
       <groupId>${coherence.group.id}</groupId>
       <artifactId>coherence-management</artifactId>
+      <version>${coherence.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>${coherence.group.id}</groupId>
+      <artifactId>coherence-metrics</artifactId>
       <version>${coherence.version}</version>
     </dependency>
 
@@ -506,96 +516,52 @@
       <activation>
         <activeByDefault>false</activeByDefault>
         <property>
-          <name>project.docker</name>
+          <name>docker</name>
         </property>
       </activation>
       
       <build>
         <plugins>
-          <!-- make a jar with specific artifacts not found in Coherence docker image -->
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>${maven.shade.plugin.version}</version>
+            <groupId>com.google.cloud.tools</groupId>
+            <artifactId>jib-maven-plugin</artifactId>
+            <version>${jib.version}</version>
+            <configuration>
+              <from>
+                <image>gcr.io/distroless/java@sha256:f59b26c5ecc735514a38afbf845214383c4e2ba1fdd15a76225339b8ab7da8ef</image>
+              </from>
+              <to>
+                <image>${project.artifactId}</image>
+                <tags>
+                  <tag>${docker.version}</tag>
+                </tags>
+              </to>
+              <container>
+                <!-- good defaults intended for containers -->
+                <jvmFlags>
+                  <jmxFlag>-server</jmxFlag>
+                  <jmxFlag>-Djava.awt.headless=true</jmxFlag>
+                  <jmxFlag>-XX:+UnlockExperimentalVMOptions</jmxFlag>
+                  <jmxFlag>-XX:+UseCGroupMemoryLimitForHeap</jmxFlag>
+                  <jmxFlag>-XX:InitialRAMFraction=2</jmxFlag>
+                  <jmxFlag>-XX:MinRAMFraction=2</jmxFlag>
+                  <jmxFlag>-XX:MaxRAMFraction=2</jmxFlag>
+                  <jmxFlag>-XX:+UseG1GC</jmxFlag>
+                </jvmFlags>
+                <mainClass>com.tangosol.net.DefaultCacheServer</mainClass>
+                <ports>
+                  <port>8080</port>
+                </ports>
+                <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+              </container>
+              <containerizingMode>packaged</containerizingMode>
+            </configuration>
             <executions>
               <execution>
-                <phase>package</phase>
                 <goals>
-                  <goal>shade</goal>
+                  <goal>${jib.goal}</goal>
                 </goals>
-                <configuration>
-                  <artifactSet>
-                    <excludes>
-                      <exclude>com.oracle.coherence:coherence:*</exclude>
-                    </excludes>
-                  </artifactSet>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!-- create docker directory -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>docker</id>
                 <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-                <configuration>
-                  <finalName>docker</finalName>
-                  <appendAssemblyId>false</appendAssemblyId>
-                  <descriptors>
-                    <descriptor>src/assembly/image-assembly.xml</descriptor>
-                  </descriptors>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!-- build docker image -->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>${maven.exec.plugin.version}</version>
-            <executions>
-              <execution>
-                <id>build-utils-docker-image</id>
-                <phase>package</phase>
-                <configuration>
-                  <executable>docker</executable>
-                  <workingDirectory>${project.build.directory}/docker
-                  </workingDirectory>
-                  <arguments>
-                    <argument>build</argument>
-                    <argument>-t</argument>
-                    <argument>${project.artifactId}-sidecar:${project.version}</argument>
-                    <argument>.</argument>
-                  </arguments>
-                </configuration>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>docker-tag</id>
-                <phase>package</phase>
-                <configuration>
-                  <executable>docker</executable>
-                  <workingDirectory>${project.build.directory}/docker
-                  </workingDirectory>
-                  <arguments>
-                    <argument>tag</argument>
-                    <argument>${project.artifactId}-sidecar:${project.version}</argument>
-                    <argument>${project.artifactId}-sidecar:latest</argument>
-                  </arguments>
-                </configuration>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
               </execution>
             </executions>
           </plugin>

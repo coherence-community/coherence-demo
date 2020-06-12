@@ -6,9 +6,7 @@ You have also configured <strong>Federation</strong>, so you must use the follow
 <strong>Primary</strong><p>
 To scale the number of replicas to 2, update the primary-cluster.yaml used to create the cluster and change the replicas to 2 under the storage role:
 <pre>
-    roles:
-       - role: storage
-         replicas: 2
+  replicas: 2
 </pre>
 Then apply this change using
 <pre>
@@ -17,9 +15,7 @@ $ kubectl apply --namespace coherence-demo-ns -f primary-cluster.yaml
 <p><strong>Secondary</strong><p>
     To scale the number of replicas to 2, update the secondary-cluster.yaml used to create the cluster and change the replicas to 2 under the storage role:
 <pre>
-    roles:
-       - role: storage
-         replicas: 2
+  replicas: 2
 </pre>
 Then apply this change using
 <pre>
