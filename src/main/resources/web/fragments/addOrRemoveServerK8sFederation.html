@@ -21,3 +21,7 @@ Then apply this change using
 <pre>
 $ kubectl apply --namespace coherence-demo-ns -f yaml/secondary-cluster.yaml
 </pre>
+You can also scale the stateful set using the following for the primary-cluster.
+<pre>
+$ kubectl  scale statefulset --namespace coherence-demo-ns primary-cluster-storage --replicas=6
+</pre>
