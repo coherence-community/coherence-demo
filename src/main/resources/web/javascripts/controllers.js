@@ -630,7 +630,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "content": "fragments/addServer.html"
        };
         self.insightContent['serverStarted'] = {
-           "header":  "Additional Server Started",
+           "header":  "Additional Server(s) Started",
            "content": "fragments/serverStarted.html"
        };
        self.insightContent['serverStopped'] = {
