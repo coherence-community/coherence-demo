@@ -94,6 +94,9 @@ public class DeveloperResource
         mapEnv.put("coherenceEditionFull",      ("CE".equals(edition) ? "Community" : "Grid") + " Edition");
         mapEnv.put("javaVersion",               System.getProperty("java.version") + " " +
                                                 System.getProperty("java.vendor"));
+        // properties for limiting resource usage
+        mapEnv.put("maxServers",                System.getProperty("max.servers", "1000"));
+        mapEnv.put("maxCacheEntries",           System.getProperty("max.cache.entries", "99999999999"));
 
         return Response.status(Response.Status.OK).entity(mapEnv).build();
     }

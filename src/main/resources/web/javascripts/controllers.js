@@ -138,6 +138,9 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.thisClusterName           = undefined;
     self.lastMemberCount           = undefined;
     self.runningMode               = "";
+    self.maxServers                = 0;
+    self.maxCacheEntries           = 0;
+    self.disableVisualVM           = false;
 
     self.displayingSplash = false;
 
@@ -167,6 +170,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.coherenceEditionFull      = response.data.coherenceEditionFull;
         self.javaVersion               = response.data.javaVersion;
         self.isMetricsEnabled          = response.data.metricsEnabled;
+        self.maxServers                = response.data.maxServers;
+        self.maxCacheEntries           = response.data.maxCacheEntries;
 
         self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
         
@@ -498,12 +503,17 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         }
         else {
             var serverCount = parseInt(prompt('Enter the number of servers to start', '1')); 
-            if (isNaN(serverCount) == false) { 
-                self.startingMember = true;
-                $http.get('/service/start-member/' + serverCount).then(function(response) {
-                    self.startingMember = false;
-                    self.displayInsightIfEnabled('serverStarted');
-                });
+            if (isNaN(serverCount) === false) { 
+                if (self.memberInfo.length + serverCount > self.maxServers) {
+                    alert("This value would exceed the maximum number of servers allowed of " + self.maxServers);
+                }
+                else {
+                    self.startingMember = true;
+                    $http.get('/service/start-member/' + serverCount).then(function(response) {
+                        self.startingMember = false;
+                        self.displayInsightIfEnabled('serverStarted');
+                    });
+                }
             }
         }
     };
@@ -909,12 +919,17 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     self.addTrades = function() { 
         var val = parseInt(prompt('Enter the number of random trades to add', '1000')); 
-        if (isNaN(val) == false) { 
-            self.displayNotification('Adding ' + val + ' trades...', 'info', false);
-            $http.get('/service/developer/insert/' + val) .then( function(response) {
-                self.displayNotification('Operation completed','success', true);
-                self.displayInsightIfEnabled('addTrades');
-            });
+        if (isNaN(val) === false) { 
+            if (self.positions + val > self.maxCacheEntries) {
+                alert("This value would exceed the maximum number of cache entries allowed of " + self.maxCacheEntries);
+            }
+            else {
+                self.displayNotification('Adding ' + val + ' trades...', 'info', false);
+                $http.get('/service/developer/insert/' + val) .then( function(response) {
+                    self.displayNotification('Operation completed','success', true);
+                    self.displayInsightIfEnabled('addTrades');
+                });
+            }
          } 
     };
 
