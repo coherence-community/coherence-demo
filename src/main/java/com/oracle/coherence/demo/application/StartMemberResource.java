@@ -1,7 +1,7 @@
 /*
  * File: StartMemberResource.java
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -19,11 +19,8 @@
 package com.oracle.coherence.demo.application;
 
 import com.oracle.bedrock.deferred.DeferredHelper;
-
 import com.oracle.bedrock.runtime.LocalPlatform;
-
 import com.oracle.bedrock.runtime.coherence.CoherenceCacheServer;
-
 import com.oracle.bedrock.runtime.coherence.options.CacheConfig;
 import com.oracle.bedrock.runtime.coherence.options.ClusterName;
 import com.oracle.bedrock.runtime.coherence.options.ClusterPort;
