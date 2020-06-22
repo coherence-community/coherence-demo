@@ -140,7 +140,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.runningMode               = "";
     self.maxServers                = 0;
     self.maxCacheEntries           = 0;
-    self.disableVisualVM           = false;
+    self.disableShutdown           = false;
 
     self.displayingSplash = false;
 
@@ -172,6 +172,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.isMetricsEnabled          = response.data.metricsEnabled;
         self.maxServers                = response.data.maxServers;
         self.maxCacheEntries           = response.data.maxCacheEntries;
+        self.disableShutdown           = response.data.disableShutdown;
 
         self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
         
@@ -865,7 +866,11 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.displayNotification('Clearing all trades...', 'info', false);
         }
         else if (command === 'shutdown') {
-            if (self.isRunningInKubernetes === true) {
+            if (self.disableShutdown) {
+                alert("You are not able to shutdown this demonstration application");
+                return;
+            }
+            else if (self.isRunningInKubernetes === true) {
                 self.displayInsight(self.federationConfiguredInK8s ? 'shutdownFederationInK8s' : 'shutdown');
                 return;
             }
