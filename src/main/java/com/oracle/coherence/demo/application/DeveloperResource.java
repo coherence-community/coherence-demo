@@ -209,7 +209,17 @@ public class DeveloperResource
                 break;
 
             case "hostname" :
-                response = System.getProperty("http.hostname", "127.0.0.1");
+                String lbrHostname = System.getProperty("lbr.hostname");
+                // check for an overriding load balancer hostname first
+                if (lbrHostname != null)
+                {
+                    response = lbrHostname;
+                }
+                else
+                {
+                    response = System.getProperty("http.hostname", "127.0.0.1");
+                }
+
                 break;
 
             case "clusterNames" :
