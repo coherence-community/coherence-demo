@@ -1,5 +1,5 @@
 /*
- * File: GetMemberInfo.java
+ * File: JpaCacheStore.java
  *
  * Copyright (c) 2020 Oracle and/or its affiliates.
  *
