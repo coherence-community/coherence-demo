@@ -1,7 +1,7 @@
 /*
  * File: PersistenceHelper.java
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -18,11 +18,8 @@
 
 package com.oracle.coherence.demo.application;
 
-import com.oracle.common.base.Blocking;
-
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
-
 import com.tangosol.net.management.MBeanServerProxy;
 import com.tangosol.net.management.Registry;
 
@@ -221,7 +218,7 @@ public class PersistenceHelper
 
             while (true)
             {
-                Blocking.sleep(SLEEP_TIME);
+                Base.sleep(SLEEP_TIME);
 
                 if ((boolean) getAttribute(beanName, "Idle"))
                 {
@@ -278,7 +275,7 @@ public class PersistenceHelper
 
         while (!registry.getMBeanServerProxy().isMBeanRegistered(beanName))
         {
-            Blocking.sleep(100L);
+            Base.sleep(100L);
 
             if (--nMaxRetries == 0)
             {

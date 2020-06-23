@@ -1,7 +1,7 @@
 /*
  * File: controllers.js
  *
- * Copyright (c) 2019 Oracle and/or its affiliates.
+ * Copyright (c) 2019, 2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -79,7 +79,6 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     // application constants
     self.MAXIMUM_AGGREGATION_TICKS = 20;
-    self.MAXIMUM_SERVERS           = 5;
     self.START_FEDERATION          = 'Start';
     self.STOP_FEDERATION           = 'Stop';
     self.SUSPEND_FEDERATION        = 'Pause';
@@ -128,13 +127,20 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.insightEnabled            = true;
     self.insightContent            = [];
     self.isRunningInKubernetes     = false;
+    self.coherenceEdition          = undefined;
+    self.coherenceEditionFull      = undefined;
     self.isThisPrimaryCluster      = false;
     self.federationConfiguredInK8s = false;
+    self.isMetricsEnabled          = false;
     self.coherenceVersion          = undefined;
+    self.javaVersion               = undefined;
     self.coherenceVersionAsInt     = 0;
     self.thisClusterName           = undefined;
     self.lastMemberCount           = undefined;
     self.runningMode               = "";
+    self.maxServers                = 0;
+    self.maxCacheEntries           = 0;
+    self.disableShutdown           = false;
 
     self.displayingSplash = false;
 
@@ -160,6 +166,13 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.isThisPrimaryCluster      = response.data.primaryCluster;
         self.federationConfiguredInK8s = response.data.federationConfiguredInK8s;
         self.thisClusterName           = response.data.thisClusterName;
+        self.coherenceEdition          = response.data.coherenceEdition;
+        self.coherenceEditionFull      = response.data.coherenceEditionFull;
+        self.javaVersion               = response.data.javaVersion;
+        self.isMetricsEnabled          = response.data.metricsEnabled;
+        self.maxServers                = response.data.maxServers;
+        self.maxCacheEntries           = response.data.maxCacheEntries;
+        self.disableShutdown           = response.data.disableShutdown;
 
         self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
         
@@ -188,7 +201,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.secondaryClusterName = clusterNames[1];
 
             // display welcome insight (on primary cluster only)
-            if (self.clusterName != self.secondaryClusterName && !insightCookies.skipSplash) {
+            if (self.clusterName !== self.secondaryClusterName && !insightCookies.skipSplash) {
                  self.displayInsight('welcome');
             }
         });
@@ -253,10 +266,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
             var chartData = response.data;
 
-            // sort the symbols returned by Coherence
-            var sortedSymbolNames = chartData.symbols.sort();
-
-            self.symbolNames = sortedSymbolNames;
+            self.symbolNames = chartData.symbols.sort();;
             self.symbolsChartData = [];
             self.symbolFrequency = {};
             self.symbolCount = {};
@@ -295,8 +305,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             });
 
             // check to see if the valuation went up or down
-            self.valuationDirection = valuationTotal == self.valuation ? 'N/A' :
-                                      valuationTotal >  self.valuation ? 'up'  : 'down';
+            self.valuationDirection = valuationTotal === self.valuation ? 'N/A' :
+                                      valuationTotal >   self.valuation ? 'up'  : 'down';
 
             self.valuationStyle = 'color: ' +
                 (self.valuationDirection === 'N/A' ? "'black'" :
@@ -321,7 +331,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             var currentMemberCount = (self.memberInfo.length !== undefined ? self.memberInfo.length : 0);
 
             // check to see if member count has changed
-            if (self.lastMemberCount !== undefined && self.lastMemberCount != currentMemberCount) {
+            if (self.lastMemberCount !== undefined && self.lastMemberCount !== currentMemberCount) {
                 self.displayNotification('Member count changed from ' + self.lastMemberCount + ' to ' + currentMemberCount,'info', true);
             }
             self.lastMemberCount = currentMemberCount;
@@ -447,6 +457,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             "role":         "",
             "tracingRatio": -1.0
         };
+        var message;
 
         if (self.selectedOption.endsWith("even")) {
             postData.role = "CoherenceDemoServerEven"
@@ -456,14 +467,19 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
         if (self.selectedOption.startsWith("enable")) {
             postData.tracingRatio = 1.0;
+            message = "Tracing enabled";
+        }
+        else {
+            message = "Tracing disabled";
         }
 
         $http.post(encodeURI('/management/coherence/cluster/configureTracing/'), postData).then(
             function () {
                 $('#tracingModal').modal('hide');
+                self.displayNotification(message, 'success', true);
                 self.selectedOption = null;
             });
-    }
+    };
 
     self.configureTracing = function() {
         self.modalContent = $sce.trustAsHtml('<p>Loading...</p>');
@@ -478,7 +494,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
           $("#tracingModal").modal();
         };
         xhr.send();
-    }
+    };
 
     // ---- the function to start a new cluster member ----
 
@@ -487,11 +503,19 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.displayInsight(self.federationConfiguredInK8s ? "addOrRemoveServerK8sFederation" : "addOrRemoveServerK8s");
         }
         else {
-            self.startingMember = true;
-            $http.get('/service/start-member').then(function(response) {
-                self.startingMember = false;
-                self.displayInsightIfEnabled('serverStarted');
-            });
+            var serverCount = parseInt(prompt('Enter the number of servers to start', '1')); 
+            if (isNaN(serverCount) === false) { 
+                if (self.memberInfo.length + serverCount > self.maxServers) {
+                    alert("This value would exceed the maximum number of servers allowed of " + self.maxServers);
+                }
+                else {
+                    self.startingMember = true;
+                    $http.get('/service/start-member/' + serverCount).then(function(response) {
+                        self.startingMember = false;
+                        self.displayInsightIfEnabled('serverStarted');
+                    });
+                }
+            }
         }
     };
 
@@ -524,14 +548,25 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     // ---- the function to control secondary cluster ----
 
     self.toggleSecondary = function() {
-       if (self.federationControlLabel == self.START_FEDERATION) {
-            self.startSecondary();
-       }
-       else {
-           if ($window.confirm('Are you sure you want to stop Federation?')) {
-               self.stopSecondary();
-           }
-       }
+        if (self.coherenceEdition === "CE") {
+            self.displayInsight("commercial");
+        }
+        else {
+            if (self.federationControlLabel === self.START_FEDERATION) {
+                 self.startSecondary();
+            }
+            else {
+                if ($window.confirm('Are you sure you want to stop Federation?')) {
+                    self.stopSecondary();
+                }
+            }
+        }
+    };
+
+    // ---- the function to show about information ----
+
+    self.about = function() {
+        $("#aboutModal").modal();
     };
 
     // ---- the function to toggle insight mode ----
@@ -595,7 +630,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "content": "fragments/addServer.html"
        };
         self.insightContent['serverStarted'] = {
-           "header":  "Additional Server Started",
+           "header":  "Additional Server(s) Started",
            "content": "fragments/serverStarted.html"
        };
        self.insightContent['serverStopped'] = {
@@ -694,6 +729,10 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "header":  "Coherence Demonstration Shutdown",
            "content": "fragments/demoShutdown.html"
        };
+       self.insightContent['commercial'] = {
+           "header":  "Feature Requires Coherence Grid Edition",
+           "content": "fragments/commercial.html"
+       };
     };
 
     // ---- the function to close the splash screen
@@ -784,6 +823,16 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         });
     };
 
+    // ---- the function to show the raw metrics
+
+    self.openMetrics = function() {
+        // get the hostname from the server so that if we specify -Dhttp.hostname
+        // to be something other than 127.0.0.1 the secondary cluster URL will work.
+        $http.get('/service/developer/hostname').then(function(response) {
+            $window.open($location.protocol() + '://' + response.data + ':9612/metrics');
+        });
+    };
+
     // ---- the function to carry out federation operations ----
 
     self.federationOperation = function(operation) {
@@ -817,7 +866,11 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.displayNotification('Clearing all trades...', 'info', false);
         }
         else if (command === 'shutdown') {
-            if (self.isRunningInKubernetes === true) {
+            if (self.disableShutdown) {
+                alert("You are not able to shutdown this demonstration application");
+                return;
+            }
+            else if (self.isRunningInKubernetes === true) {
                 self.displayInsight(self.federationConfiguredInK8s ? 'shutdownFederationInK8s' : 'shutdown');
                 return;
             }
@@ -871,12 +924,17 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     self.addTrades = function() { 
         var val = parseInt(prompt('Enter the number of random trades to add', '1000')); 
-        if (isNaN(val) == false) { 
-            self.displayNotification('Adding ' + val + ' trades...', 'info', false);
-            $http.get('/service/developer/insert/' + val) .then( function(response) {
-                self.displayNotification('Operation completed','success', true);
-                self.displayInsightIfEnabled('addTrades');
-            });
+        if (isNaN(val) === false) { 
+            if (self.positions + val > self.maxCacheEntries) {
+                alert("This value would exceed the maximum number of cache entries allowed of " + self.maxCacheEntries);
+            }
+            else {
+                self.displayNotification('Adding ' + val + ' trades...', 'info', false);
+                $http.get('/service/developer/insert/' + val) .then( function(response) {
+                    self.displayNotification('Operation completed','success', true);
+                    self.displayInsightIfEnabled('addTrades');
+                });
+            }
          } 
     };
 

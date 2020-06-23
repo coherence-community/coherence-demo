@@ -1,0 +1,67 @@
+apiVersion: coherence.oracle.com/v1
+kind: Coherence
+metadata:
+  name: primary-cluster-storage
+spec:
+  cluster: primary-cluster
+  role: storage
+  jvm:
+    memory:
+      heapSize: 512m
+    args:
+      - "-Dwith.http=false"
+      - "-Dprimary.cluster=primary-cluster"
+      - "-Dprimary.cluster.port=40000"
+      - "-Dprimary.cluster.host=primary-cluster-storage-wka"
+      - "-Dsecondary.cluster=secondary-cluster"
+      - "-Dsecondary.cluster.port=40000"
+      - "-Dsecondary.cluster.host=secondary-cluster-storage-wka"
+      - "-Dcoherence.metrics.legacy.names=false"
+  ports:
+    - name: federation
+      port: 40000
+    - name: metrics
+      port: 9612
+      serviceMonitor:
+        enabled: true
+  coherence:
+    cacheConfig: cache-config.xml
+    metrics:
+      enabled: true
+      port: 9612
+  image: coherence-demo:4.0.0-SNAPSHOT
+  imagePullPolicy: Always
+  replicas: 9
+---
+apiVersion: coherence.oracle.com/v1
+kind: Coherence
+metadata:
+  name: primary-cluster-http
+spec:
+  cluster: primary-cluster
+  role: http
+  jvm:
+    memory:
+      heapSize: 512m
+    args:
+      - "-Dprimary.cluster=primary-cluster"
+      - "-Dprimary.cluster.host=primary-cluster-storage-wka"
+      - "-Dsecondary.cluster=secondary-cluster"
+      - "-Dsecondary.cluster.host=secondary-cluster-storage-wka"
+      - "-Dcoherence.metrics.legacy.names=false"
+  ports:
+    - name: http
+      port: 8080
+    - name: metrics
+      port: 9612
+      serviceMonitor:
+        enabled: true
+  coherence:
+    cacheConfig: cache-config.xml
+    storageEnabled: false
+    metrics:
+      enabled: true
+      port: 9612
+  image: coherence-demo:4.0.0-SNAPSHOT
+  imagePullPolicy: Always
+  replicas: 1

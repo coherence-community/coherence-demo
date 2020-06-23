@@ -1,7 +1,7 @@
 /*
  * File: StartSecondaryResource.java
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -30,6 +30,7 @@ import com.oracle.bedrock.runtime.coherence.options.ClusterName;
 import com.oracle.bedrock.runtime.coherence.options.ClusterPort;
 import com.oracle.bedrock.runtime.coherence.options.Logging;
 
+import com.oracle.bedrock.runtime.coherence.options.RoleName;
 import com.oracle.bedrock.runtime.console.NullApplicationConsole;
 import com.oracle.bedrock.runtime.console.SystemApplicationConsole;
 
@@ -104,6 +105,9 @@ public class StartSecondaryResource
                                     SystemProperty.of("http.port", uriInfo.getBaseUri().getPort() + 1),
                                     SystemProperty.of("http.hostname", System.getProperty("http.hostname",
                                                                                           "127.0.0.1")),
+                                    SystemProperty.of("lbr.hostname", System.getProperty("lbr.hostname")),
+                                    SystemProperty.of("max.servers", System.getProperty("max.servers")),
+                                    SystemProperty.of("max.cache.entries", System.getProperty("max.cache.entries")),
                                     SystemProperty.of("coherence.distribution.2server", "false"),
                                     SystemProperty.of("coherence.tracing.ratio", 1.0),
                                     SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
@@ -112,6 +116,7 @@ public class StartSecondaryResource
                                                       System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
                                                                          Launcher.DEFAULT_JAEGER_ENDPOINT)),
                                     Logging.at(0),
+                                    RoleName.of("CoherenceDemoServer-" + secondaryName),
                                     ClusterPort.of(Launcher.SECONDARY_PORT),
                                     ClusterName.of(secondaryName),
                                     SystemProperty.of("with.data", "false"),

@@ -2,7 +2,7 @@
  *
  * File: index.html
  *
- * Copyright (c) 2019 Oracle and/or its affiliates.
+ * Copyright (c) 2019,2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -140,6 +140,7 @@
                         <li><a href="#" ng-click="startDeveloper('clear')"><i class="fa fa-remove fa-fw"></i> Clear Cache</a></li>
                         <li><a href="#" ng-click="startDeveloper('populate')"><i class="fa fa-repeat fa-fw"></i> Populate Cache</a></li>
                         <li><a href="#" ng-click="addTrades()"><i class="fa fa-plus fa-fw"></i> Add Trades</a></li>
+                        <li><a href="#" ng-click="openMetrics()" ng-show="isMetricsEnabled && !isRunningInKubernetes"><i class="fa fa-medkit fa-fw"></i> Show Raw Metrics</a></li>
                         <li class="divider"></li>
                         <li>
                             <a href="#" ng-click="configureTracing()"><i class="fa fa-eye fa-fw"></i> Configure Tracing</a>
@@ -151,6 +152,10 @@
                         <li class="divider"  ng-show="clusterName != secondaryClusterName"></li>
                         <li><a href="#" ng-click="toggleInsightMode()"  ng-show="clusterName != secondaryClusterName">
                             <i class="fa fa-info fa-fw"></i>{{ insightLabel }}</a>
+                        </li>
+                        <li class="divider"  ng-show="clusterName != secondaryClusterName"></li>
+                        <li><a href="#" ng-click="about()"  ng-show="clusterName != secondaryClusterName">
+                            <i class="fa fa-question fa-fw"></i>About</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -196,6 +201,42 @@
                                 ng-model="selectedOption"
                                 ng-options="x for (x, y) in tracingOptions()">
                         </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="aboutModal" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">About the Coherence Demonstration</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <strong>Coherence Edition:</strong> {{coherenceEdition}} ({{coherenceEditionFull}})
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Coherence Version:</strong> {{coherenceVersion}}
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Cluster Name:</strong> {{thisClusterName}}
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Running in Kubernetes:</strong> {{isRunningInKubernetes}}
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Metrics Enabled:</strong> {{isMetricsEnabled}}
+                            </div>
+                            <div class="col-lg-7">
+                                <strong>Java Version:</strong> {{javaVersion}}
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -351,12 +392,12 @@
                             <span>Cluster Management {{ clusterName }}
                             </span>
                             <div class="pull-right">
-                                <span ng-show="MAXIMUM_SERVERS - memberInfo.length > 0 && !startingMember" >
-                                    <button class="btn btn-xs btn-default" ng-click="startMember()">Add Server</button>
+                                <span ng-show="!startingMember" >
+                                    <button class="btn btn-xs btn-default" ng-click="startMember()">Add Servers</button>
                                     <insight ng-click="displayInsightK8sAware('addServer')" ng-show="insightEnabled"/>
                                 </span>
 
-                                <span ng-show="startingMember">Starting Server <img src="images/spinner.gif"/>
+                                <span ng-show="startingMember">Starting Servers <img src="images/spinner.gif"/>
                                 </span>
                             </div>
                         </div>
@@ -394,7 +435,7 @@
                                             <td align="right">{{ member.tracingEnabled ? 'ENABLED' : 'DISABLED'}}</td>
                                             <td align="right">{{ member.totalMemory - member.freeMemory | memory }}</td>
                                         </tr>
-                                        <tr><td colspan="4">&nbsp;</td></tr>
+                                        <tr><td colspan="5">&nbsp;</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -410,7 +451,7 @@
 
         <hr>
         <div class="col-lg-12">
-            <p>© 2019 Oracle Corporation. All Rights Reserved.
+            <p>© 2020 Oracle Corporation. All Rights Reserved.
             <img class="pull-right" src="images/oracle.png">
         </div>
 

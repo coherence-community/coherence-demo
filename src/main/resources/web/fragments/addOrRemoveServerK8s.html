@@ -4,15 +4,17 @@ to scale the application rather than specifically adding or removing members.
 <br/>
 To scale the number of replicas to 2, update the primary-cluster.yaml used to create the cluster and change the replicas to 2 under the storage role:
 <pre>
-    roles:
-       - role: storage
-         replicas: 2
+  replicas: 2
 </pre>
 Then apply this change using
 <pre>
-$ kubectl apply --namespace coherence-demo-ns -f primary-cluster.yaml
+$ kubectl apply --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
 </pre>
 <p>
+You can also scale the stateful set using
+<pre>
+$ kubectl  scale statefulset --namespace coherence-demo-ns primary-cluster-storage --replicas=6
+</pre>
 <p>
 You can use <strong>kubectl get pods</strong> to view the status of the apply command and the number of replicas.
 <p>

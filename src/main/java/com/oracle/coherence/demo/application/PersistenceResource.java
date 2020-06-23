@@ -1,7 +1,7 @@
 /*
  * File: PersistenceResource.java
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -20,7 +20,6 @@ package com.oracle.coherence.demo.application;
 
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
-
 import com.tangosol.net.management.Registry;
 
 import javax.ws.rs.GET;
@@ -54,9 +53,10 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 public class PersistenceResource
 {
     /**
-     * Name of the service we are using.
+     * Name of the federated service we are using.
      */
-    private static final String SERVICE_NAME = "FederatedCache";
+    private static final String SERVICE_NAME = CacheFactory.getEdition().equals("CE") ? "DistributedCache" : "FederatedCache";
+
 
     /**
      * Name of the snapshot to create.

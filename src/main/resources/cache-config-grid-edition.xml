@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
- * File: cache-config.xml
+ * File: cache-config-grid-edition.xml
  *
  * Copyright (c) 2020 Oracle and/or its affiliates.
  *
@@ -18,6 +18,9 @@
  * under the License.
 -->
 
+<!--
+  Grid Edition version of the cache config which includes Federation.
+-->
 <cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
               xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd">
@@ -48,21 +51,21 @@
     <caching-scheme-mapping>
         <cache-mapping>
             <cache-name>Trade</cache-name>
-            <scheme-name>distributed-scheme</scheme-name>
+            <scheme-name>federated-scheme</scheme-name>
             <key-type>java.lang.String</key-type>
             <value-type>com.oracle.coherence.demo.model.Trade</value-type>
         </cache-mapping>
         <cache-mapping>
             <cache-name>Price</cache-name>
-            <scheme-name>distributed-scheme</scheme-name>
+            <scheme-name>federated-scheme</scheme-name>
             <key-type>java.lang.String</key-type>
             <value-type>com.oracle.coherence.demo.model.Price</value-type>
         </cache-mapping>
     </caching-scheme-mapping>
 
     <caching-schemes>
-        <distributed-scheme>
-            <scheme-name>distributed-scheme</scheme-name>
+        <federated-scheme>
+            <scheme-name>federated-scheme</scheme-name>
             <backing-map-scheme>
                 <read-write-backing-map-scheme>
                     <internal-cache-scheme>
@@ -101,7 +104,18 @@
                 </read-write-backing-map-scheme>
             </backing-map-scheme>
             <autostart>true</autostart>
-        </distributed-scheme>
+            <address-provider>
+                <local-address>
+                    <address system-property="coherence.extend.address"></address>
+                    <port system-property="coherence.federation.port">40000</port>
+                </local-address>
+            </address-provider>
+            <topologies>
+                <topology>
+                    <name>Active</name>
+                </topology>
+            </topologies>
+        </federated-scheme>
 
         <invocation-scheme>
             <service-name>InvocationService</service-name>

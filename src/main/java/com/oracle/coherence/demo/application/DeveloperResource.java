@@ -1,7 +1,7 @@
 /*
  * File: DeveloperResource.java
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -80,14 +80,24 @@ public class DeveloperResource
     {
         Map<String, Object> mapEnv =  new HashMap<>();
 
-        String sClusterName = CacheFactory.ensureCluster().getClusterName();
+        String clusterName = CacheFactory.ensureCluster().getClusterName();
+        String edition     = CacheFactory.getEdition();
 
         mapEnv.put("runningInKubernetes",       Utilities.isRunningInKubernetes());
+        mapEnv.put("metricsEnabled",            Utilities.isMetricsEnabled());
         mapEnv.put("coherenceVersion",          Utilities.getCoherenceVersion());
         mapEnv.put("coherenceVersionAsInt",     Utilities.getCoherenceVersionAsInt());
-        mapEnv.put("primaryCluster",            sClusterName.equals(PRIMARY_CLUSTER));
+        mapEnv.put("primaryCluster",            clusterName.equals(PRIMARY_CLUSTER));
         mapEnv.put("federationConfiguredInK8s", Utilities.isFederationConfiguredInK8s());
-        mapEnv.put("thisClusterName",           sClusterName);
+        mapEnv.put("thisClusterName",           clusterName);
+        mapEnv.put("coherenceEdition",          edition);
+        mapEnv.put("coherenceEditionFull",      ("CE".equals(edition) ? "Community" : "Grid") + " Edition");
+        mapEnv.put("javaVersion",               System.getProperty("java.version") + " " +
+                                                System.getProperty("java.vendor"));
+        // properties for limiting resource usage
+        mapEnv.put("maxServers",                System.getProperty("max.servers", "1000"));
+        mapEnv.put("maxCacheEntries",           System.getProperty("max.cache.entries", "99999999999"));
+        mapEnv.put("disableShutdown",           System.getProperty("disable.shutdown", "false"));
 
         return Response.status(Response.Status.OK).entity(mapEnv).build();
     }
@@ -200,7 +210,17 @@ public class DeveloperResource
                 break;
 
             case "hostname" :
-                response = System.getProperty("http.hostname", "127.0.0.1");
+                String lbrHostname = System.getProperty("lbr.hostname");
+                // check for an overriding load balancer hostname first
+                if (lbrHostname != null)
+                {
+                    response = lbrHostname;
+                }
+                else
+                {
+                    response = System.getProperty("http.hostname", "127.0.0.1");
+                }
+
                 break;
 
             case "clusterNames" :

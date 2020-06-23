@@ -1,7 +1,7 @@
 /*
  * File: BootstrapInterceptor.java
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -19,9 +19,7 @@
 package com.oracle.coherence.demo.application;
 
 import com.tangosol.net.CacheFactory;
-
 import com.tangosol.net.events.EventInterceptor;
-
 import com.tangosol.net.events.application.LifecycleEvent;
 
 import java.awt.Desktop;
@@ -58,10 +56,10 @@ public class BootstrapInterceptor implements EventInterceptor<LifecycleEvent>
                 String sURL  = "http://" + (sHost == null ? "127.0.0.1" : sHost) + ':'
                                + (sPort == null ? "8080" : sPort) + "/application/index.html";
 
-                // open the default web browser to start the front-end
+                // open the default web browser to start the front-end if we are not running in k8s
                 try
                 {
-                    if (Desktop.isDesktopSupported())
+                    if (!Utilities.isRunningInKubernetes() && Desktop.isDesktopSupported())
                     {
                         Desktop.getDesktop().browse(new URI(sURL));
                     }

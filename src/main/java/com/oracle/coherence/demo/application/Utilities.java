@@ -1,7 +1,7 @@
 /*
  * File: Utilities.java
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -36,6 +36,7 @@ import io.opentracing.tag.Tags;
 
 import io.opentracing.util.GlobalTracer;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -169,6 +170,23 @@ public final class Utilities
         return System.getenv("KUBERNETES_SERVICE_HOST") != null &&
                System.getenv("KUBERNETES_SERVICE_PORT") != null;
     }
+
+    /**
+     * Obtain an indicator showing if we have enabled metrics.
+     *
+     * @return an indicator showing if we have enabled metrics
+     */
+    public static boolean isMetricsEnabled()
+    {
+        Enumeration serviceNames = CacheFactory.ensureCluster().getServiceNames();
+        while (serviceNames.hasMoreElements()) {
+            if (serviceNames.nextElement().equals("MetricsHttpProxy")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
     /**

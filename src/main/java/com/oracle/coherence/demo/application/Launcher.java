@@ -1,7 +1,7 @@
 /*
  * File: Launcher.java
  *
- * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -138,6 +138,7 @@ public final class Launcher
 
         MAP_ZONES.put("US/Central", new Pair<>("Chicago", "New York"));
         MAP_ZONES.put("US/Eastern", new Pair<>("Boston", "London"));
+        MAP_ZONES.put("UTC", new Pair<>("Boston", "London"));
 
         MAP_ZONES.put("Europe/London", new Pair<>("London", "New York"));
         MAP_ZONES.put("Europe/Moscow", new Pair<>("Moscow", "London"));
@@ -218,7 +219,7 @@ public final class Launcher
         String zone   = ZoneId.systemDefault().toString();
         Locale locale = Locale.getDefault();
 
-        System.out.println("*** Locale: " + locale + ", Country=" + locale.getCountry() + ", Lang="
+        System.out.println("*** Locale: " + locale + ", Country=" + locale.getCountry() + ", Language="
                            + locale.getLanguage() + ", Zone: " + zone);
 
         // try direct matches first
