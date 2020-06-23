@@ -38,6 +38,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
   * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
   * [Enable Federation on Kubernetes (Grid Edition Only)](#enable-federation-on-kubernetes-grid-edition-only)
   * [Run the Demonstration using Coherence Grid Edition](#run-the-demonstration-using-coherence-grid-edition)
+  * [View Cluster Metrics via Grafana](#view-cluster-metrics-via-grafana)
   * [References](#references)
 
 ## Prerequisites
@@ -205,11 +206,7 @@ The steps to run the application on Kubernetes comprises the following:
    Install the operator using `helm`:
 
    ```bash
-   helm install \
-      --namespace coherence-demo-ns --version 3.0.0 \
-      --set imagePullSecrets[0].name=coherence-demo-secret \
-      --name coherence-operator \
-      coherence/coherence-operator
+   helm install --namespace coherence-demo-ns --name coherence-operator coherence/coherence-operator
    ```
    Confirm the creation of the chart:
 
@@ -223,8 +220,7 @@ The steps to run the application on Kubernetes comprises the following:
    
    NAME                                 READY   STATUS    RESTARTS   AGE
    coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          2m12s
-   ```                             
-   
+   ```
   
 1. **Install the Coherence Cluster**
 
@@ -489,6 +485,11 @@ mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
             
 > **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
 
+## View Cluster Metrics via Grafana
+
+If you wish to view metrics via Grafana, please carry out the steps 
+[here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#view-cluster-metrics-via-grafana) 
+before you install any of the examples above.
 
 ## References
 
