@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes how to build and run the Coherence Demonstration application. 
+This document describes how to build and run the Coherence Demonstration application.
 The application showcases Coherence general features, scalability capabilities including:
 
 * Clustering and Data Sharding
@@ -20,9 +20,9 @@ When you run the application locally, it results in a single self-contained JAR,
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
 > Note: This demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) and
-> as a consequence the commercial-only feature "Federation" is not available by default. 
-> 
-> Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition. 
+> as a consequence the commercial-only feature "Federation" is not available by default.
+>
+> Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
 
 ## Table of Contents
 
@@ -31,8 +31,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
   * [Table of Contents](#table-of-contents)
   * [Prerequisites](#prerequisites)
     + [General Prerequisites](#general-prerequisites)
-    + [Environment Variables](#environment-variables)
-    + [Coherence JARs (Grid Edition](#coherence-jars)
+    + [OpenTracing Prerequisites](#openTracing-prerequisites)
   * [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
   * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
@@ -58,11 +57,10 @@ To run the demonstration application, you must have the following software insta
 
    For more information about browser compatibility, see https://code.angularjs.org/1.7.5/docs/misc/faq.
 
-1. (Optional) VisualVM is not included in JDK 11. You can download and install VisualVM from [https://visualvm.github.io](https://visualvm.github.io). 
+1. (Optional) VisualVM is not included in JDK 11. You can download and install VisualVM from [https://visualvm.github.io](https://visualvm.github.io).
    You must provide `-Dvisualvm.executable` to point to the VisualVM executable.
 
 > **Note**: All code compiles to JDK 8 bytecode for compatibility with Coherence releases.
-
 
 ### OpenTracing Prerequisites
 
@@ -87,7 +85,7 @@ Note: If Jaeger is already running in your environment locally, you can skip thi
 at a different location, specify the `JAEGER_ENDPOINT` JVM property when starting the demo to override the default
 location.
 
-### Run the Application Locally
+## Run the Application Locally
 
 Build the application using Maven:
 
@@ -148,7 +146,7 @@ To shut down the application, select **Shutdown** option from the **Tools** menu
 
 > **Note:** Secondary cluster will not form if you are running on a virtual private network due to security restrictions.
 
-#### Modify the Defaults
+### Modify the Defaults
 
 **HTTP Ports and Hostname**
 
@@ -169,7 +167,7 @@ java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-4.
 ```
 If you want to use a cluster name with a space, you must enclose it in quotes.
 
-### Run the Application on Kubernetes
+## Run the Application on Kubernetes
 
 The steps to run the application on Kubernetes comprises the following:
 * Oracle Coherence Operator Helm Chart
@@ -202,7 +200,7 @@ The steps to run the application on Kubernetes comprises the following:
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker image to your repository accessible to that cluster. You also need to prefix the image name in your `helm` commands below.
 
 1. **Install the Oracle Coherence Operator**
-   
+
    Install the operator using `helm`:
 
    ```bash
@@ -212,33 +210,33 @@ The steps to run the application on Kubernetes comprises the following:
 
    ```bash
    helm ls
-   
+
    NAME              	REVISION UPDATED                 STATUS     CHART                     APP VERSION  NAMESPACE        
    coherence-operator	1       Mon Oct 28 13:19:20 2019 DEPLOYED   coherence-operator-3.0.0  3.0.0        coherence-demo-ns
-  
-   kubectl get pods --namespace coherence-demo-ns 
-   
+
+   kubectl get pods --namespace coherence-demo-ns
+
    NAME                                 READY   STATUS    RESTARTS   AGE
    coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          2m12s
    ```
-  
+
 1. **Install the Coherence Cluster**
 
    The Coherence cluster comprises of 2 roles:
-   
-   * storage - contains the storage-enabled tier which stores application data
-   * http - contains a storage-disabled http server which serves the application 
 
-   The file [demo-cluster.yaml](yaml/demo-cluster.yaml) contains the yaml to install the two 
+   * storage - contains the storage-enabled tier which stores application data
+   * http - contains a storage-disabled http server which serves the application
+
+   The file [demo-cluster.yaml](yaml/demo-cluster.yaml) contains the yaml to install the two
    Coherence cluster roles.       
-   
+
    Issue the following command to install the Coherence cluster using the above yaml:
 
    ```bash
    kubectl create --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
    ```                                                              
-  
-   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pod is running. 
+
+   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pod is running.
    The pod primary-cluster-storage-0 must be running and ready as shown:
 
    ```bash
@@ -247,7 +245,7 @@ The steps to run the application on Kubernetes comprises the following:
    primary-cluster-http-0               1/1     Running   0          3m2s
    primary-cluster-storage-0            1/1     Running   0          3m4s
    ```
-   
+
    If the pod does not show as `Running`, you can use the following command to diagnose and troubleshoot the pod:
 
    ```bash
@@ -270,39 +268,39 @@ The steps to run the application on Kubernetes comprises the following:
 
    When running the application in Kubernetes, the **Add Server** and **Remove Server** options are not available. You need to use `kubectl` to scale the application.
 
-   Scale the application to three nodes by editing `demo-cluster.yaml` and changing 
+   Scale the application to three nodes by editing `demo-cluster.yaml` and changing
    the `replicas` value for the `storage` role to 3. Then apply using
 
    ```bash
    kubectl apply --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
    ```          
-   
+
    Use `kubectl get pods --namespace coherence-demo-ns` to view the progress.
-   
+
 1. **Scale the Application down**
 
-   Scale the application to one node by editing `demo-cluster.yaml` and changing 
+   Scale the application to one node by editing `demo-cluster.yaml` and changing
    the `replicas` value for the `storage` role to 1. Then apply using
 
    ```bash
    kubectl apply --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
    ```  
-   
+
    Use `kubectl get pods --namespace coherence-demo-ns` to view the scale down progress.
-   
-   > Note: The Coherence Operator ensures that all scale operations are 
-   > carried out in a safe manner (checking service statusHA values) to ensure no data is lost. 
+
+   > Note: The Coherence Operator ensures that all scale operations are
+   > carried out in a safe manner (checking service statusHA values) to ensure no data is lost.
    > You can confirm this by checking the number of positions are the same as before the scale-down was initiated.                                                                                                                                                                                                                                                                                                                                                                                   
-   
+
 1. Uninstall the Coherence Cluster
 
     Use the following to uninstall the Coherence cluster.
-    
+
     ```bash
     kubectl delete --namespace coherence-demo-ns -f yaml/primary-cluster.yaml    
     ```
-   
-### Enable Federation on Kubernetes (Grid Edition Only)
+
+## Enable Federation on Kubernetes (Grid Edition Only)
 
 You must use Oracle Coherence 12.2.1.4.0 or later for Federation to work within Kubernetes.
 
@@ -323,27 +321,27 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 
    namespace/sample-coherence-ns created
    ```  
-   
+
 1. Build the Docker image:
 
    ```bash
    mvn clean install -P docker,grid-edition -Dcoherence.version=14.1.1-0-0
    ```
-            
+
    > **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
 
 4. Install the **Primary** cluster:
 
-   The file [primary-cluster.yaml](yaml/primary-cluster.yaml) contains the yaml to install the 
+   The file [primary-cluster.yaml](yaml/primary-cluster.yaml) contains the yaml to install the
    `primary-cluster` Coherence cluster.      
-   
+
     Issue the following command to install the Coherence cluster using the above yaml:   
-   
+
    ```bash
    kubectl create --namespace coherence-demo-ns -f yaml/primary-cluster.yaml
    ```                                                              
-  
-   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pods are running. 
+
+   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pods are running.
 
    ```bash
    NAME                                 READY   STATUS    RESTARTS   AGE
@@ -351,7 +349,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
    primary-cluster-http-0               1/1     Running   0          74s
    primary-cluster-storage-0            1/1     Running   0          76s
    ```
-   
+
 5. Port forward the Primary Cluster - Port **8088**
 
    ```bash
@@ -363,16 +361,16 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 
 6. Install the **Secondary** cluster
 
-    The file [secondary-cluster.yaml](yaml/secondary-cluster.yaml) contains the yaml to install the 
+    The file [secondary-cluster.yaml](yaml/secondary-cluster.yaml) contains the yaml to install the
    `secondary-cluster` Coherence cluster.      
-   
+
     Issue the following command to install the Coherence cluster using the above yaml:   
-              
+
    ```bash
    kubectl create --namespace coherence-demo-ns -f yaml/secondary-cluster.yaml
    ```                                                              
-  
-   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pods are running. 
+
+   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pods are running.
 
    ```bash
    NAME                                 READY   STATUS    RESTARTS   AGE
@@ -411,7 +409,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 
 Before starting another sample, ensure that all the pods are removed from the previous sample.
 
-### Uninstalling the Coherence Operator
+## Uninstalling the Coherence Operator
 
 To remove the `coherence-operator`, the use the following:
 
@@ -421,7 +419,7 @@ helm delete coherence-operator --purge
 
 ## Run the Demonstration using Coherence Grid Edition
 
-If you wish to demonstrate the Federation feature, which is only available in Coherence Grid Edition, 
+If you wish to demonstrate the Federation feature, which is only available in Coherence Grid Edition,
 you must carry out the following steps.
 
 
@@ -453,7 +451,7 @@ set PATH=%JAVA_HOME%\bin;%PATH%
 
 ### Install Coherence JARs into your Maven repository
 
-Install Coherence, Coherence-REST, Coherence Management and Coherence HTTP Netty installed into your local maven repository. 
+Install Coherence, Coherence-REST, Coherence Management and Coherence HTTP Netty installed into your local maven repository.
 
 For Linux/UNIX/Mac OS:
 
@@ -482,13 +480,13 @@ When you issue any maven commands, ensure you include the `grid-edition` profile
 ```bash
 mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
 ```
-            
+
 > **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
 
 ## View Cluster Metrics via Grafana
 
-If you wish to view metrics via Grafana, please carry out the steps 
-[here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#view-cluster-metrics-via-grafana) 
+If you wish to view metrics via Grafana, please carry out the steps
+[here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#view-cluster-metrics-via-grafana)
 before you install any of the examples above.
 
 ## References
