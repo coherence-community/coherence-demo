@@ -1,6 +1,6 @@
 # Oracle Coherence Demonstration Application
 
-> ![Coherence Demo](assets/coherence-demo-movie.gif "Coherence Demo")
+![Coherence Demo](assets/coherence-demo-movie.gif "Coherence Demo")
 
 ## Overview
 
