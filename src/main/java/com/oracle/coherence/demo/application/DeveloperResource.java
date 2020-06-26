@@ -97,7 +97,7 @@ public class DeveloperResource
         // properties for limiting resource usage
         mapEnv.put("maxServers",                System.getProperty("max.servers", "1000"));
         mapEnv.put("maxCacheEntries",           System.getProperty("max.cache.entries", "99999999999"));
-        mapEnv.put("disableShutdown",           System.getProperty("disable.shutdown", "false"));
+        mapEnv.put("disableShutdown",           Boolean.valueOf(System.getProperty("disable.shutdown", "false")));
 
         return Response.status(Response.Status.OK).entity(mapEnv).build();
     }

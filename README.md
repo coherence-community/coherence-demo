@@ -1,5 +1,7 @@
 # Oracle Coherence Demonstration Application
 
+![Coherence Demo](assets/coherence-demo-movie.gif "Coherence Demo")
+
 ## Overview
 
 This document describes how to build and run the Coherence Demonstration application.
@@ -67,7 +69,7 @@ To run the demonstration application, you must have the following software insta
 If you wish to demonstrate OpenTracing, then prior to running the demo, start the Jaeger OpenTracing implementation:
 
 ```bash
-docker run -d --name jaeger \
+docker run --rm -d --name jaeger \
         -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
         -p 5775:5775/udp \
         -p 6831:6831/udp \
@@ -84,6 +86,11 @@ Navigate to [http://localhost:16686](http://localhost:16686) in order to access 
 Note: If Jaeger is already running in your environment locally, you can skip this step.  If Jaeger is available
 at a different location, specify the `JAEGER_ENDPOINT` JVM property when starting the demo to override the default
 location.
+
+> The following screenshot shows the Jaegar UI and a trace from a JAX-RS call to Coherence 
+> to JPA cache store, then backing up of cache entries across to another node.
+
+![Coherence Demo](assets/jaeger-ui.png "Jaegar UI showing tracing")
 
 ## Run the Application Locally
 
@@ -105,7 +112,11 @@ Run the JAR file in the `target` directory:
 
 ```bash
 java -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
-```      
+``` 
+
+The following screenshot shows the application running with 5 cache servers started.
+ 
+![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
 
 You can use the following to run the application with the `Metrics` endpoint enabled:
 
@@ -138,7 +149,6 @@ Federation Features - Grid Edition Only
 * Issue replicate all to secondary cluster.
 * Open secondary cluster dashboard to observe changes are replicated.
 * Stop Federation and shut down secondary cluster.
-
 
 > **Note:** If you recover a snapshot on a cluster, you must replicate all to resynchronize.
 
@@ -488,6 +498,10 @@ mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
 If you wish to view metrics via Grafana, please carry out the steps
 [here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#view-cluster-metrics-via-grafana)
 before you install any of the examples above.
+
+The following screenshot shows the application running within Oracle's Cloud Infrastructure (OCI) under Kubernetes.
+
+![Coherence Demo - Grafana](assets/coherence-demo-grafana.png "Coherence Demo - Grafana")
 
 ## References
 
