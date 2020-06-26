@@ -866,7 +866,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.displayNotification('Clearing all trades...', 'info', false);
         }
         else if (command === 'shutdown') {
-            if (self.disableShutdown === true) {
+            if (self.disableShutdown) {
                 alert("You are not able to shutdown this demonstration application");
                 return;
             }
