@@ -26,10 +26,6 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 >
 > Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
 
-The following screenshot shows the application running with 5 cache servers started.
- 
-![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
-
 ## Table of Contents
 
 - Oracle Coherence Demonstration Application
@@ -116,7 +112,11 @@ Run the JAR file in the `target` directory:
 
 ```bash
 java -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
-```
+``` 
+
+The following screenshot shows the application running with 5 cache servers started.
+ 
+![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
 
 You can use the following to run the application with the `Metrics` endpoint enabled:
 
