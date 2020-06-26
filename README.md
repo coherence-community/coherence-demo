@@ -24,9 +24,6 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 >
 > Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
 
-![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
-
-
 ## Table of Contents
 
 - Oracle Coherence Demonstration Application
@@ -89,7 +86,7 @@ at a different location, specify the `JAEGER_ENDPOINT` JVM property when startin
 location.
 
 > The following screenshot shows the Jaegar UI and a trace from a JAX-RS call to Coherence 
-> and then to a JPA cache store. This includes backing up of data across to another node.
+> to JPA cache store, then backing up of cache entries across to another node.
 
 ![Coherence Demo](assets/jaeger-ui.png "Jaegar UI showing tracing")
 
@@ -113,7 +110,7 @@ Run the JAR file in the `target` directory:
 
 ```bash
 java -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
-```      
+```
 
 You can use the following to run the application with the `Metrics` endpoint enabled:
 
@@ -147,6 +144,9 @@ Federation Features - Grid Edition Only
 * Open secondary cluster dashboard to observe changes are replicated.
 * Stop Federation and shut down secondary cluster.
 
+> The following screenshot shows the application running with 5 cache servers started.
+ 
+![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
 
 > **Note:** If you recover a snapshot on a cluster, you must replicate all to resynchronize.
 
