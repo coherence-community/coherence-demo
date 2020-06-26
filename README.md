@@ -1,6 +1,6 @@
 # Oracle Coherence Demonstration Application
 
-![](assets/aggregation.mp4.mov)
+![](assets/aggregation.mp4)
 
 ## Overview
 
