@@ -88,6 +88,11 @@ Note: If Jaeger is already running in your environment locally, you can skip thi
 at a different location, specify the `JAEGER_ENDPOINT` JVM property when starting the demo to override the default
 location.
 
+> The following screenshot shows the Jaegar UI and a trace from a JAX-RS call to Coherence 
+> and then to a JPA cache store. This includes backing up of data across to another node.
+
+![Coherence Demo](assets/jaeger-ui.png "Jaegar UI showing tracing")
+
 ## Run the Application Locally
 
 Build the application using Maven:
