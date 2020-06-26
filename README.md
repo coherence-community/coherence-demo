@@ -24,7 +24,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 >
 > Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
 
-![Coherence Demo](assets/coherence-demo.png"Coherence Demo")
+![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
 
 
 ## Table of Contents
