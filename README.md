@@ -503,6 +503,10 @@ If you wish to view metrics via Grafana, please carry out the steps
 [here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#view-cluster-metrics-via-grafana)
 before you install any of the examples above.
 
+The following screenshot shows the application running within Oracle's Cloud Infrastructure (OCI) under Kubernetes.
+
+![Coherence Demo - Grafana](assets/coherence-demo-grafana.png "Coherence Demo - Grafana")
+
 ## References
 
 For more information about Oracle Coherence, see the following links:
