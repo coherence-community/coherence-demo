@@ -24,6 +24,9 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 >
 > Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
 
+![Coherence Demo](assets/coherence-demo.png"Coherence Demo")
+
+
 ## Table of Contents
 
 - Oracle Coherence Demonstration Application
@@ -67,7 +70,7 @@ To run the demonstration application, you must have the following software insta
 If you wish to demonstrate OpenTracing, then prior to running the demo, start the Jaeger OpenTracing implementation:
 
 ```bash
-docker run -d --name jaeger \
+docker run --rm -d --name jaeger \
         -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
         -p 5775:5775/udp \
         -p 6831:6831/udp \
