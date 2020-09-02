@@ -291,7 +291,7 @@ The steps to run the application on Kubernetes comprises the following:
    kubectl scale statefulset --namespace coherence-demo-ns primary-cluster-storage --replicas=6
    ```    
 
-   Use `kubectl -n coherence-demo-ns rollout status sts/primary-cluster-storage to view the progress.
+   Use `kubectl  --namespace coherence-demo-ns rollout status sts/primary-cluster-storage to view the progress.
 
 1. **Scale the Application down**
 
