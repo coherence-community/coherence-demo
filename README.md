@@ -283,9 +283,15 @@ The steps to run the application on Kubernetes comprises the following:
 
    ```bash
    kubectl apply --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
-   ```          
+   ```      
+    
+   You can also use the following to scale the cluster:
+   
+   ```bash
+   kubectl scale statefulset --namespace coherence-demo-ns primary-cluster-storage --replicas=6
+   ```    
 
-   Use `kubectl get pods --namespace coherence-demo-ns` to view the progress.
+   Use `kubectl -n coherence-demo-ns rollout status sts/primary-cluster-storage to view the progress.
 
 1. **Scale the Application down**
 
@@ -294,9 +300,9 @@ The steps to run the application on Kubernetes comprises the following:
 
    ```bash
    kubectl apply --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
-   ```  
+   ```                    
 
-   Use `kubectl get pods --namespace coherence-demo-ns` to view the scale down progress.
+   Use `kubectl -n coherence-demo-ns rollout status sts/primary-cluster-storage to view the progress.
 
    > Note: The Coherence Operator ensures that all scale operations are
    > carried out in a safe manner (checking service statusHA values) to ensure no data is lost.
