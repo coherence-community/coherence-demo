@@ -14,7 +14,7 @@
     
     <!-- dependency versions -->
     <bedrock.version>5.0.11</bedrock.version>
-    <coherence.version>14.1.1-0-1</coherence.version>
+    <coherence.version>20.06.1</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.14.2.0</derby.version>
@@ -527,7 +527,7 @@
             <version>${jib.version}</version>
             <configuration>
               <from>
-                <image>gcr.io/distroless/java@sha256:f59b26c5ecc735514a38afbf845214383c4e2ba1fdd15a76225339b8ab7da8ef</image>
+                <image>gcr.io/distroless/java:11</image>
               </from>
               <to>
                 <image>${project.artifactId}</image>
