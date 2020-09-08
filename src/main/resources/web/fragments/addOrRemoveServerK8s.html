@@ -11,9 +11,9 @@ Then apply this change using
 $ kubectl apply --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
 </pre>
 <p>
-You can also scale the stateful set using
+You can also scale the cluster using
 <pre>
-$ kubectl scale statefulset --namespace coherence-demo-ns primary-cluster-storage --replicas=6
+$ kubectl scale coherence --namespace coherence-demo-ns primary-cluster-storage --replicas=6
 </pre>
 <p>
 You can use <strong>kubectl get pods</strong> to view the status of the apply command and the number of replicas.
