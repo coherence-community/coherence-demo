@@ -109,7 +109,7 @@
         </invocation-scheme>
 
         <proxy-scheme>
-            <service-name>ExtendHttpProxyService</service-name>
+            <service-name>RestService</service-name>
             <acceptor-config>
                 <http-acceptor>
                     <class-name>com.tangosol.coherence.http.netty.NettyHttpServer</class-name>
