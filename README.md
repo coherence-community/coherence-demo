@@ -5,7 +5,8 @@
 ## Overview
 
 This document describes how to build and run the Coherence Demonstration application.
-The application showcases Coherence general features, scalability capabilities including:
+The application showcases Coherence gen
+eral features, scalability capabilities including:
 
 * Clustering and Data Sharding
 * Scalability and High Availability
@@ -187,6 +188,21 @@ The steps to run the application on Kubernetes comprises the following:
 
 > **Note:** If you want to enable Federation when running on Kubernetes, see [Enable Federation on Kubernetes](#enable-federation-on-kubernetes).
 
+1. **Add Helm Repositories**
+
+    You must have at least version v2.14.3 of `helm`, but these instructions are written for V3.3.+. 
+    See [here](https://helm.sh/docs/intro/install/) for information on installing helm for your platform.
+
+    Run the following to add the required helm repositories:
+
+    ```bash
+    $ helm repo add stable https://charts.helm.sh/stable
+    $ helm repo add coherence https://oracle.github.io/coherence-operator/charts
+    $ helm repo update
+    ```
+
+    > Note: The `helm` commands below are for helm 3.3.  Version 2 equivalent commands have also been included.
+
 1. **Create Namespace**
 
    Run the application using the Oracle Coherence Operator in a namespace called `coherence-demo-ns`. Create the demonstration namespace:
@@ -205,7 +221,7 @@ The steps to run the application on Kubernetes comprises the following:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo4.0.0-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:4.0.0-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker image to your repository accessible to that cluster. You also need to prefix the image name in your `helm` commands below.
 
@@ -214,20 +230,29 @@ The steps to run the application on Kubernetes comprises the following:
    Install the operator using `helm`:
 
    ```bash
-   helm install --namespace coherence-demo-ns --name coherence-operator coherence/coherence-operator
+   helm install --namespace coherence-demo-ns coherence-operator coherence/coherence-operator
    ```
+
    Confirm the creation of the chart:
 
    ```bash
-   helm ls
+   helm ls --namespace coherence-demo-ns
 
-   NAME              	REVISION UPDATED                 STATUS     CHART                     APP VERSION  NAMESPACE        
-   coherence-operator	1       Mon Oct 28 13:19:20 2019 DEPLOYED   coherence-operator-3.0.0  3.0.0        coherence-demo-ns
+   NAME              	NAMESPACE        	REVISION	UPDATED                                 	STATUS  	CHART                   	APP VERSION
+   coherence-operator	coherence-demo-ns	1       	2021-01-12 15:25:04.409346768 +0800 AWST	deployed	coherence-operator-3.1.1	3.1.1 
 
    kubectl get pods --namespace coherence-demo-ns
 
    NAME                                 READY   STATUS    RESTARTS   AGE
    coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          2m12s
+   ```
+
+   For `helm` version 2.X:
+
+   ```bash
+   helm install --namespace coherence-demo-ns --name coherence-operator coherence/coherence-operator
+
+   helm ls
    ```
 
 1. **Install the Coherence Cluster**
@@ -428,6 +453,12 @@ Before starting another sample, ensure that all the pods are removed from the pr
 ## Uninstalling the Coherence Operator
 
 To remove the `coherence-operator`, the use the following:
+
+```bash
+ helm delete coherence-operator --namespace coherence-demo-ns
+```
+
+For `helm` version 2.X:
 
 ```bash
 helm delete coherence-operator --purge
