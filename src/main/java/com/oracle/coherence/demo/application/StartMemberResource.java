@@ -1,7 +1,7 @@
 /*
  * File: StartMemberResource.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2020, 2021 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -68,7 +68,9 @@ public class StartMemberResource
         extends AbstractClusterMemberResource
 {
     /**
-     * Starts an additional cluster member.
+     * Starts additional cluster members.
+     *
+     * @param serverCount the number of servers to start
      *
      * @return a response indicating the status of the member creation
      */
