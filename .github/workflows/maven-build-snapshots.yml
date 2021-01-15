@@ -1,0 +1,83 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Java CI with Maven - Snapshots
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+          - v14.1.1.0
+          - main
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: '11'
+
+    - name: Print Versions
+      run: mvn -version && ant -version
+
+    - name: Cache Maven packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2-snapshots
+
+    - name: Build Coherence Snapshot
+      shell: bash
+      env:
+        COH_BRANCH: ${{ matrix.branch }}
+      run: |
+        # Checkout the git repo for coherence snapshot and build
+        DIR=`pwd`
+        CLONE_DIR=coherence-$COH_BRANCH
+        cd /tmp
+        git clone https://github.com/oracle/coherence.git $CLONE_DIR
+        cd $CLONE_DIR
+        if [ $COH_BRANCH != "main" ] ; then
+           git checkout $COH_BRANCH
+        fi
+        mvn --file prj/pom.xml --batch-mode -e -DskipTests clean install
+        cd $DIR
+
+    - name: Build and Verify
+      env:
+        COH_BRANCH: ${{ matrix.branch }}
+      shell: bash
+      run: |
+        CLONE_DIR=coherence-$COH_BRANCH
+        VERSION=`cat /tmp/${CLONE_DIR}/prj/pom.xml | grep '<revision>' | sed -e 's,^.*<revision>,,' -e 's,</revision>.*$,,'`
+
+        echo "Running verify against $VERSION"
+        mvn --file pom.xml --batch-mode -e -Dcoherence.version=$VERSION clean install
+
+        echo "Removing Coherence cloned directory"
+        CLONE_DIR=coherence-$COH_BRANCH
+        rm -rf /tmp/${CLONE_DIR}
+
+    - name: Coherence Demo Jar
+      uses: actions/upload-artifact@v2
+      with:
+        name: coherence-demo-jar
+        path: target/coherence-demo-*.jar
+
+    - name: Coherence Demo Javadoc
+      uses: actions/upload-artifact@v2
+      with:
+        name: coherence-demo-javadoc
+        path: target/coherence-demo-*-javadoc.jar
