@@ -2,6 +2,9 @@
 
 ![Coherence Demo](assets/coherence-demo-movie.gif "Coherence Demo")
 
+
+![Java CI with Maven](https://github.com/coherence-community/coherence-demo/workflows/Java%20CI%20with%20Maven/badge.svg)  ![Java CI with Maven](https://github.com/coherence-community/coherence-demo/workflows/Java%20CI%20with%20Maven%20-%20Snapshots/badge.svg)
+
 ## Overview
 
 This document describes how to build and run the Coherence Demonstration application.
@@ -88,7 +91,7 @@ Note: If Jaeger is already running in your environment locally, you can skip thi
 at a different location, specify the `JAEGER_ENDPOINT` JVM property when starting the demo to override the default
 location.
 
-> The following screenshot shows the Jaegar UI and a trace from a JAX-RS call to Coherence 
+> The following screenshot shows the Jaegar UI and a trace from a JAX-RS call to Coherence
 > to JPA cache store, then backing up of cache entries across to another node.
 
 ![Coherence Demo](assets/jaeger-ui.png "Jaegar UI showing tracing")
@@ -113,10 +116,10 @@ Run the JAR file in the `target` directory:
 
 ```bash
 java -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
-``` 
+```
 
 The following screenshot shows the application running with 5 cache servers started.
- 
+
 ![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
 
 You can use the following to run the application with the `Metrics` endpoint enabled:
@@ -190,7 +193,7 @@ The steps to run the application on Kubernetes comprises the following:
 
 1. **Add Helm Repositories**
 
-    You must have at least version v2.14.3 of `helm`, but these instructions are written for V3.3.+. 
+    You must have at least version v2.14.3 of `helm`, but these instructions are written for V3.3.+.
     See [here](https://helm.sh/docs/intro/install/) for information on installing helm for your platform.
 
     Run the following to add the required helm repositories:
@@ -239,7 +242,7 @@ The steps to run the application on Kubernetes comprises the following:
    helm ls --namespace coherence-demo-ns
 
    NAME              	NAMESPACE        	REVISION	UPDATED                                 	STATUS  	CHART                   	APP VERSION
-   coherence-operator	coherence-demo-ns	1       	2021-01-12 15:25:04.409346768 +0800 AWST	deployed	coherence-operator-3.1.1	3.1.1 
+   coherence-operator	coherence-demo-ns	1       	2021-01-12 15:25:04.409346768 +0800 AWST	deployed	coherence-operator-3.1.1	3.1.1
 
    kubectl get pods --namespace coherence-demo-ns
 
@@ -309,9 +312,9 @@ The steps to run the application on Kubernetes comprises the following:
    ```bash
    kubectl apply --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
    ```      
-    
+
    You can also use the following to scale the cluster:
-   
+
    ```bash
    kubectl scale statefulset --namespace coherence-demo-ns primary-cluster-storage --replicas=6
    ```    
