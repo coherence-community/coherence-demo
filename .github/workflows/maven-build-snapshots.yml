@@ -43,7 +43,7 @@ jobs:
       shell: bash
       env:
         COH_BRANCH: ${{ matrix.branch }}
-        MAVEN_OPTS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
+        MAVEN_OPTS: -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=3
       run: |
         # Checkout the git repo for coherence snapshot and build
         DIR=`pwd`
