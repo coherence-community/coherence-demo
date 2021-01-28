@@ -115,7 +115,7 @@ The `target` directory contains a list of files:
 Run the JAR file in the `target` directory:
 
 ```bash
-java -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
+java -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 
 The following screenshot shows the application running with 5 cache servers started.
@@ -125,12 +125,12 @@ The following screenshot shows the application running with 5 cache servers star
 You can use the following to run the application with the `Metrics` endpoint enabled:
 
 ```bash
-java -Dcoherence.metrics.http.enabled=true -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
+java -Dcoherence.metrics.http.enabled=true -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 
 Use the following argument to start the VisualVM while running the JAR file:
 ```bash
-java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
+java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 `-Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm` in the command points to the path of the VisualVM executable.
 
@@ -167,7 +167,7 @@ To shut down the application, select **Shutdown** option from the **Tools** menu
 The default HTTP hostname is 127.0.0.1 and default port is 8080. To modify these you can add the `http.hostname` or `http.port` properties on startup:
 
 ```bash
-java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-4.0.0-SNAPSHOT.jar
+java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 By changing the `http.hostname` you can access the application outside of
 your local machine.
@@ -177,7 +177,7 @@ your local machine.
 When starting up the application, the timezone is analyzed and default names are selected for the primary and secondary cluster (see [Launcher.java](https://github.com/coherence-community/coherence-demo/tree/master/src/main/java/com/oracle/coherence/demo/application/Launcher.java)). If you want to customize the name, do the following:
 
 ```bash
-java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-4.0.0-SNAPSHOT.jar
+java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 If you want to use a cluster name with a space, you must enclose it in quotes.
 
@@ -208,9 +208,9 @@ The steps to run the application on Kubernetes comprises the following:
 
 1. **Create Namespace**
 
-   Run the application using the Oracle Coherence Operator in a namespace called `coherence-demo-ns`. Create the demonstration namespace:
+   Run the application using the Oracle Coherence Operator in a namespace called `coherence-example`. Create the demonstration namespace:
    ```bash
-   kubectl create namespace coherence-demo-ns
+   kubectl create namespace coherence-example
 
    namespace/sample-coherence-ns created
    ```   
@@ -218,13 +218,13 @@ The steps to run the application on Kubernetes comprises the following:
 1. **Build and Push Docker Image**
 
    Ensure that you have Docker running locally and execute the following command which will
-   used the `jib-maven-plugin` to build a Docker time.
+   used the `jib-maven-plugin` to build a Docker image.
 
    ```bash
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo:4.0.0-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:4.0.1-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker image to your repository accessible to that cluster. You also need to prefix the image name in your `helm` commands below.
 
@@ -233,18 +233,18 @@ The steps to run the application on Kubernetes comprises the following:
    Install the operator using `helm`:
 
    ```bash
-   helm install --namespace coherence-demo-ns coherence-operator coherence/coherence-operator
+   helm install --namespace coherence-example coherence-operator coherence/coherence-operator
    ```
 
    Confirm the creation of the chart:
 
    ```bash
-   helm ls --namespace coherence-demo-ns
+   helm ls --namespace coherence-example
 
    NAME              	NAMESPACE        	REVISION	UPDATED                                 	STATUS  	CHART                   	APP VERSION
-   coherence-operator	coherence-demo-ns	1       	2021-01-12 15:25:04.409346768 +0800 AWST	deployed	coherence-operator-3.1.1	3.1.1
+   coherence-operator	coherence-example	1       	2021-01-12 15:25:04.409346768 +0800 AWST	deployed	coherence-operator-3.1.1	3.1.1
 
-   kubectl get pods --namespace coherence-demo-ns
+   kubectl get pods --namespace coherence-example
 
    NAME                                 READY   STATUS    RESTARTS   AGE
    coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          2m12s
@@ -253,7 +253,7 @@ The steps to run the application on Kubernetes comprises the following:
    For `helm` version 2.X:
 
    ```bash
-   helm install --namespace coherence-demo-ns --name coherence-operator coherence/coherence-operator
+   helm install --namespace coherence-example --name coherence-operator coherence/coherence-operator
 
    helm ls
    ```
@@ -271,10 +271,10 @@ The steps to run the application on Kubernetes comprises the following:
    Issue the following command to install the Coherence cluster using the above yaml:
 
    ```bash
-   kubectl create --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
+   kubectl create --namespace coherence-example -f yaml/demo-cluster.yaml
    ```                                                              
 
-   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pod is running.
+   Use `kubectl get pods --namespace coherence-example` to ensure that the pod is running.
    The pod primary-cluster-storage-0 must be running and ready as shown:
 
    ```bash
@@ -287,13 +287,13 @@ The steps to run the application on Kubernetes comprises the following:
    If the pod does not show as `Running`, you can use the following command to diagnose and troubleshoot the pod:
 
    ```bash
-   kubectl describe pod primary-cluster-storage-0 --namespace coherence-demo-ns
+   kubectl describe pod primary-cluster-storage-0 --namespace coherence-example
    ```
 
 1. **Port Forward the HTTP Port**
 
    ```bash
-   kubectl port-forward --namespace coherence-demo-ns primary-cluster-http-0 8080:8080
+   kubectl port-forward --namespace coherence-example primary-cluster-http-0 8080:8080
    ```  
 
 1. **Access the Application**</br>
@@ -310,16 +310,16 @@ The steps to run the application on Kubernetes comprises the following:
    the `replicas` value for the `storage` role to 3. Then apply using
 
    ```bash
-   kubectl apply --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
+   kubectl apply --namespace coherence-example -f yaml/demo-cluster.yaml
    ```      
 
    You can also use the following to scale the cluster:
 
    ```bash
-   kubectl scale --namespace coherence-demo-ns coherence  coehrence/primary-cluster-storage --replicas=6
+   kubectl scale --namespace coherence-example coherence  coehrence/primary-cluster-storage --replicas=6
    ```    
 
-   Use `kubectl  --namespace coherence-demo-ns rollout status sts/primary-cluster-storage` to view the progress.
+   Use `kubectl  --namespace coherence-example rollout status sts/primary-cluster-storage` to view the progress.
 
 1. **Scale the Application down**
 
@@ -327,10 +327,10 @@ The steps to run the application on Kubernetes comprises the following:
    the `replicas` value for the `storage` role to 1. Then apply using
 
    ```bash
-   kubectl apply --namespace coherence-demo-ns -f yaml/demo-cluster.yaml
+   kubectl apply --namespace coherence-example -f yaml/demo-cluster.yaml
    ```                    
 
-   Use `kubectl -n coherence-demo-ns rollout status coherence/primary-cluster-storage` to view the progress.
+   Use `kubectl -n coherence-example rollout status coherence/primary-cluster-storage` to view the progress.
 
    > Note: The Coherence Operator ensures that all scale operations are
    > carried out in a safe manner (checking service statusHA values) to ensure no data is lost.
@@ -341,7 +341,7 @@ The steps to run the application on Kubernetes comprises the following:
     Use the following to uninstall the Coherence cluster.
 
     ```bash
-    kubectl delete --namespace coherence-demo-ns -f yaml/primary-cluster.yaml    
+    kubectl delete --namespace coherence-example -f yaml/demo-cluster.yaml    
     ```
 
 ## Enable Federation on Kubernetes (Grid Edition Only)
@@ -359,9 +359,9 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 
 1. **Create Namespace**
 
-   Run the application using the Oracle Coherence Operator in a namespace called `coherence-demo-ns`. Create the demonstration namespace:
+   Run the application using the Oracle Coherence Operator in a namespace called `coherence-example`. Create the demonstration namespace:
    ```bash
-   kubectl create namespace coherence-demo-ns
+   kubectl create namespace coherence-example
 
    namespace/sample-coherence-ns created
    ```  
@@ -382,10 +382,10 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
     Issue the following command to install the Coherence cluster using the above yaml:   
 
    ```bash
-   kubectl create --namespace coherence-demo-ns -f yaml/primary-cluster.yaml
+   kubectl create --namespace coherence-example -f yaml/primary-cluster.yaml
    ```                                                              
 
-   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pods are running.
+   Use `kubectl get pods --namespace coherence-example` to ensure that the pods are running.
 
    ```bash
    NAME                                 READY   STATUS    RESTARTS   AGE
@@ -397,7 +397,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 5. Port forward the Primary Cluster - Port **8088**
 
    ```bash
-   kubectl port-forward --namespace coherence-demo-ns primary-cluster-http-0 8080:8080
+   kubectl port-forward --namespace coherence-example primary-cluster-http-0 8080:8080
    ```
    Use the following URL to access the application home page:
 
@@ -411,10 +411,10 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
     Issue the following command to install the Coherence cluster using the above yaml:   
 
    ```bash
-   kubectl create --namespace coherence-demo-ns -f yaml/secondary-cluster.yaml
+   kubectl create --namespace coherence-example -f yaml/secondary-cluster.yaml
    ```                                                              
 
-   Use `kubectl get pods --namespace coherence-demo-ns` to ensure that the pods are running.
+   Use `kubectl get pods --namespace coherence-example` to ensure that the pods are running.
 
    ```bash
    NAME                                 READY   STATUS    RESTARTS   AGE
@@ -430,7 +430,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 7. Port forward the Secondary Cluster - Port **8090**
 
    ```bash
-   kubectl port-forward --namespace coherence-demo-ns secondary-cluster-http-0 8090:8080
+   kubectl port-forward --namespace coherence-example secondary-cluster-http-0 8090:8080
    ```
    Use the following URL to access the application home page:
 
@@ -446,9 +446,9 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 10. Uninstall the Coherence Clusters
 
     ```bash
-    kubectl delete --namespace coherence-demo-ns -f yaml/primary-cluster.yaml    
+    kubectl delete --namespace coherence-example -f yaml/primary-cluster.yaml    
 
-    kubectl delete --namespace coherence-demo-ns -f yaml/secondary-cluster.yaml   
+    kubectl delete --namespace coherence-example -f yaml/secondary-cluster.yaml   
     ```
 
 Before starting another sample, ensure that all the pods are removed from the previous sample.
@@ -458,7 +458,7 @@ Before starting another sample, ensure that all the pods are removed from the pr
 To remove the `coherence-operator`, the use the following:
 
 ```bash
- helm delete coherence-operator --namespace coherence-demo-ns
+ helm delete coherence-operator --namespace coherence-example
 ```
 
 For `helm` version 2.X:
@@ -538,6 +538,9 @@ mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
 If you wish to view metrics via Grafana, please carry out the steps
 [here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#view-cluster-metrics-via-grafana)
 before you install any of the examples above.
+
+> Note: Before you run the above, you must change the namespace in `src/main/yaml/prometheus-rbac.yaml` in the coherence-operator cloned repository
+> from `coherence-example` to `coherence-example`.
 
 The following screenshot shows the application running within Oracle's Cloud Infrastructure (OCI) under Kubernetes.
 

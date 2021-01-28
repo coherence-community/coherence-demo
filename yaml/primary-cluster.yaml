@@ -16,7 +16,6 @@ spec:
       - "-Dsecondary.cluster=secondary-cluster"
       - "-Dsecondary.cluster.port=40000"
       - "-Dsecondary.cluster.host=secondary-cluster-storage-wka"
-      - "-Dcoherence.metrics.legacy.names=false"
   ports:
     - name: federation
       port: 40000
@@ -29,9 +28,9 @@ spec:
     metrics:
       enabled: true
       port: 9612
-  image: coherence-demo:4.0.0-SNAPSHOT
+  image: coherence-demo:4.0.1-SNAPSHOT
   imagePullPolicy: Always
-  replicas: 9
+  replicas: 3
 ---
 apiVersion: coherence.oracle.com/v1
 kind: Coherence
@@ -48,7 +47,6 @@ spec:
       - "-Dprimary.cluster.host=primary-cluster-storage-wka"
       - "-Dsecondary.cluster=secondary-cluster"
       - "-Dsecondary.cluster.host=secondary-cluster-storage-wka"
-      - "-Dcoherence.metrics.legacy.names=false"
   ports:
     - name: http
       port: 8080
@@ -62,6 +60,6 @@ spec:
     metrics:
       enabled: true
       port: 9612
-  image: coherence-demo:4.0.0-SNAPSHOT
+  image: coherence-demo:4.0.1-SNAPSHOT
   imagePullPolicy: Always
   replicas: 1

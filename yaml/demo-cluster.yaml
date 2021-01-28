@@ -11,7 +11,6 @@ spec:
     args:
       - "-Dwith.http=false"
       - "-Dprimary.cluster=primary-cluster"
-      - "-Dcoherence.metrics.legacy.names=false"
   ports:
     - name: metrics
       port: 9612
@@ -21,7 +20,7 @@ spec:
     cacheConfig: cache-config.xml
     metrics:
       enabled: true
-  image: coherence-demo:4.0.0-SNAPSHOT
+  image: coherence-demo:4.0.1-SNAPSHOT
   imagePullPolicy: Always
   replicas: 2
 ---
@@ -37,7 +36,6 @@ spec:
       heapSize: 512m
     args:
       - "-Dprimary.cluster=primary-cluster"
-      - "-Dcoherence.metrics.legacy.names=false"
   ports:
     - name: http
       port: 8080
@@ -51,6 +49,6 @@ spec:
     metrics:
       enabled: true
       port: 9612
-  image: coherence-demo:4.0.0-SNAPSHOT
+  image: coherence-demo:4.0.1-SNAPSHOT
   imagePullPolicy: Always
   replicas: 1
