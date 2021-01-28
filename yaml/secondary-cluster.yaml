@@ -31,7 +31,7 @@ spec:
       port: 9612
   image: coherence-demo:4.0.1-SNAPSHOT
   imagePullPolicy: Always
-  replicas: 9
+  replicas: 3
 ---
 apiVersion: coherence.oracle.com/v1
 kind: Coherence
