@@ -17,7 +17,6 @@ spec:
       - "-Dsecondary.cluster=secondary-cluster"
       - "-Dsecondary.cluster.port=40000"
       - "-Dsecondary.cluster.host=secondary-cluster-storage-wka"
-      - "-Dcoherence.metrics.legacy.names=false"
   ports:
     - name: federation
       port: 40000
@@ -49,7 +48,6 @@ spec:
       - "-Dprimary.cluster.host=primary-cluster-storage-wka"
       - "-Dsecondary.cluster=secondary-cluster"
       - "-Dsecondary.cluster.host=secondary-cluster-storage-wka"
-      - "-Dcoherence.metrics.legacy.names=false"
   ports:
     - name: http
       port: 8080
