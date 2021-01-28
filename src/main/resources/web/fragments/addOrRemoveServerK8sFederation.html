@@ -10,7 +10,7 @@ To scale the number of replicas to 2, update the primary-cluster.yaml used to cr
 </pre>
 Then apply this change using
 <pre>
-$ kubectl apply --namespace coherence-demo-ns -f yaml/primary-cluster.yaml
+$ kubectl apply --namespace coherence-example -f yaml/primary-cluster.yaml
 </pre>
 <p><strong>Secondary</strong><p>
     To scale the number of replicas to 2, update the secondary-cluster.yaml used to create the cluster and change the replicas to 2 under the storage role:
@@ -19,9 +19,9 @@ $ kubectl apply --namespace coherence-demo-ns -f yaml/primary-cluster.yaml
 </pre>
 Then apply this change using
 <pre>
-$ kubectl apply --namespace coherence-demo-ns -f yaml/secondary-cluster.yaml
+$ kubectl apply --namespace coherence-example -f yaml/secondary-cluster.yaml
 </pre>
 You can also scale the cluster using the following for the primary-cluster.
 <pre>
-$ kubectl scale coherence --namespace coherence-demo-ns primary-cluster-storage --replicas=6
+$ kubectl scale coherence --namespace coherence-example primary-cluster-storage --replicas=6
 </pre>
