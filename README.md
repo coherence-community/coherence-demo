@@ -115,7 +115,7 @@ The `target` directory contains a list of files:
 Run the JAR file in the `target` directory:
 
 ```bash
-java -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
+java -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 
 The following screenshot shows the application running with 5 cache servers started.
@@ -125,12 +125,12 @@ The following screenshot shows the application running with 5 cache servers star
 You can use the following to run the application with the `Metrics` endpoint enabled:
 
 ```bash
-java -Dcoherence.metrics.http.enabled=true -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
+java -Dcoherence.metrics.http.enabled=true -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 
 Use the following argument to start the VisualVM while running the JAR file:
 ```bash
-java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm -jar target/coherence-demo-4.0.0-SNAPSHOT.jar
+java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 `-Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm` in the command points to the path of the VisualVM executable.
 
@@ -167,7 +167,7 @@ To shut down the application, select **Shutdown** option from the **Tools** menu
 The default HTTP hostname is 127.0.0.1 and default port is 8080. To modify these you can add the `http.hostname` or `http.port` properties on startup:
 
 ```bash
-java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-4.0.0-SNAPSHOT.jar
+java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 By changing the `http.hostname` you can access the application outside of
 your local machine.
@@ -177,7 +177,7 @@ your local machine.
 When starting up the application, the timezone is analyzed and default names are selected for the primary and secondary cluster (see [Launcher.java](https://github.com/coherence-community/coherence-demo/tree/master/src/main/java/com/oracle/coherence/demo/application/Launcher.java)). If you want to customize the name, do the following:
 
 ```bash
-java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-4.0.0-SNAPSHOT.jar
+java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 If you want to use a cluster name with a space, you must enclose it in quotes.
 
@@ -224,7 +224,7 @@ The steps to run the application on Kubernetes comprises the following:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo:4.0.0-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:4.0.1-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker image to your repository accessible to that cluster. You also need to prefix the image name in your `helm` commands below.
 
