@@ -242,7 +242,7 @@ The steps to run the application on Kubernetes comprises the following:
    helm ls --namespace coherence-example
 
    NAME              	NAMESPACE        	REVISION	UPDATED                                 	STATUS  	CHART                   	APP VERSION
-   coherence-operator	coherence-example	1       	2021-01-12 15:25:04.409346768 +0800 AWST	deployed	coherence-operator-3.1.1	3.1.1
+   coherence-operator	coherence-example	1       	2021-01-12 15:25:04.409346768 +0800 AWST	deployed	coherence-operator-3.1.3	3.1.3
 
    kubectl get pods --namespace coherence-example
 
