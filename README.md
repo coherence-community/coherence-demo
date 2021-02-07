@@ -1,5 +1,7 @@
 # Oracle Coherence Demonstration Application
 
+<img src=https://oracle.github.io/coherence/assets/images/logo-red.png><img>
+
 ![Coherence Demo](assets/coherence-demo-movie.gif "Coherence Demo")
 
 
