@@ -20,6 +20,7 @@ jobs:
           - 20.06.1
           - 20.06
           - 20.12
+          - 20.12.1
 
     steps:
     - name: Checkout
