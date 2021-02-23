@@ -8,6 +8,9 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  schedule:
+    # Every day at 1am
+    - cron: '0 1 * * *'
 
 jobs:
   build:
