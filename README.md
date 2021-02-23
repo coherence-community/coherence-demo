@@ -318,7 +318,7 @@ The steps to run the application on Kubernetes comprises the following:
    You can also use the following to scale the cluster:
 
    ```bash
-   kubectl scale --namespace coherence-example coherence  coehrence/primary-cluster-storage --replicas=6
+   kubectl scale --namespace coherence-example coherence/primary-cluster-storage --replicas=6
    ```    
 
    Use `kubectl  --namespace coherence-example rollout status sts/primary-cluster-storage` to view the progress.
