@@ -63,7 +63,7 @@ jobs:
       shell: bash
       run: |
         CLONE_DIR=coherence-$COH_BRANCH
-        VERSION=`cat /tmp/${CLONE_DIR}/prj/pom.xml | grep '<revision>' | sed -e 's,^.*<revision>,,' -e 's,</revision>.*$,,'`
+        VERSION=`cat /tmp/${CLONE_DIR}/prj/coherence-bom/pom.xml | grep '<revision>' | sed -e 's,^.*<revision>,,' -e 's,</revision>.*$,,'`
 
         echo "Running verify against $VERSION"
         mvn --file pom.xml --batch-mode -e -Dcoherence.version=$VERSION clean install
