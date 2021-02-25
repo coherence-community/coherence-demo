@@ -63,10 +63,15 @@ jobs:
       shell: bash
       run: |
         CLONE_DIR=coherence-$COH_BRANCH
-        VERSION=`cat /tmp/${CLONE_DIR}/prj/coherence-bom/pom.xml | grep '<revision>' | sed -e 's,^.*<revision>,,' -e 's,</revision>.*$,,'`
+        # coherence-bom does not exist in 14.1.1.0
+        POM_FILE=/tmp/${CLONE_DIR}/prj/coherence-bom/pom.xml
+        if [ ! -r $POM_FILE ] ; then
+           POM_FILE=/tmp/${CLONE_DIR}/prj/pom.xml
+        fi
+        COH_VERSION=`cat {POM_FILE} | grep '<revision>' | sed -e 's,^.*<revision>,,' -e 's,</revision>.*$,,'`
 
-        echo "Running verify against $VERSION"
-        mvn --file pom.xml --batch-mode -e -Dcoherence.version=$VERSION clean install
+        echo "Running verify against $COH_VERSION"
+        mvn --file pom.xml --batch-mode -e -Dcoherence.version=$COH_VERSION clean install
 
         echo "Removing Coherence cloned directory"
         CLONE_DIR=coherence-$COH_BRANCH
