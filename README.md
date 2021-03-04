@@ -228,7 +228,10 @@ The steps to run the application on Kubernetes comprises the following:
 
    This creates an image named `coherence-demo:4.0.1-SNAPSHOT` which contains everything needed to run the demo.
 
-   > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker image to your repository accessible to that cluster. You also need to prefix the image name in your `helm` commands below.
+   > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker 
+   > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:4.0.1-SNAPSHOT` and 
+   > them push using `docker push youname/coherence-demo:4.0.1-SNAPSHOT`.
 
 1. **Install the Oracle Coherence Operator**
 
@@ -332,7 +335,7 @@ The steps to run the application on Kubernetes comprises the following:
    kubectl apply --namespace coherence-example -f yaml/demo-cluster.yaml
    ```                    
 
-   Use `kubectl -n coherence-example rollout status coherence/primary-cluster-storage` to view the progress.
+   Use `kubectl -n coherence-example rollout status sts/primary-cluster-storage` to view the progress.
 
    > Note: The Coherence Operator ensures that all scale operations are
    > carried out in a safe manner (checking service statusHA values) to ensure no data is lost.
@@ -401,6 +404,9 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
    ```bash
    kubectl port-forward --namespace coherence-example primary-cluster-http-0 8080:8080
    ```
+
+   > Note: You may wish to run the above command in a separate terminal as it will block to process the HTTP requests. 
+
    Use the following URL to access the application home page:
 
    [http://127.0.0.1:8080/application/index.html](http://127.0.0.1:8080/application/index.html)  
