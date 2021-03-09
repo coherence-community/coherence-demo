@@ -35,7 +35,7 @@
     <coherence.version>20.12</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
-    <derby.version>10.14.2.0</derby.version>
+    <derby.version>10.15.2.0</derby.version>
     <docker.version>${project.version}</docker.version>
     <eclipselink.version>2.7.5</eclipselink.version>
     <jackson.version>2.12.1</jackson.version>
