@@ -65,9 +65,6 @@ To run the demonstration application, you must have the following software insta
 
    For more information about browser compatibility, see https://code.angularjs.org/1.7.5/docs/misc/faq.
 
-1. (Optional) VisualVM is not included in JDK 11. You can download and install VisualVM from [https://visualvm.github.io](https://visualvm.github.io).
-   You must provide `-Dvisualvm.executable` to point to the VisualVM executable.
-
 > **Note**: All code compiles to JDK 8 bytecode for compatibility with Coherence releases.
 
 ### OpenTracing Prerequisites
@@ -130,12 +127,6 @@ You can use the following to run the application with the `Metrics` endpoint ena
 java -Dcoherence.metrics.http.enabled=true -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
 ```
 
-Use the following argument to start the VisualVM while running the JAR file:
-```bash
-java -Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
-```
-`-Dvisualvm.executable=/u01/oracle/product/visualvm/visualvm_143/bin/visualvm` in the command points to the path of the VisualVM executable.
-
 A Coherence Cache server and HTTP server are started on port 8080 for serving REST and application data. When the Cache server starts, the application loads on the default web browser at http://127.0.0.1:8080/application/index.html.
 
 The following features are available to demonstrate in the application:
@@ -145,7 +136,6 @@ The following features are available to demonstrate in the application:
 * Enable real-time price updates.
 * Enable or disable indexes for queries.
 * Add additional data, clear the cache or populate the cache from the **Tools** menu.
-* Start VisualVM from the **Tools** menu.
 * Show OpenTracing Support
 * Open raw metrics endpoint
 
@@ -155,6 +145,8 @@ Federation Features - Grid Edition Only
 * Issue replicate all to secondary cluster.
 * Open secondary cluster dashboard to observe changes are replicated.
 * Stop Federation and shut down secondary cluster.
+
+> Note: If you wish to connect to the cluster via the VisualVM Plugin, see https://github.com/oracle/coherence-visualvm.
 
 > **Note:** If you recover a snapshot on a cluster, you must replicate all to resynchronize.
 

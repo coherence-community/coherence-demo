@@ -149,9 +149,6 @@ public class DeveloperResource
      * Available commands are:
      * <ul>
      *     <li>
-     *         jvisualvm {@code ->} launches JVisualVM
-     *     </li>
-     *     <li>
      *         populate {@code ->} populates the stock positions
      *     </li>
      *     <li>
@@ -187,15 +184,6 @@ public class DeveloperResource
 
             switch (command)
             {
-            case "jvisualvm" :
-                // If -Dvisualvm.executable has been set then use the default for the JVM.
-                // VisualVM was removed from the JDK in 9
-                String sVisualVM = Utilities.VISUALVM.isEmpty()
-                                   ? System.getProperty("java.home") + SEP + ".." + SEP + "bin" + SEP + "jvisualvm"
-                                   : Utilities.VISUALVM;
-                LocalPlatform.get().launch(sVisualVM);
-                break;
-
             case "clear" :
                 trades.clear();
                 break;

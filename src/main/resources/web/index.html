@@ -133,10 +133,6 @@
                         Tools <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li ng-show="!isRunningInKubernetes">
-                            <a href="#" ng-click="startDeveloper('jvisualvm')" ><i class="fa fa-dashboard fa-fw"></i> Start JVisualVM</a>
-                        </li>
-                        <li ng-show="!isRunningInKubernetes" class="divider"></li>
                         <li><a href="#" ng-click="startDeveloper('clear')"><i class="fa fa-remove fa-fw"></i> Clear Cache</a></li>
                         <li><a href="#" ng-click="startDeveloper('populate')"><i class="fa fa-repeat fa-fw"></i> Populate Cache</a></li>
                         <li><a href="#" ng-click="addTrades()"><i class="fa fa-plus fa-fw"></i> Add Trades</a></li>

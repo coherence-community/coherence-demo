@@ -20,7 +20,15 @@ spec:
     cacheConfig: cache-config.xml
     metrics:
       enabled: true
-  image: coherence-demo:4.0.1-SNAPSHOT
+    persistence:
+      mode: active
+      persistentVolumeClaim:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  image: tmiddlet/coherence-demo:4.0.1-SNAPSHOT
   imagePullPolicy: Always
   replicas: 2
 ---
@@ -53,6 +61,6 @@ spec:
     metrics:
       enabled: true
       port: 9612
-  image: coherence-demo:4.0.1-SNAPSHOT
+  image: tmiddlet/coherence-demo:4.0.1-SNAPSHOT
   imagePullPolicy: Always
   replicas: 1

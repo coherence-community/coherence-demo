@@ -693,10 +693,6 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "header":  "Populate Trades",
            "content": "fragments/populate.html"
        };
-       self.insightContent['jvisualvm'] = {
-           "header":  "JVisualVM Plugin",
-           "content": "fragments/jvisualvm.html"
-       };
        self.insightContent['tracingEnabled'] = {
            "header": "OpenTracing Support Enabled",
            "content": "fragments/tracingEnabled.html"
