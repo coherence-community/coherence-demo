@@ -36,6 +36,8 @@ spec:
       heapSize: 512m
     args:
       - "-Dprimary.cluster=primary-cluster"
+      - "-Dcoherence.management.http=inherit"
+      - "-Dcoherence.management.http.port=30000"
   ports:
     - name: http
       port: 8080
@@ -43,6 +45,8 @@ spec:
       port: 9612
       serviceMonitor:
         enabled: true
+    - name: management
+      port: 30000
   coherence:
     cacheConfig: cache-config.xml
     storageEnabled: false

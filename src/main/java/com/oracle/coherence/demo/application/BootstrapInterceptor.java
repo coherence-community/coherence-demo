@@ -18,13 +18,17 @@
 
 package com.oracle.coherence.demo.application;
 
+import com.oracle.coherence.demo.model.Price;
 import com.tangosol.net.CacheFactory;
+import com.tangosol.net.NamedCache;
 import com.tangosol.net.events.EventInterceptor;
 import com.tangosol.net.events.application.LifecycleEvent;
+import com.tangosol.util.Base;
 
 import java.awt.Desktop;
 
 import java.net.URI;
+import java.util.Random;
 
 /**
  * An {@link EventInterceptor} for bootstrapping the Coherence Demo Application.
@@ -38,16 +42,44 @@ public class BootstrapInterceptor implements EventInterceptor<LifecycleEvent>
     {
         if (event.getType() == LifecycleEvent.Type.ACTIVATED)
         {
-            if (CacheFactory.getCluster().getLocalMember().getId() == 1)
+            int memberId = CacheFactory.getCluster().getLocalMember().getId();
+            // check if we are the first member or we are running in Kubernetes as the
+            // first member could be http which is storage-disabled and the data cannot yet be loaded
+            if (memberId == 1 || Utilities.isRunningInKubernetes())
             {
                 // only load if with.data=true, which is defaulted to true
                 // with.data is set to false on the start of the secondary cluster for federation
                 if ("true".equals(System.getProperty("with.data", "true")))
                 {
-                    // create initial data for the demo
-                    Utilities.addIndexes();
-                    Utilities.populatePrices();
-                    Utilities.createPositions();
+                    // create initial data for the demo if it does not already exist
+                    NamedCache<String, Price> pricesCache = Utilities.getPricesCache();
+                    boolean loadData = false;
+
+                    // check to see if the data is loaded already if we are in Kubernetes
+                    if (Utilities.isRunningInKubernetes())
+                    {
+                        if (pricesCache.size() == 0)
+                        {
+                            // wait for a short while in case the two storage members start at exact same time
+                            // and if the prices cache is still zero then load
+                            Base.sleep(new Random().nextInt(4000) + 1000L);
+                            if (pricesCache.size() == 0)
+                            {
+                                loadData = true;
+                            }
+                        }
+                    }
+                    else if (memberId == 1)
+                    {
+                        loadData = true;  // we are not in Kubernetes so load the data for 1st member
+                    }
+
+                    if (loadData)
+                    {
+                        Utilities.addIndexes();
+                        Utilities.populatePrices();
+                        Utilities.createPositions();
+                    }
                 }
 
                 // cater for case where user has overridden default port via -Dhttp.port=xxxx
