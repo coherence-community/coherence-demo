@@ -28,7 +28,7 @@ spec:
         resources:
           requests:
             storage: 1Gi
-  image: tmiddlet/coherence-demo:4.0.1-SNAPSHOT
+  image: coherence-demo:4.0.1-SNAPSHOT
   imagePullPolicy: Always
   replicas: 2
 ---
@@ -61,6 +61,6 @@ spec:
     metrics:
       enabled: true
       port: 9612
-  image: tmiddlet/coherence-demo:4.0.1-SNAPSHOT
+  image: coherence-demo:4.0.1-SNAPSHOT
   imagePullPolicy: Always
   replicas: 1
