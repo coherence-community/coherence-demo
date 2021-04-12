@@ -58,7 +58,6 @@
     <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
     <maven.enforcer.plugin.version>1.3.1</maven.enforcer.plugin.version>
     <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
-    <maven.gmaven.plugin.version>1.5</maven.gmaven.plugin.version>
     <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.shade.plugin.version>3.2.0</maven.shade.plugin.version>
@@ -320,30 +319,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <!-- Create a new property "actual.coherence.version" for the manifest
-           by replacing '-' with '.' -->
-      <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>gmaven-plugin</artifactId>
-        <version>${maven.gmaven.plugin.version}</version>
-        <executions>
-          <execution>
-            <id>add-dynamic-properties</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <configuration>
-              <source>
-                properties = project.properties
-                version = properties.getProperty("coherence.version")
-                properties.setProperty("actual.coherence.version", version.replaceAll('-', '.'))
-              </source>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
@@ -376,12 +351,10 @@
                       <mainClass>com.oracle.coherence.demo.application.Launcher
                       </mainClass>
                       <manifestEntries>
-                        <Implementation-GroupId>com.oracle.coherence
-                        </Implementation-GroupId>
-                        <Implementation-Description>Demonstration
-                        </Implementation-Description>
+                        <Implementation-GroupId>com.oracle.coherence</Implementation-GroupId>
+                        <Implementation-Description>Demonstration</Implementation-Description>
                         <Implementation-Vendor>Oracle</Implementation-Vendor>
-                        <Implementation-Version>${actual.coherence.version}</Implementation-Version>
+                        <Implementation-Version>${coherence.version}</Implementation-Version>
                         <Implementation-Build>demo</Implementation-Build>
                         <Specification-Vendor>Oracle</Specification-Vendor>
                         <Specification-Version>${actual.coherence.version}</Specification-Version>
