@@ -11,6 +11,7 @@ spec:
     args:
       - "-Dwith.http=false"
       - "-Dprimary.cluster=primary-cluster"
+      - "-Dcoherence.distributed.threads.min=10"
   ports:
     - name: metrics
       port: 9612
@@ -38,6 +39,7 @@ spec:
       - "-Dprimary.cluster=primary-cluster"
       - "-Dcoherence.management.http=inherit"
       - "-Dcoherence.management.http.port=30000"
+      - "-Dcoherence.distributed.threads.min=10"
   ports:
     - name: http
       port: 8080
