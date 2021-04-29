@@ -552,4 +552,5 @@ For more information about Oracle Coherence, see the following links:
 
 * Download Coherence - [http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html](http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html)
 * Coherence Documentation - [https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.1.0/index.html](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.1.0/index.html)
-* Coherence Community - [http://coherence.oracle.com/](http://coherence.oracle.com/)
+* Coherence Community - [https://coherence.community/](https://coherence.community/)
+* Coherence CE - [https://github.com/oracle/coherence](https://github.com/oracle/coherence)
