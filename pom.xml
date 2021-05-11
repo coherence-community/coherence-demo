@@ -41,7 +41,7 @@
     <jackson.version>2.12.1</jackson.version>
     <jaeger.version>1.1.0</jaeger.version>
     <jaxrs.version>2.1.6</jaxrs.version>
-    <jersey.version>2.29</jersey.version>
+    <jersey.version>2.34</jersey.version>
     <javax.activation.version>1.2.0</javax.activation.version>
     <jib.version>2.3.0</jib.version>
     <jib.goal>dockerBuild</jib.goal>
