@@ -29,7 +29,7 @@ spec:
     metrics:
       enabled: true
       port: 9612
-  image: coherence-demo:4.0.1-SNAPSHOT
+  image: coherence-demo:5.0.0-SNAPSHOT
   imagePullPolicy: Always
   replicas: 3
 ---
@@ -61,6 +61,6 @@ spec:
     metrics:
       enabled: true
       port: 9612
-  image: coherence-demo:4.0.1-SNAPSHOT
+  image: coherence-demo:5.0.0-SNAPSHOT
   imagePullPolicy: Always
   replicas: 1

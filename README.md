@@ -10,8 +10,7 @@
 ## Overview
 
 This document describes how to build and run the Coherence Demonstration application.
-The application showcases Coherence gen
-eral features, scalability capabilities including:
+The application showcases Coherence general features, scalability capabilities including:
 
 * Clustering and Data Sharding
 * Scalability and High Availability
@@ -22,8 +21,9 @@ eral features, scalability capabilities including:
 * Federation (Grid Edition feature only)
 * Lambda Support
 * OpenTracing Support
-
-When you run the application locally, it results in a single self-contained JAR, javadoc and source.
+                 
+You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table 
+of contents below for instructions.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
@@ -106,26 +106,19 @@ mvn clean install
 The `target` directory contains a list of files:
 
 ```bash
- coherence-demo-{version}-SNAPSHOT.jar          - Executable JAR file, see instructions below
  coherence-demo-{version}-SNAPSHOT-javadoc.jar  - javadoc
  coherence-demo-{version}-SNAPSHOT-sources.jar  - sources
  ```
 
-Run the JAR file in the `target` directory:
+Run demo application
 
 ```bash
-java -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
+mvn exec:exec
 ```
 
 The following screenshot shows the application running with 5 cache servers started.
 
 ![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
-
-You can use the following to run the application with the `Metrics` endpoint enabled:
-
-```bash
-java -Dcoherence.metrics.http.enabled=true -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
-```
 
 A Coherence Cache server and HTTP server are started on port 8080 for serving REST and application data. When the Cache server starts, the application loads on the default web browser at http://127.0.0.1:8080/application/index.html.
 
@@ -153,6 +146,14 @@ Federation Features - Grid Edition Only
 To shut down the application, select **Shutdown** option from the **Tools** menu. This shuts down all the processes including the secondary cluster if started.
 
 > **Note:** Secondary cluster will not form if you are running on a virtual private network due to security restrictions.
+       
+You can use the following to run the application with the `Metrics` endpoint enabled:
+
+```bash
+mvn -Dmetrics.enabled=true exec:exec
+```
+
+From the `Tools` menu choose `Show Raw Metrics` to view the raw metrics.
 
 ### Modify the Defaults
 
@@ -161,19 +162,10 @@ To shut down the application, select **Shutdown** option from the **Tools** menu
 The default HTTP hostname is 127.0.0.1 and default port is 8080. To modify these you can add the `http.hostname` or `http.port` properties on startup:
 
 ```bash
-java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-4.0.1-SNAPSHOT.jar
+mvn -Dhttp.hostname=myhostname -Dhttp.port=9000 exec:exec
 ```
 By changing the `http.hostname` you can access the application outside of
 your local machine.
-
-**Default Cluster Names**
-
-When starting up the application, the timezone is analyzed and default names are selected for the primary and secondary cluster (see [Launcher.java](https://github.com/coherence-community/coherence-demo/tree/master/src/main/java/com/oracle/coherence/demo/application/Launcher.java)). If you want to customize the name, do the following:
-
-```bash
-java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-4.0.1-SNAPSHOT.jar
-```
-If you want to use a cluster name with a space, you must enclose it in quotes.
 
 ## Run the Application on Kubernetes
 
@@ -218,12 +210,12 @@ The steps to run the application on Kubernetes comprises the following:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo:4.0.1-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:5.0.0-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker 
    > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
-   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:4.0.1-SNAPSHOT` and 
-   > them push using `docker push youname/coherence-demo:4.0.1-SNAPSHOT`.
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:5.0.0-SNAPSHOT` and 
+   > them push using `docker push youname/coherence-demo:5.0.0-SNAPSHOT`.
 
 1. **Install the Oracle Coherence Operator**
 
@@ -532,6 +524,11 @@ mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
 ```
 
 > **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
+               
+Run the application using:
+```bash
+mvn exec:exec -Pgrid-edition -Dcoherence.version=14.1.1-0-0
+```
 
 ## View Cluster Metrics via Grafana
 
