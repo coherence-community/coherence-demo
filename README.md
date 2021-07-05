@@ -10,8 +10,7 @@
 ## Overview
 
 This document describes how to build and run the Coherence Demonstration application.
-The application showcases Coherence gen
-eral features, scalability capabilities including:
+The application showcases Coherence general features, scalability capabilities including:
 
 * Clustering and Data Sharding
 * Scalability and High Availability
@@ -22,8 +21,9 @@ eral features, scalability capabilities including:
 * Federation (Grid Edition feature only)
 * Lambda Support
 * OpenTracing Support
-
-When you run the application locally, it results in a single self-contained JAR, javadoc and source.
+                 
+You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table 
+of contents below for instructions on running the application.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
