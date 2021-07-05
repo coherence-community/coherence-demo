@@ -24,7 +24,7 @@
 
   <groupId>com.oracle.coherence</groupId>
   <artifactId>coherence-demo</artifactId>
-  <version>4.0.1-SNAPSHOT</version>
+  <version>5.0.0-SNAPSHOT</version>
 
   <properties>
     <!-- The groupId of the Coherence product -->
@@ -32,7 +32,7 @@
     
     <!-- dependency versions -->
     <bedrock.version>5.0.11</bedrock.version>
-    <coherence.version>20.12.2</coherence.version>
+    <coherence.version>21.06</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.15.2.0</derby.version>
@@ -60,10 +60,14 @@
     <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
     <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
-    <maven.shade.plugin.version>3.2.0</maven.shade.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
     <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
     <maven.version>3.6.0</maven.version>
+
+    <!-- startup options -->
+    <metrics.enabled>false</metrics.enabled>
+    <http.hostname>127.0.0.1</http.hostname>
+    <http.port>8080</http.port>
   </properties>
 
   <dependencies>
@@ -319,56 +323,32 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- mvn exec plugin -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${maven.exec.plugin.version}</version>
+        <configuration>
+          <executable>java</executable>
+          <arguments>
+            <argument>-classpath</argument>
+            <classpath/>
+            <argument>-Xmx512m</argument>
+            <argument>-Xms512m</argument>
+            <argument>-Dcoherence.log.level=3</argument>
+            <argument>-Dcoherence.management=all</argument>
+            <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}</argument>
+            <argument>-Dhttp.hostname=${http.hostname}</argument>
+            <argument>-Dhttp.port=${http.port}</argument>
+            <argument>com.oracle.coherence.demo.application.Launcher</argument>
+          </arguments>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
   <profiles>
-    <!-- profile to include shaded jar -->
-    <profile>
-      <id>stand-alone</id>
-      <activation>
-        <property>
-          <name>!docker</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <!-- create a single jar with everything in it -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>${maven.shade.plugin.version}</version>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>shade</goal>
-                </goals>
-                <configuration>
-                  <transformers>
-                    <transformer
-                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                      <mainClass>com.oracle.coherence.demo.application.Launcher
-                      </mainClass>
-                      <manifestEntries>
-                        <Implementation-GroupId>com.oracle.coherence</Implementation-GroupId>
-                        <Implementation-Description>Demonstration</Implementation-Description>
-                        <Implementation-Vendor>Oracle</Implementation-Vendor>
-                        <Implementation-Version>${coherence.version}</Implementation-Version>
-                        <Implementation-Build>demo</Implementation-Build>
-                        <Specification-Vendor>Oracle</Specification-Vendor>
-                        <Specification-Version>${actual.coherence.version}</Specification-Version>
-                      </manifestEntries>
-                    </transformer>
-                  </transformers>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
     <profile>
       <id>grid-edition</id>
       <activation>

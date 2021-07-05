@@ -106,15 +106,14 @@ mvn clean install
 The `target` directory contains a list of files:
 
 ```bash
- coherence-demo-{version}-SNAPSHOT.jar          - Executable JAR file, see instructions below
  coherence-demo-{version}-SNAPSHOT-javadoc.jar  - javadoc
  coherence-demo-{version}-SNAPSHOT-sources.jar  - sources
  ```
 
-Run the JAR file in the `target` directory:
+Run demo application
 
 ```bash
-java -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
+mvn exec:exec
 ```
 
 The following screenshot shows the application running with 5 cache servers started.
@@ -124,8 +123,10 @@ The following screenshot shows the application running with 5 cache servers star
 You can use the following to run the application with the `Metrics` endpoint enabled:
 
 ```bash
-java -Dcoherence.metrics.http.enabled=true -jar target/coherence-demo-4.0.1-SNAPSHOT.jar
+mvn -Dmetrics.enabled=true exec:exec
 ```
+
+> Note: From the `Tools` menu choose `Show Raw Metrics` to view the raw metrics.
 
 A Coherence Cache server and HTTP server are started on port 8080 for serving REST and application data. When the Cache server starts, the application loads on the default web browser at http://127.0.0.1:8080/application/index.html.
 
@@ -161,19 +162,10 @@ To shut down the application, select **Shutdown** option from the **Tools** menu
 The default HTTP hostname is 127.0.0.1 and default port is 8080. To modify these you can add the `http.hostname` or `http.port` properties on startup:
 
 ```bash
-java -Dhttp.hostname=myhostname -Dhttp.port=9000 -jar coherence-demo-4.0.1-SNAPSHOT.jar
+mvn -Dhttp.hostname=myhostname -Dhttp.port=9000 exec:exec
 ```
 By changing the `http.hostname` you can access the application outside of
 your local machine.
-
-**Default Cluster Names**
-
-When starting up the application, the timezone is analyzed and default names are selected for the primary and secondary cluster (see [Launcher.java](https://github.com/coherence-community/coherence-demo/tree/master/src/main/java/com/oracle/coherence/demo/application/Launcher.java)). If you want to customize the name, do the following:
-
-```bash
-java -Dprimary.cluster=NewYork -Dsecondary.cluster=Boston -jar coherence-demo-4.0.1-SNAPSHOT.jar
-```
-If you want to use a cluster name with a space, you must enclose it in quotes.
 
 ## Run the Application on Kubernetes
 
@@ -218,12 +210,12 @@ The steps to run the application on Kubernetes comprises the following:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo:4.0.1-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:5.0.0-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker 
    > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
-   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:4.0.1-SNAPSHOT` and 
-   > them push using `docker push youname/coherence-demo:4.0.1-SNAPSHOT`.
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:5.0.0-SNAPSHOT` and 
+   > them push using `docker push youname/coherence-demo:5.0.0-SNAPSHOT`.
 
 1. **Install the Oracle Coherence Operator**
 
