@@ -120,14 +120,6 @@ The following screenshot shows the application running with 5 cache servers star
 
 ![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
 
-You can use the following to run the application with the `Metrics` endpoint enabled:
-
-```bash
-mvn -Dmetrics.enabled=true exec:exec
-```
-
-> Note: From the `Tools` menu choose `Show Raw Metrics` to view the raw metrics.
-
 A Coherence Cache server and HTTP server are started on port 8080 for serving REST and application data. When the Cache server starts, the application loads on the default web browser at http://127.0.0.1:8080/application/index.html.
 
 The following features are available to demonstrate in the application:
@@ -154,6 +146,14 @@ Federation Features - Grid Edition Only
 To shut down the application, select **Shutdown** option from the **Tools** menu. This shuts down all the processes including the secondary cluster if started.
 
 > **Note:** Secondary cluster will not form if you are running on a virtual private network due to security restrictions.
+       
+You can use the following to run the application with the `Metrics` endpoint enabled:
+
+```bash
+mvn -Dmetrics.enabled=true exec:exec
+```
+
+From the `Tools` menu choose `Show Raw Metrics` to view the raw metrics.
 
 ### Modify the Defaults
 
