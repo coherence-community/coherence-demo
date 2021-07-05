@@ -524,6 +524,11 @@ mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
 ```
 
 > **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
+               
+Run the application using:
+```bash
+mvn exec:exec -Pgrid-edition -Dcoherence.version=14.1.1-0-0
+```
 
 ## View Cluster Metrics via Grafana
 
