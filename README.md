@@ -23,7 +23,7 @@ The application showcases Coherence general features, scalability capabilities i
 * OpenTracing Support
                  
 You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table 
-of contents below for instructions on running the application.
+of contents below for instructions.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
