@@ -21,8 +21,8 @@ The application showcases Coherence general features, scalability capabilities i
 * Federation (Grid Edition feature only)
 * Lambda Support
 * OpenTracing Support
-                 
-You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table 
+
+You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table
 of contents below for instructions.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
@@ -146,7 +146,7 @@ Federation Features - Grid Edition Only
 To shut down the application, select **Shutdown** option from the **Tools** menu. This shuts down all the processes including the secondary cluster if started.
 
 > **Note:** Secondary cluster will not form if you are running on a virtual private network due to security restrictions.
-       
+
 You can use the following to run the application with the `Metrics` endpoint enabled:
 
 ```bash
@@ -212,9 +212,9 @@ The steps to run the application on Kubernetes comprises the following:
 
    This creates an image named `coherence-demo:5.0.0-SNAPSHOT` which contains everything needed to run the demo.
 
-   > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker 
+   > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker
    > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
-   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:5.0.0-SNAPSHOT` and 
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:5.0.0-SNAPSHOT` and
    > them push using `docker push youname/coherence-demo:5.0.0-SNAPSHOT`.
 
 1. **Install the Oracle Coherence Operator**
@@ -358,7 +358,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 1. Build the Docker image:
 
    ```bash
-   mvn clean install -P docker,grid-edition -Dcoherence.version=14.1.1-0-0
+   mvn clean install -P docker,grid-edition -Dcoherence.version={coherence-version}
    ```
 
    > **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
@@ -389,7 +389,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
    kubectl port-forward --namespace coherence-example primary-cluster-http-0 8080:8080
    ```
 
-   > Note: You may wish to run the above command in a separate terminal as it will block to process the HTTP requests. 
+   > Note: You may wish to run the above command in a separate terminal as it will block to process the HTTP requests.
 
    Use the following URL to access the application home page:
 
@@ -524,7 +524,7 @@ mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
 ```
 
 > **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
-               
+
 Run the application using:
 ```bash
 mvn exec:exec -Pgrid-edition -Dcoherence.version=14.1.1-0-0
