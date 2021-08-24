@@ -198,7 +198,7 @@ The steps to run the application on Kubernetes comprises the following:
    ```bash
    kubectl create namespace coherence-example
 
-   namespace/sample-coherence-ns created
+   namespace/coherence-example created
    ```   
 
 1. **Build and Push Docker Image**
@@ -352,7 +352,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
    ```bash
    kubectl create namespace coherence-example
 
-   namespace/sample-coherence-ns created
+   namespace/coherence-example created
    ```  
 
 1. Build the Docker image:
