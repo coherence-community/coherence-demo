@@ -99,6 +99,7 @@ public class StartMemberResource
                                         SystemProperty.of("coherence.wka", "127.0.0.1"),
                                         SystemProperty.of("coherence.ttl", "0"),
                                         SystemProperty.of("with.http", false),
+                                        SystemProperty.of("coherence.management.http.port", "0"),
                                         SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
                                                           "Coherence Demo (" + clusterName + ')'),
                                         SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,

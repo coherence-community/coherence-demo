@@ -110,6 +110,7 @@ public class StartSecondaryResource
                                     SystemProperty.of("max.cache.entries", System.getProperty("max.cache.entries")),
                                     SystemProperty.of("coherence.distribution.2server", "false"),
                                     SystemProperty.of("coherence.tracing.ratio", 1.0),
+                                    SystemProperty.of("coherence.management.http.port", "0"),
                                     SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
                                                       "Coherence Demo (" + secondaryName + ')'),
                                     SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,

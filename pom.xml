@@ -338,6 +338,7 @@
             <argument>-Xms512m</argument>
             <argument>-Dcoherence.log.level=3</argument>
             <argument>-Dcoherence.management=all</argument>
+            <argument>-Dcom.oracle.coherence.common.util.Threads.dumpLocks=FULL</argument>
             <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}</argument>
             <argument>-Dhttp.hostname=${http.hostname}</argument>
             <argument>-Dhttp.port=${http.port}</argument>
