@@ -16,7 +16,7 @@ For all contributions that involve making a change to the source tree and thus
 releasing a new build of the Coherence Demonstration, those primarily
 being a defect fix, enhancement, new feature or documentation improvement, all
 non-Oracle contributors must complete and sign the
-[Oracle Contributors Agreement](http://oss.oracle.com/oca.pdf).
+[Oracle Contributors Agreement](https://oca.opensource.oracle.com/).
 
 To do this, simply print out the form, fill in the necessary details, scan it
 in and return via email to: oracle-ca_us [at] oracle [dot] com.
@@ -28,7 +28,7 @@ Open Solaris and the Open Java itself.  If you already have executed this
 agreement then you're ready to contribute to the Coherence Demonstration.
 
 Should you have any questions regarding this agreement, you should consult the
-[Oracle Contributors Agreement FAQ](http://www.oracle.com/technetwork/oca-faq-405384.pdf)
+[Oracle Contributors Agreement FAQ](https://oca.opensource.oracle.com/)
 
 <h4>Roles and Responsibilities</h4>
 
