@@ -91,6 +91,11 @@ public class StartMemberResource
 
             try
             {
+                // strip off debug
+                String[] arguments = inputArguments.toArray(new String[0]);
+                String[] newArguments = new String[arguments.length -1];
+                System.arraycopy(arguments, 0, newArguments, 0, arguments.length -1);
+
                 // start the new cache server
                 CoherenceCacheServer server =
                         platform.launch(CoherenceCacheServer.class,
@@ -99,7 +104,9 @@ public class StartMemberResource
                                         SystemProperty.of("coherence.wka", "127.0.0.1"),
                                         SystemProperty.of("coherence.ttl", "0"),
                                         SystemProperty.of("with.http", false),
-                                        SystemProperty.of("coherence.management.http.port", "0"),
+                                        SystemProperty.of("coherence.management.http", "none"),
+                                        SystemProperty.of("coherence.management.http", "none"),
+                                        SystemProperty.of("coherence.management", "all"),
                                         SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
                                                           "Coherence Demo (" + clusterName + ')'),
                                         SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,
@@ -113,7 +120,7 @@ public class StartMemberResource
                                                           System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY)),
                                         SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
                                                           System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)),
-                                        JvmOptions.include(inputArguments.toArray(new String[0])));
+                                        JvmOptions.include(newArguments));
                 Span span = GlobalTracer.get().activeSpan();
                 Utilities.spanLog(span, "Starting new member");
 
