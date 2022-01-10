@@ -105,7 +105,6 @@ public class StartMemberResource
                                         SystemProperty.of("coherence.ttl", "0"),
                                         SystemProperty.of("with.http", false),
                                         SystemProperty.of("coherence.management.http", "none"),
-                                        SystemProperty.of("coherence.management.http", "none"),
                                         SystemProperty.of("coherence.management", "all"),
                                         SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
                                                           "Coherence Demo (" + clusterName + ')'),

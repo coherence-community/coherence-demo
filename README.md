@@ -210,12 +210,12 @@ The steps to run the application on Kubernetes comprises the following:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo:5.0.0-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:5.0.1-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker
    > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
-   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:5.0.0-SNAPSHOT` and
-   > them push using `docker push youname/coherence-demo:5.0.0-SNAPSHOT`.
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:5.0.1-SNAPSHOT` and
+   > them push using `docker push youname/coherence-demo:5.0.1-SNAPSHOT`.
 
 1. **Install the Oracle Coherence Operator**
 

@@ -101,6 +101,8 @@ public class StartSecondaryResource
                                     CacheConfig.of("cache-config.xml"),
                                     SystemProperty.of("coherence.wka", "127.0.0.1"),
                                     SystemProperty.of("coherence.ttl", "0"),
+                                    SystemProperty.of("coherence.management.http", "all"),
+                                    SystemProperty.of("coherence.management.http.port", "0"),
                                     SystemProperty.of("with.http", true),
                                     SystemProperty.of("http.port", uriInfo.getBaseUri().getPort() + 1),
                                     SystemProperty.of("http.hostname", System.getProperty("http.hostname",
