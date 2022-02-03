@@ -1,7 +1,7 @@
 /*
  * File: StartMemberResource.java
  *
- * Copyright (c) 2015, 2020, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2021, 2021 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -19,22 +19,26 @@
 package com.oracle.coherence.demo.application;
 
 import com.oracle.bedrock.deferred.DeferredHelper;
+
 import com.oracle.bedrock.runtime.LocalPlatform;
+
 import com.oracle.bedrock.runtime.coherence.CoherenceCacheServer;
+
 import com.oracle.bedrock.runtime.coherence.options.CacheConfig;
 import com.oracle.bedrock.runtime.coherence.options.ClusterName;
 import com.oracle.bedrock.runtime.coherence.options.ClusterPort;
 import com.oracle.bedrock.runtime.coherence.options.Logging;
 import com.oracle.bedrock.runtime.coherence.options.RoleName;
 
+import com.oracle.bedrock.runtime.java.options.ClassName;
 import com.oracle.bedrock.runtime.java.options.JvmOptions;
 import com.oracle.bedrock.runtime.java.options.SystemProperty;
 
-import com.oracle.bedrock.runtime.options.Argument;
 import com.oracle.bedrock.runtime.options.DisplayName;
 
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
+import com.tangosol.net.Coherence;
 import com.tangosol.net.Member;
 
 import com.tangosol.util.ResourceRegistry;
@@ -50,6 +54,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import java.lang.management.ManagementFactory;
+
 import java.util.List;
 
 import static com.oracle.bedrock.deferred.DeferredHelper.eventually;
@@ -99,6 +104,7 @@ public class StartMemberResource
                 // start the new cache server
                 CoherenceCacheServer server =
                         platform.launch(CoherenceCacheServer.class,
+                                        ClassName.of(Coherence.class),
                                         DisplayName.of("Coherence Demo Server"),
                                         CacheConfig.of("cache-config.xml"),
                                         SystemProperty.of("coherence.wka", "127.0.0.1"),
@@ -112,7 +118,7 @@ public class StartMemberResource
                                                           System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
                                                                              Launcher.DEFAULT_JAEGER_ENDPOINT)),
                                         Logging.at(0),
-                                        RoleName.of(augmentRoleName(nStableId, "CoherenceDemoServer")),
+                                        RoleName.of(createRoleName(nStableId)),
                                         ClusterPort.of(cluster.getDependencies().getGroupPort()),
                                         ClusterName.of(cluster.getClusterName()),
                                         SystemProperty.of(Launcher.PRIMARY_CLUSTER_PROPERTY,

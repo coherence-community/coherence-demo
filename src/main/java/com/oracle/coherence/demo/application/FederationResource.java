@@ -1,7 +1,7 @@
 /*
  * File: FederationResource.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -142,7 +142,7 @@ public class FederationResource
                     // key = state and value = percent of members in that state
                     statusMap.forEach((key, value) -> sb.append(key).append(' '));
 
-                    // just take the first status if we multiple values as it is just transitive anyway
+                    // just take the first status if we have multiple values as it is just transitive anyway
                     String status = sb.toString();
 
                     response = status.substring(0, status.indexOf(' '));

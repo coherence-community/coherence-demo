@@ -18,14 +18,12 @@
 
 package com.oracle.coherence.demo.cachestore;
 
-import com.tangosol.net.cache.CacheLoader;
 import com.tangosol.net.cache.CacheStore;
+
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -33,9 +31,8 @@ import java.util.Map;
  *
  * @author Tim Middleton
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
-
-
     /**
      * Construct a {@link JpaCacheStore} with no {@link ClassLoader}.
      *
@@ -43,6 +40,7 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
      * @param entityClassName  entity class
      * @param unitName         unit name
      */
+    @SuppressWarnings("unused")
     public JpaCacheStore(String entityName, String entityClassName, String unitName)
     {
         super(entityName, entityClassName, unitName);
@@ -56,6 +54,7 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
      * @param unitName         unit name
      * @param loader           class loader
      */
+    @SuppressWarnings("unused")
     public JpaCacheStore(String entityName, String entityClassName, String unitName, ClassLoader loader)
     {
         super(entityName, entityClassName, unitName, loader);
@@ -65,8 +64,8 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
     @Override
     public void store(Object key, Object value)
     {
-        EntityManager em = this.getEntityManager();
-        EntityTransaction  tx = null;
+        EntityManager     em = this.getEntityManager();
+        EntityTransaction tx = null;
 
         try
         {
@@ -90,7 +89,7 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
     @Override
     public void storeAll(Map map)
     {
-        EntityManager em = this.getEntityManager();
+        EntityManager     em = this.getEntityManager();
         EntityTransaction tx = null;
 
         try
@@ -120,7 +119,7 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
     @Override
     public void erase(Object key)
     {
-        EntityManager em = this.getEntityManager();
+        EntityManager     em = this.getEntityManager();
         EntityTransaction tx = null;
 
         try
@@ -135,10 +134,10 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
 
             tx.commit();
         }
-        catch (RuntimeException var8)
+        catch (RuntimeException e)
         {
             this.rollback(tx);
-            throw var8;
+            throw e;
         }
         finally
         {
@@ -150,7 +149,7 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
     @Override
     public void eraseAll(Collection keys)
     {
-       EntityManager em = this.getEntityManager();
+       EntityManager      em = this.getEntityManager();
         EntityTransaction tx = null;
 
         try {
@@ -187,7 +186,8 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
             {
                 tx.rollback();
             }
-        } catch (RuntimeException var3)
+        }
+        catch (RuntimeException ignored)
         {
         }
     }

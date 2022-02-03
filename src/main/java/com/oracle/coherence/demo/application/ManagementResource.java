@@ -1,7 +1,7 @@
 /*
  * File: ManagementResource.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -49,7 +49,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,10 +64,10 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
  * <li>Run a report - /jmx/run-report/report-name</li>
  * </ul>
  * When you run a report using http://127.0.0.1:8080/service/jmx/run-report/report-cache-size
- * The report name gets a prefix of reports/ and also xml added, so effectivly you run
+ * The report name gets a prefix of reports/ and also xml added, so effectively you run
  * "reports/report-cache-size.xml"
  * <p>
- * <strong>Note:</strong> This is an example only and does not include security
+ * <strong>Note:</strong> This is an example only and does not include
  * security capabilities to protect REST end-points. <p>Adding security via supported
  * methods would be highly recommended if you were to utilize this pattern.
  *
@@ -110,16 +109,10 @@ public class ManagementResource
 
                 for (ObjectName objectName : setObjects)
                 {
-                    Map<String, String> mapKeys       = new TreeMap<>();
-                    Map<String, Object> mapAttributes = new TreeMap<>();
-
-                    Hashtable<String, String> key = objectName.getKeyPropertyList();
-
-                    // copy the key values
-                    key.forEach(mapKeys::put);
-
-                    MBeanInfo            info     = mbs.getMBeanInfo(objectName);
-                    MBeanAttributeInfo[] attrInfo = info.getAttributes();
+                    Map<String, String>  mapKeys       = new TreeMap<>(objectName.getKeyPropertyList());
+                    Map<String, Object>  mapAttributes = new TreeMap<>();
+                    MBeanInfo            info          = mbs.getMBeanInfo(objectName);
+                    MBeanAttributeInfo[] attrInfo      = info.getAttributes();
 
                     String[] attrsToRetrieve = new String[setAttributes.size() == 0
                                                           ? attrInfo.length

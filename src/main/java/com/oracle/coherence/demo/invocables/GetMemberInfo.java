@@ -19,6 +19,7 @@
 package com.oracle.coherence.demo.invocables;
 
 import com.oracle.coherence.demo.application.Utilities;
+
 import com.oracle.coherence.demo.model.MemberInfo;
 
 import com.tangosol.io.pof.PofReader;
@@ -32,9 +33,9 @@ import com.tangosol.net.ExtensibleConfigurableCacheFactory;
 import com.tangosol.net.Member;
 import com.tangosol.net.NamedCache;
 
-import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE;
-
 import java.io.IOException;
+
+import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE;
 
 /**
  * An {@link com.tangosol.net.Invocable} to acquire cluster member information.

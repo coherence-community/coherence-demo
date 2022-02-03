@@ -19,13 +19,15 @@
 package com.oracle.coherence.demo.cachestore;
 
 import com.tangosol.net.cache.CacheLoader;
+
 import com.tangosol.util.Base;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -33,26 +35,22 @@ import java.util.Map;
  *
  * @author Tim Middleton
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class JpaCacheLoader extends Base implements CacheLoader {
-
-
     /**
      * {@link Map} of factories keyed on unit name.
      */
     protected static final Map mapFactories = new HashMap();
-
 
     /**
      * Entity name.
      */
     protected String entityName;
 
-
     /**
      * Entity class.
      */
     protected Class entityClass;
-
 
     /**
      * Entity manager factory.
@@ -112,17 +110,15 @@ public class JpaCacheLoader extends Base implements CacheLoader {
 
         try
         {
-            Map      mapResult = new HashMap();
-            Iterator iter      = keys.iterator();
+            Map mapResult = new HashMap();
 
-            while (iter.hasNext())
+            for (Object key : keys)
             {
-                Object key   = iter.next();
-                Object value = em.find(entityClass, key);
-                if (value != null)
-                {
-                    mapResult.put(key, value);
-                }
+                    Object value = em.find(entityClass, key);
+                    if (value != null)
+                    {
+                        mapResult.put(key, value);
+                    }
             }
 
             return mapResult;

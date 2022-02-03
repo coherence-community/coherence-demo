@@ -1,7 +1,7 @@
 /*
  * File: DeveloperResource.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -20,8 +20,6 @@ package com.oracle.coherence.demo.application;
 
 import com.oracle.coherence.demo.model.Trade;
 
-import com.oracle.bedrock.runtime.LocalPlatform;
-
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 
@@ -31,8 +29,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import javax.ws.rs.core.Response;
-
-import java.io.File;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,11 +49,6 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 @Path("/developer")
 public class DeveloperResource
 {
-    /**
-     * Platform file separator.
-     */
-    private static final String SEP = File.separator;
-
     /**
      * Name of primary cluster.
      */

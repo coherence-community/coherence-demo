@@ -1,7 +1,7 @@
 /*
  * File: AbstractClusterMemberResource.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -82,13 +82,12 @@ public class AbstractClusterMemberResource
      * on the evenness/oddness of the provided stable ID.
      *
      * @param nStableId  the stable ID
-     * @param sRoleName  the role name to augment
      *
      * @return the augmented role name
      */
-    protected String augmentRoleName(int nStableId, String sRoleName)
+    protected String createRoleName(int nStableId)
     {
-        return sRoleName + ((nStableId & 1) == 1 ? "Odd" : "Even");
+        return "CoherenceDemoServer" + ((nStableId & 1) == 1 ? "Odd" : "Even");
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File: Utilities.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -82,6 +82,7 @@ public final class Utilities
     /**
      * The path to the VisualVM executable, for JDK9+.
      */
+    @SuppressWarnings("unused")
     public static final String VISUALVM = System.getProperty("visualvm.executable", "");
 
     /**
@@ -178,9 +179,9 @@ public final class Utilities
      */
     public static boolean isMetricsEnabled()
     {
-        Enumeration serviceNames = CacheFactory.ensureCluster().getServiceNames();
+        Enumeration<String> serviceNames = CacheFactory.ensureCluster().getServiceNames();
         while (serviceNames.hasMoreElements()) {
-            if (serviceNames.nextElement().equals("MetricsHttpProxy")) {
+            if ("MetricsHttpProxy".equals(serviceNames.nextElement())) {
                 return true;
             }
         }
@@ -433,7 +434,7 @@ public final class Utilities
      *
      * @return a {@link InvocableMap.EntryProcessor} to carry out the processing
      */
-    protected static InvocableMap.EntryProcessor<String, Price, Void> updateStockPrice(float randomValue)
+    private static InvocableMap.EntryProcessor<String, Price, Void> updateStockPrice(float randomValue)
     {
         return entry ->
         {

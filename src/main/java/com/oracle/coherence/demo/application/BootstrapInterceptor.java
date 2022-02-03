@@ -1,7 +1,7 @@
 /*
  * File: BootstrapInterceptor.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -43,7 +43,7 @@ public class BootstrapInterceptor implements EventInterceptor<LifecycleEvent>
         if (event.getType() == LifecycleEvent.Type.ACTIVATED)
         {
             int memberId = CacheFactory.getCluster().getLocalMember().getId();
-            // check if we are the first member or we are running in Kubernetes as the
+            // check if we are the first member, or we are running in Kubernetes as the
             // first member could be http which is storage-disabled and the data cannot yet be loaded
             if (memberId == 1 || Utilities.isRunningInKubernetes())
             {
