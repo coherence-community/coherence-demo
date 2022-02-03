@@ -30,7 +30,6 @@ import com.oracle.bedrock.runtime.coherence.options.ClusterPort;
 import com.oracle.bedrock.runtime.coherence.options.Logging;
 import com.oracle.bedrock.runtime.coherence.options.RoleName;
 
-import com.oracle.bedrock.runtime.java.options.ClassName;
 import com.oracle.bedrock.runtime.java.options.JvmOptions;
 import com.oracle.bedrock.runtime.java.options.SystemProperty;
 
@@ -38,7 +37,6 @@ import com.oracle.bedrock.runtime.options.DisplayName;
 
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
-import com.tangosol.net.Coherence;
 import com.tangosol.net.Member;
 
 import com.tangosol.util.ResourceRegistry;
@@ -104,7 +102,6 @@ public class StartMemberResource
                 // start the new cache server
                 CoherenceCacheServer server =
                         platform.launch(CoherenceCacheServer.class,
-                                        ClassName.of(Coherence.class),
                                         DisplayName.of("Coherence Demo Server"),
                                         CacheConfig.of("cache-config.xml"),
                                         SystemProperty.of("coherence.wka", "127.0.0.1"),

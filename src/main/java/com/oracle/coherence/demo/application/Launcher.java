@@ -20,7 +20,7 @@ package com.oracle.coherence.demo.application;
 
 import com.oracle.bedrock.util.Pair;
 
-import com.tangosol.net.Coherence;
+import com.tangosol.net.DefaultCacheServer;
 
 import java.time.ZoneId;
 
@@ -207,7 +207,7 @@ public final class Launcher
                            System.getProperty(JAEGER_ENDPOINT_PROPERTY, DEFAULT_JAEGER_ENDPOINT));
 
         // start the Default Cache Server
-        Coherence.main(args);
+        DefaultCacheServer.main(args);
     }
 
 
