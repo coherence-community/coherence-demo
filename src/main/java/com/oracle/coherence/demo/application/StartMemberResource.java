@@ -33,6 +33,7 @@ import com.oracle.bedrock.runtime.coherence.options.RoleName;
 import com.oracle.bedrock.runtime.java.options.JvmOptions;
 import com.oracle.bedrock.runtime.java.options.SystemProperty;
 
+import com.oracle.bedrock.runtime.java.profiles.RemoteDebugging;
 import com.oracle.bedrock.runtime.options.DisplayName;
 
 import com.tangosol.net.CacheFactory;
@@ -53,7 +54,10 @@ import javax.ws.rs.core.Response;
 
 import java.lang.management.ManagementFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.oracle.bedrock.deferred.DeferredHelper.eventually;
 import static com.oracle.bedrock.deferred.DeferredHelper.invoking;
@@ -94,10 +98,8 @@ public class StartMemberResource
 
             try
             {
-                // strip off debug
-                String[] arguments = inputArguments.toArray(new String[0]);
-                String[] newArguments = new String[arguments.length -1];
-                System.arraycopy(arguments, 0, newArguments, 0, arguments.length -1);
+                // strip off unwanted arguments other than memory
+                List<String> newArguments = inputArguments.stream().filter(s -> s.contains("-Xm")).collect(Collectors.toList());
 
                 // start the new cache server
                 CoherenceCacheServer server =
@@ -122,7 +124,7 @@ public class StartMemberResource
                                                           System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY)),
                                         SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
                                                           System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)),
-                                        JvmOptions.include(newArguments));
+                                        JvmOptions.include(newArguments.toArray(new String[0])));
                 Span span = GlobalTracer.get().activeSpan();
                 Utilities.spanLog(span, "Starting new member");
 

@@ -182,9 +182,6 @@ public final class Launcher
         System.setProperty("coherence.wka", "127.0.0.1");
         System.setProperty("coherence.ttl", "0");
 
-        // management over REST
-        System.setProperty("coherence.management.http", "all");
-
         // enable http serving
         System.setProperty("with.http", "true");
 

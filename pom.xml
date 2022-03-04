@@ -41,11 +41,11 @@
     <jackson.version>2.12.1</jackson.version>
     <jaeger.version>1.1.0</jaeger.version>
     <jaxrs.version>2.1.6</jaxrs.version>
-    <jersey.version>2.34</jersey.version>
+    <jersey.version>2.35</jersey.version>
     <javax.activation.version>1.2.0</javax.activation.version>
     <jib.version>2.3.0</jib.version>
     <jib.goal>dockerBuild</jib.goal>
-    <netty.version>4.1.42.Final</netty.version>
+    <netty.version>4.1.73.Final</netty.version>
     <opentracing.jdbc.version>0.2.10</opentracing.jdbc.version>
 
     <!-- maven configuration -->
@@ -338,6 +338,10 @@
             <argument>-Xms512m</argument>
             <argument>-Dcoherence.log.level=3</argument>
             <argument>-Dcoherence.management=all</argument>
+            <argument>-Dcoherence.management.http=none</argument>
+            <argument>-Dcoherence.ttl=0</argument>
+            <argument>-Djava.net.preferIPv4Stack=true</argument>
+            <argument>-Dcoherence.wka=127.0.0.1</argument>
             <argument>-Dcom.oracle.coherence.common.util.Threads.dumpLocks=FULL</argument>
             <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}</argument>
             <argument>-Dhttp.hostname=${http.hostname}</argument>

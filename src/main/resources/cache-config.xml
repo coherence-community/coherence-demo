@@ -146,7 +146,7 @@
                     <!-- Management over REST -->
                     <resource-config>
                         <instance>
-                            <class-name>com.tangosol.coherence.management.internal.ManagementResourceConfig</class-name>
+                            <class-name>com.oracle.coherence.demo.application.ManagementResourceConfig</class-name>
                         </instance>
                     </resource-config>
                 </http-acceptor>
