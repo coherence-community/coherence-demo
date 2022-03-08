@@ -19,7 +19,7 @@
 package com.oracle.coherence.demo.application;
 
 import com.tangosol.coherence.management.RestManagement;
-import javax.ws.rs.ApplicationPath;
+
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
