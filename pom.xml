@@ -32,7 +32,7 @@
     
     <!-- dependency versions -->
     <bedrock.version>5.0.11</bedrock.version>
-    <coherence.version>21.12.3</coherence.version>
+    <coherence.version>21.12.4</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.15.2.0</derby.version>
