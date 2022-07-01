@@ -358,7 +358,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 1. Build the Docker image:
 
    ```bash
-   mvn clean install -P docker,grid-edition -Dcoherence.version={coherence-version}
+   mvn clean install -P docker,grid-edition -Dcoherence.version={coherence.version}
    ```
 
    > **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
