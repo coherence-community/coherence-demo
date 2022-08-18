@@ -46,5 +46,6 @@ jobs:
 
     - name: Build with Maven
       run: |
+        git fetch --all --tags
         git checkout v5.0.1
         mvn -B package --file pom.xml -Dcoherence.version=${{ matrix.version }}
