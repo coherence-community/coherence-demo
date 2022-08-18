@@ -20,8 +20,8 @@ package com.oracle.coherence.demo.cachestore;
 
 import com.tangosol.net.cache.CacheStore;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.Collection;
 import java.util.Map;

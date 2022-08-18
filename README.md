@@ -27,10 +27,13 @@ of contents below for instructions.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
-> Note: This demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) and
+> Note: By default, this demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) version 22.09 and
 > as a consequence the commercial-only feature "Federation" is not available by default.
 >
 > Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
+>
+> This version has been updated to move from `javax` -> `jakarta` packages and as such
+> if you wish to run this demo against a previous CE or Grid Edition version, you must use `git checkout v5.0.1` to checkout a release of the demo that works with this version.
 
 ## Table of Contents
 
@@ -210,12 +213,12 @@ The steps to run the application on Kubernetes comprises the following:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo:5.0.1-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:6.0.0-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker
    > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
-   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:5.0.1-SNAPSHOT` and
-   > them push using `docker push youname/coherence-demo:5.0.1-SNAPSHOT`.
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:6.0.0-SNAPSHOT` and
+   > them push using `docker push youname/coherence-demo:6.0.0-SNAPSHOT`.
 
 1. **Install the Oracle Coherence Operator**
 
@@ -358,6 +361,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 1. Build the Docker image:
 
    ```bash
+   git checkout v5.0.1 # required for pre CE 22.09 versions
    mvn clean install -P docker,grid-edition -Dcoherence.version={coherence.version}
    ```
 
@@ -520,6 +524,7 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -D
 When you issue any maven commands, ensure you include the `grid-edition` profile as below:
 
 ```bash
+git checkout v5.0.1 # required for pre CE 22.09 versions
 mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
 ```
 

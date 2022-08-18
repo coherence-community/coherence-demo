@@ -20,7 +20,7 @@ package com.oracle.coherence.demo.application;
 
 import com.tangosol.coherence.rest.server.DefaultResourceConfig;
 
-import javax.ws.rs.ApplicationPath;
+import jakarta.ws.rs.ApplicationPath;
 
 /**
  * Defined the configured REST services for the Coherence Demo application.

@@ -33,7 +33,6 @@ import com.oracle.bedrock.runtime.coherence.options.RoleName;
 import com.oracle.bedrock.runtime.java.options.JvmOptions;
 import com.oracle.bedrock.runtime.java.options.SystemProperty;
 
-import com.oracle.bedrock.runtime.java.profiles.RemoteDebugging;
 import com.oracle.bedrock.runtime.options.DisplayName;
 
 import com.tangosol.net.CacheFactory;
@@ -46,16 +45,14 @@ import io.opentracing.Span;
 
 import io.opentracing.util.GlobalTracer;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Response;
 
 import java.lang.management.ManagementFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
