@@ -68,6 +68,7 @@ jobs:
         COH_VERSION=`cat ${POM_FILE} | grep '<revision>' | sed -e 's,^.*<revision>,,' -e 's,</revision>.*$,,'`
 
         # checkout the v5.0.1 tag which is the one that works for 14.1.1.
+        git fetch --all --tags
         git checkout v5.0.1
         echo "Running verify against $COH_VERSION and tag v5.0.1"
         mvn --file pom.xml -nsu --batch-mode -e -Dcoherence.version=$COH_VERSION clean install
