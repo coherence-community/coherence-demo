@@ -538,7 +538,7 @@ mvn exec:exec -Pgrid-edition -Dcoherence.version=14.1.1-0-0
 ## View Cluster Metrics via Grafana
 
 If you wish to view metrics via Grafana, please carry out the steps
-[here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#view-cluster-metrics-via-grafana)
+[here](https://oracle.github.io/coherence-operator/docs/latest/#/examples/021_deployment/README)
 before you install any of the examples above.
 
 > Note: Before you run the above, you must change the namespace in `src/main/yaml/prometheus-rbac.yaml` in the coherence-operator cloned repository
