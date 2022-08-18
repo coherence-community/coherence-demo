@@ -20,7 +20,7 @@ package com.oracle.coherence.demo.application;
 
 import org.glassfish.jersey.server.ResourceConfig;
 
-import javax.ws.rs.ApplicationPath;
+import jakarta.ws.rs.ApplicationPath;
 
 /**
  * The Coherence Demo Web Application {@link ResourceConfig}.
