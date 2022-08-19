@@ -511,7 +511,7 @@
             <version>${jib.version}</version>
             <configuration>
               <from>
-                <image>gcr.io/distroless/java:11</image>
+                <image>gcr.io/distroless/java17</image>
               </from>
               <to>
                 <image>${project.artifactId}</image>
@@ -525,10 +525,6 @@
                   <jmxFlag>-server</jmxFlag>
                   <jmxFlag>-Djava.awt.headless=true</jmxFlag>
                   <jmxFlag>-XX:+UnlockExperimentalVMOptions</jmxFlag>
-                  <jmxFlag>-XX:+UseCGroupMemoryLimitForHeap</jmxFlag>
-                  <jmxFlag>-XX:InitialRAMFraction=2</jmxFlag>
-                  <jmxFlag>-XX:MinRAMFraction=2</jmxFlag>
-                  <jmxFlag>-XX:MaxRAMFraction=2</jmxFlag>
                   <jmxFlag>-XX:+UseG1GC</jmxFlag>
                 </jvmFlags>
                 <mainClass>com.tangosol.net.DefaultCacheServer</mainClass>

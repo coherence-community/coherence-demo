@@ -57,9 +57,9 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 
 To run the demonstration application, you must have the following software installed:
 
-1. Java 11 SE Development Kit or Runtime environment.
+1. Java 11 or 17 SE Development Kit or Runtime environment.
 
-   You can download JDK 11 from [Java SE Development Kit 11 Downloads](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+   You can download JDK 11 or 17 from [Java SE Development Kit Downloads](https://www.oracle.com/java/technologies/downloads/)
 
 1. Maven 3.6.0 or later version installed and configured.
 
@@ -174,7 +174,7 @@ your local machine.
 
 The steps to run the application on Kubernetes comprises the following:
 * Oracle Coherence Operator Helm Chart
-* Use `kubectl` to install the Coherence cluster which comprises of 2 roles:
+* Use `kubectl` to install the Coherence cluster which comprises 2 roles:
   * storage-enabled Coherence servers
   * storage-disabled application with Grizzly HTTP Server
 

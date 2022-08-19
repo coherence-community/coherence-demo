@@ -21,8 +21,8 @@ spec:
     cacheConfig: cache-config.xml
     metrics:
       enabled: true
-  image: coherence-demo:5.0.0-SNAPSHOT
-  imagePullPolicy: Always
+  image: coherence-demo:6.0.0-SNAPSHOT
+  imagePullPolicy: IfNotPresent
   replicas: 2
 ---
 apiVersion: coherence.oracle.com/v1
@@ -55,6 +55,6 @@ spec:
     metrics:
       enabled: true
       port: 9612
-  image: coherence-demo:5.0.0-SNAPSHOT
-  imagePullPolicy: Always
+  image: coherence-demo:6.0.0-SNAPSHOT
+  imagePullPolicy: IfNotPresent
   replicas: 1
