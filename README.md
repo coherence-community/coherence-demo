@@ -119,6 +119,7 @@ Run demo application
 
 ```bash
 mvn exec:exec
+```
 
 The following screenshot shows the application running with 5 cache servers started.
 
