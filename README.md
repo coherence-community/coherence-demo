@@ -100,6 +100,8 @@ location.
 
 ## Run the Application Locally
 
+> Note: You *must* first use `git checkout v5.0.1` to use the current 5.0.1 release that supports Coherence CE 22.06.
+
 Build the application using Maven:
 
 ```bash
@@ -109,15 +111,14 @@ mvn clean install
 The `target` directory contains a list of files:
 
 ```bash
- coherence-demo-{version}-SNAPSHOT-javadoc.jar  - javadoc
- coherence-demo-{version}-SNAPSHOT-sources.jar  - sources
- ```
+coherence-demo-{version}-SNAPSHOT-javadoc.jar - javadoc
+coherence-demo-{version}-SNAPSHOT-sources.jar - sources
+```
 
 Run demo application
 
 ```bash
 mvn exec:exec
-```
 
 The following screenshot shows the application running with 5 cache servers started.
 
