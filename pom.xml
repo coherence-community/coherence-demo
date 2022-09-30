@@ -2,7 +2,7 @@
 <!--
  * File: pom.xml
  *
- * Copyright (c) 2015, 2020, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2022 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -32,7 +32,7 @@
     
     <!-- dependency versions -->
     <bedrock.version>6.0.1</bedrock.version>
-    <coherence.version>22.09-SNAPSHOT</coherence.version>
+    <coherence.version>22.09</coherence.version>
     <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.15.2.0</derby.version>
