@@ -100,8 +100,6 @@ location.
 
 ## Run the Application Locally
 
-> Note: You *must* first use `git checkout v5.0.1` to use the current 5.0.1 release that supports Coherence CE 22.06.
-
 Build the application using Maven:
 
 ```bash
@@ -120,6 +118,9 @@ Run demo application
 ```bash
 mvn exec:exec
 ```
+
+> Note: If you wish to run against an older Coherence CE version than 22.09 or older than Coherence GE 14.1.1.2206.1, then *must* first use `git checkout v5.0.1` to use the
+> current 5.0.1 release that supports these older versions.
 
 The following screenshot shows the application running with 5 cache servers started.
 
