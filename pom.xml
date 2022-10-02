@@ -83,12 +83,6 @@
       <artifactId>coherence-management</artifactId>
       <version>${coherence.version}</version>
     </dependency>
-    
-    <dependency>
-      <groupId>${coherence.group.id}</groupId>
-      <artifactId>coherence-metrics</artifactId>
-      <version>${coherence.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>${coherence.group.id}</groupId>
