@@ -57,9 +57,9 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 
 To run the demonstration application, you must have the following software installed:
 
-1. Java 11 or 17 SE Development Kit or Runtime environment.
+1. Java 17 SE Development Kit or Runtime environment.
 
-   You can download JDK 11 or 17 from [Java SE Development Kit Downloads](https://www.oracle.com/java/technologies/downloads/)
+   You can download JDK 17 from [Java SE Development Kit Downloads](https://www.oracle.com/java/technologies/downloads/)
 
 1. Maven 3.6.0 or later version installed and configured.
 
@@ -100,8 +100,6 @@ location.
 
 ## Run the Application Locally
 
-> Note: You *must* first use `git checkout v5.0.1` to use the current 5.0.1 release that supports Coherence CE 22.06.
-
 Build the application using Maven:
 
 ```bash
@@ -120,6 +118,9 @@ Run demo application
 ```bash
 mvn exec:exec
 ```
+
+> Note: If you wish to run against an older Coherence CE version than 22.09 or older than Coherence GE 14.1.1.2206.1, then *must* first use `git checkout v5.0.1` to use the
+> current 5.0.1 release that supports these older versions.
 
 The following screenshot shows the application running with 5 cache servers started.
 
