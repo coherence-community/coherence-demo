@@ -38,7 +38,7 @@
     <derby.version>10.15.2.0</derby.version>
     <docker.version>${project.version}</docker.version>
     <eclipselink.version>3.0.2</eclipselink.version>
-    <jackson.version>2.13.3</jackson.version>
+    <jackson.version>2.13.4.1</jackson.version>
     <jaeger.version>1.1.0</jaeger.version>
     <jaxrs.version>3.0.0</jaxrs.version>
     <jersey.version>3.0.5</jersey.version>
