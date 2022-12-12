@@ -39,6 +39,7 @@
     <docker.version>${project.version}</docker.version>
     <eclipselink.version>3.0.2</eclipselink.version>
     <jackson.version>2.13.3</jackson.version>
+    <jackson.databind.version>2.13.4.1</jackson.databind.version>
     <jaeger.version>1.1.0</jaeger.version>
     <jaxrs.version>3.0.0</jaxrs.version>
     <jersey.version>3.0.5</jersey.version>
@@ -159,7 +160,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${jackson.version}</version>
+      <version>${jackson.databind.version}</version>
     </dependency>
 
     <dependency>
