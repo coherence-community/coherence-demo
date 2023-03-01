@@ -6,8 +6,6 @@ name: Java CI with Maven JDK17
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
   schedule:
     # Every day at 1am
     - cron: '0 1 * * *'
