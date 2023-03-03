@@ -5,7 +5,8 @@ name: Java CI with Maven - Snapshots
 
 on:
   push:
-    branches: [ main ]
+    branches:
+    - '*'
   schedule:
     # Every day at midnight
     - cron: '0 0 * * *'

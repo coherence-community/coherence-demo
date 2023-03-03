@@ -5,7 +5,8 @@ name: Java CI with Maven - Snapshots - ce-14.1.1.0.x
 
 on:
   push:
-    branches: [ main ]
+    branches:
+    - '*'
   schedule:
     # Every day at midnight
     - cron: '0 0 * * *'
