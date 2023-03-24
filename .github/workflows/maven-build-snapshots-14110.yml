@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        coherenceVersion:
-          - 14.1.1-0-13-SNAPSHOT
+        branch:
+          - v14.1.1.0
 
     steps:
     - uses: actions/checkout@v3
@@ -39,6 +39,22 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2-snapshots
 
+    - name: Build Coherence Snapshot
+      shell: bash
+      env:
+        COH_BRANCH: ${{ matrix.branch }}
+        MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false
+      run: |
+        # Checkout the git repo for coherence snapshot and build
+        DIR=`pwd`
+        CLONE_DIR=coherence-$COH_BRANCH
+        cd /tmp
+        git clone https://github.com/oracle/coherence.git $CLONE_DIR
+        cd $CLONE_DIR
+        git checkout $COH_BRANCH
+        mvn --file prj/pom.xml --batch-mode -e -DskipTests clean install
+        cd $DIR
+
     - name: Set up JDK 11 for Build
       uses: actions/setup-java@v3
       with:
@@ -47,14 +63,26 @@ jobs:
 
     - name: Build and Verify
       env:
-        COH_VERSION: ${{ matrix.coherenceVersion }}
+        COH_BRANCH: ${{ matrix.branch }}
       shell: bash
       run: |
+        CLONE_DIR=coherence-$COH_BRANCH
+        # coherence-bom does not exist in 14.1.1.0
+        POM_FILE=/tmp/${CLONE_DIR}/prj/coherence-bom/pom.xml
+        if [ ! -r $POM_FILE ] ; then
+           POM_FILE=/tmp/${CLONE_DIR}/prj/pom.xml
+        fi
+        COH_VERSION=`cat ${POM_FILE} | grep '<revision>' | sed -e 's,^.*<revision>,,' -e 's,</revision>.*$,,'`
+
         # checkout the v5.0.1 tag which is the one that works for 14.1.1.
         git fetch --all --tags
         git checkout v5.0.1
         echo "Running verify against $COH_VERSION and tag v5.0.1"
         mvn --file pom.xml -nsu --batch-mode -e -Dcoherence.version=$COH_VERSION clean install
+
+        echo "Removing Coherence cloned directory"
+        CLONE_DIR=coherence-$COH_BRANCH
+        rm -rf /tmp/${CLONE_DIR}
 
     - name: Coherence Demo Jar
       uses: actions/upload-artifact@v2
