@@ -68,8 +68,6 @@ To run the demonstration application, you must have the following software insta
 
    For more information about browser compatibility, see https://code.angularjs.org/1.7.5/docs/misc/faq.
 
-> **Note**: All code compiles to JDK 8 bytecode for compatibility with Coherence releases.
-
 ### OpenTracing Prerequisites
 
 If you wish to demonstrate OpenTracing, then prior to running the demo, start the Jaeger OpenTracing implementation:
@@ -126,7 +124,7 @@ The following screenshot shows the application running with 5 cache servers star
 
 ![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
 
-A Coherence Cache server and HTTP server are started on port 8080 for serving REST and application data. When the Cache server starts, the application loads on the default web browser at http://127.0.0.1:8080/application/index.html.
+A Coherence Cache server and HTTP server are started on port 8080 for serving application data. When the Cache server starts, the application loads on the default web browser at http://127.0.0.1:8080/application/index.html.
 
 The following features are available to demonstrate in the application:
 
@@ -500,15 +498,12 @@ set PATH=%JAVA_HOME%\bin;%PATH%
 
 ### Install Coherence JARs into your Maven repository
 
-Install Coherence, Coherence-REST, Coherence Management and Coherence HTTP Netty installed into your local maven repository.
+Install Coherence and Coherence HTTP Netty installed into your local maven repository.
 
 For Linux/UNIX/Mac OS:
 
 ```bash
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/14.1.1/coherence.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-management.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.1/coherence-management.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-metrics.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-metrics/14.1.1/coherence-metrics.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/14.1.1/coherence-rest.14.1.1.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.1/coherence-http-netty.14.1.1.pom
 ```
 
@@ -516,9 +511,6 @@ For Windows OS:
 
 ```bash
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\14.1.1\coherence.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-management.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.1.1\coherence-management.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-metrics.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-metrics\14.1.1\coherence-metrics.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\14.1.1\coherence-rest.14.1.1.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.1.1\coherence-http-netty.14.1.1.pom
 ```
 

@@ -23,6 +23,7 @@ jobs:
           - 21.12.4
           - 22.06.2
           - 22.06.3
+          - 22.06.4-SNAPSHOT
 
     steps:
     - name: Checkout

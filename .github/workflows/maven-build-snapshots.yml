@@ -17,12 +17,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch:
-          - main
+        coherenceVersion:
+          - 22.06.4-SNAPSHOT
+          - 23.03-SNAPSHOT
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 11
+    - name: Set up JDK 17
       uses: actions/setup-java@v1
       with:
         java-version: '17'
@@ -37,40 +38,13 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2-snapshots
 
-    - name: Build Coherence Snapshot
-      shell: bash
-      env:
-        COH_BRANCH: ${{ matrix.branch }}
-        MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false
-      run: |
-        # Checkout the git repo for coherence snapshot and build
-        DIR=`pwd`
-        CLONE_DIR=coherence-$COH_BRANCH
-        cd /tmp
-        git clone https://github.com/oracle/coherence.git $CLONE_DIR
-        cd $CLONE_DIR/prj
-        make all
-        cd $DIR
-
     - name: Build and Verify
       env:
-        COH_BRANCH: ${{ matrix.branch }}
+        COH_VERSION: ${{ matrix.coherenceVersion }}
       shell: bash
       run: |
-        CLONE_DIR=coherence-$COH_BRANCH
-        # coherence-bom does not exist in 14.1.1.0
-        POM_FILE=/tmp/${CLONE_DIR}/prj/coherence-bom/pom.xml
-        if [ ! -r $POM_FILE ] ; then
-           POM_FILE=/tmp/${CLONE_DIR}/prj/pom.xml
-        fi
-        COH_VERSION=`cat ${POM_FILE} | grep '<revision>' | sed -e 's,^.*<revision>,,' -e 's,</revision>.*$,,'`
-
         echo "Running verify against $COH_VERSION"
         mvn --file pom.xml -nsu --batch-mode -e -Dcoherence.version=$COH_VERSION clean install
-
-        echo "Removing Coherence cloned directory"
-        CLONE_DIR=coherence-$COH_BRANCH
-        rm -rf /tmp/${CLONE_DIR}
 
     - name: Coherence Demo Jar
       uses: actions/upload-artifact@v2

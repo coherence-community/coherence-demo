@@ -3,7 +3,7 @@
 <!--
  * File: cache-config-grid-edition.xml
  *
- * Copyright (c) 2020, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2020, 2023 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -132,14 +132,6 @@
                         <port system-property="http.port">8080</port>
                     </local-address>
 
-                    <!-- the coherence cache resources -->
-                    <resource-config>
-                        <context-path>/cache</context-path>
-                        <instance>
-                            <class-name>com.tangosol.coherence.rest.server.DefaultResourceConfig</class-name>
-                        </instance>
-                    </resource-config>
-
                     <!-- the application service resources -->
                     <resource-config>
                         <context-path>/service</context-path>
@@ -154,13 +146,6 @@
                         <context-path>/application</context-path>
                         <instance>
                             <class-name>com.oracle.coherence.demo.application.ApplicationResourceConfig</class-name>
-                        </instance>
-                    </resource-config>
-
-                    <!-- Management over REST -->
-                    <resource-config>
-                        <instance>
-                            <class-name>com.oracle.coherence.demo.application.ManagementResourceConfig</class-name>
                         </instance>
                     </resource-config>
                 </http-acceptor>

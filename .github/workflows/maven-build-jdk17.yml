@@ -20,7 +20,7 @@ jobs:
         version:
           - 22.06.2
           - 22.06.3
-#          - 22.09
+          - 23.03-SNAPSHOT
 
     steps:
     - name: Checkout
