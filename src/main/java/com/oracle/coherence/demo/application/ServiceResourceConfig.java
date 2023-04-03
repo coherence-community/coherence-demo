@@ -1,7 +1,7 @@
 /*
  * File: ServiceResourceConfig.java
  *
- * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2023 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -18,9 +18,8 @@
 
 package com.oracle.coherence.demo.application;
 
-import com.tangosol.coherence.rest.server.DefaultResourceConfig;
-
 import jakarta.ws.rs.ApplicationPath;
+import org.glassfish.jersey.server.ResourceConfig;
 
 /**
  * Defined the configured REST services for the Coherence Demo application.
@@ -28,7 +27,7 @@ import jakarta.ws.rs.ApplicationPath;
  * @author Brian Oliver
  */
 @ApplicationPath("service")
-public class ServiceResourceConfig extends DefaultResourceConfig
+public class ServiceResourceConfig extends ResourceConfig
 {
     /**
      * Constructs a {@link ServiceResourceConfig}.
@@ -47,10 +46,4 @@ public class ServiceResourceConfig extends DefaultResourceConfig
         register(TracingFilter.class);
     }
 
-
-    @Override
-    protected void registerRootResource()
-    {
-        // we don't want a root resource
-    }
 }

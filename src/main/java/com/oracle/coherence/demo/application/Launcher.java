@@ -1,7 +1,7 @@
 /*
  * File: Launcher.java
  *
- * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2023 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -20,6 +20,7 @@ package com.oracle.coherence.demo.application;
 
 import com.oracle.bedrock.util.Pair;
 
+import com.tangosol.net.Coherence;
 import com.tangosol.net.DefaultCacheServer;
 
 import java.time.ZoneId;
@@ -204,7 +205,7 @@ public final class Launcher
                            System.getProperty(JAEGER_ENDPOINT_PROPERTY, DEFAULT_JAEGER_ENDPOINT));
 
         // start the Default Cache Server
-        DefaultCacheServer.main(args);
+        Coherence.main(args);
     }
 
 

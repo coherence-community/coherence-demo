@@ -1,7 +1,7 @@
 /*
  * File: StartMemberResource.java
  *
- * Copyright (c) 2015, 2021, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2023, Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -30,6 +30,7 @@ import com.oracle.bedrock.runtime.coherence.options.ClusterPort;
 import com.oracle.bedrock.runtime.coherence.options.Logging;
 import com.oracle.bedrock.runtime.coherence.options.RoleName;
 
+import com.oracle.bedrock.runtime.java.options.ClassName;
 import com.oracle.bedrock.runtime.java.options.JvmOptions;
 import com.oracle.bedrock.runtime.java.options.SystemProperty;
 
@@ -37,6 +38,7 @@ import com.oracle.bedrock.runtime.options.DisplayName;
 
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
+import com.tangosol.net.Coherence;
 import com.tangosol.net.Member;
 
 import com.tangosol.util.ResourceRegistry;
@@ -66,6 +68,7 @@ import static com.oracle.bedrock.predicate.Predicates.greaterThan;
  * cluster, either primary or secondary.
  *
  * @author Brian Oliver
+ * @author Tim Middleton
  */
 @Path("/start-member/{serverCount}")
 public class StartMemberResource
@@ -101,6 +104,7 @@ public class StartMemberResource
                 // start the new cache server
                 CoherenceCacheServer server =
                         platform.launch(CoherenceCacheServer.class,
+                                        ClassName.of(Coherence.class),
                                         DisplayName.of("Coherence Demo Server"),
                                         CacheConfig.of("cache-config.xml"),
                                         SystemProperty.of("coherence.wka", "127.0.0.1"),
