@@ -27,7 +27,7 @@ of contents below for instructions.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
-> Note: By default, this demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) version 22.09 and
+> Note: By default, this demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) version 23.03 and
 > as a consequence the commercial-only feature "Federation" is not available by default.
 >
 > Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
