@@ -1,0 +1,43 @@
+# Copyright 2023 Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at
+# https://oss.oracle.com/licenses/upl.
+
+# ---------------------------------------------------------------------------
+# Coherence VisualVM Plugin Actions Scheduled Trivy Scan
+# ---------------------------------------------------------------------------
+name: Scheduled Trivy Scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '*'
+  schedule:
+    # Every day at midnight
+    - cron: '0 0 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+#   Checkout the source, we need a depth of zero to fetch all of the history otherwise
+#   the copyright check cannot work out the date of the files from Git.
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+
+    - name: Trivy Scan
+      shell: bash
+      run: |
+        DIR=`mktemp -d`
+        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ${DIR} v0.38.3
+        ${DIR}/trivy fs --exit-code 1 .
+        
+        

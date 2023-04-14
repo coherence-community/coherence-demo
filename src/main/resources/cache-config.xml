@@ -134,6 +134,13 @@
                             <class-name>com.oracle.coherence.demo.application.ApplicationResourceConfig</class-name>
                         </instance>
                     </resource-config>
+
+                    <!-- Management over REST -->
+                    <resource-config>
+                        <instance>
+                            <class-name>com.oracle.coherence.demo.application.ManagementResourceConfig</class-name>
+                        </instance>
+                    </resource-config>
                 </http-acceptor>
             </acceptor-config>
             <autostart system-property="with.http">true</autostart>
