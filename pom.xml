@@ -29,7 +29,7 @@
   <properties>
     <!-- The groupId of the Coherence product -->
     <coherence.group.id>com.oracle.coherence.ce</coherence.group.id>
-    
+
     <!-- dependency versions -->
     <bedrock.version>6.0.1</bedrock.version>
     <coherence.version>23.03</coherence.version>
@@ -162,6 +162,13 @@
       <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-client</artifactId>
       <version>${jaeger.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.tomcat.embed</groupId>
+          <artifactId>tomcat-embed-core</artifactId>
+        </exclusion>
+      </exclusions>
+
     </dependency>
 
     <!-- jax-ws -->
@@ -303,7 +310,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <!-- attach sources -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -336,8 +343,11 @@
             <argument>-Dcoherence.ttl=0</argument>
             <argument>-Djava.net.preferIPv4Stack=true</argument>
             <argument>-Dcoherence.wka=127.0.0.1</argument>
-            <argument>-Dcom.oracle.coherence.common.util.Threads.dumpLocks=FULL</argument>
-            <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}</argument>
+            <argument>
+              -Dcom.oracle.coherence.common.util.Threads.dumpLocks=FULL
+            </argument>
+            <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}
+            </argument>
             <argument>-Dhttp.hostname=${http.hostname}</argument>
             <argument>-Dhttp.port=${http.port}</argument>
             <argument>com.oracle.coherence.demo.application.Launcher</argument>
@@ -397,7 +407,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <!-- JDk11 specifics -->
     <profile>
       <id>javadoc-jdk11</id>
@@ -478,7 +488,7 @@
           <name>docker</name>
         </property>
       </activation>
-      
+
       <build>
         <plugins>
           <plugin>

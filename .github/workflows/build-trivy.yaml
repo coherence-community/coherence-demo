@@ -43,6 +43,6 @@ jobs:
       run: |
         DIR=`mktemp -d`
         curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ${DIR} v0.38.3
-        ${DIR}/trivy fs .
+        ${DIR}/trivy fs --exit-code 1 .
         
         
