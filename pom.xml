@@ -81,6 +81,12 @@
 
     <dependency>
       <groupId>${coherence.group.id}</groupId>
+      <artifactId>coherence-management</artifactId>
+      <version>${coherence.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>${coherence.group.id}</groupId>
       <artifactId>coherence-http-netty</artifactId>
       <version>${coherence.version}</version>
       <exclusions>
@@ -345,7 +351,7 @@
             <classpath/>
             <argument>-Xmx512m</argument>
             <argument>-Xms512m</argument>
-            <argument>-Dcoherence.log.level=3</argument>
+            <argument>-Dcoherence.log.level=9</argument>
             <argument>-Dcoherence.management=all</argument>
             <argument>-Dcoherence.ttl=0</argument>
             <argument>-Djava.net.preferIPv4Stack=true</argument>
