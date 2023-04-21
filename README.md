@@ -82,7 +82,7 @@ docker run --rm -d --name jaeger \
         -p 16686:16686 \
         -p 14268:14268 \
         -p 9411:9411 \
-        jaegertracing/all-in-one:1.13
+        jaegertracing/all-in-one:1.20
 ```
 
 Navigate to [http://localhost:16686](http://localhost:16686) in order to access the Jaeger UI.

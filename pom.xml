@@ -170,10 +170,6 @@
       <version>${jaeger.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>org.apache.tomcat.embed</groupId>
-          <artifactId>tomcat-embed-core</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.jetbrains.kotlin</groupId>
           <artifactId>kotlin-stdlib-common</artifactId>
         </exclusion>
@@ -182,6 +178,19 @@
           <artifactId>kotlin-stdlib</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!-- Include most recent versions of the following to avoid CVE's -->
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-common</artifactId>
+      <version>1.8.20</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>1.8.20</version>
     </dependency>
 
     <!-- jax-ws -->
@@ -356,13 +365,11 @@
             <argument>-Dcoherence.ttl=0</argument>
             <argument>-Djava.net.preferIPv4Stack=true</argument>
             <argument>-Dcoherence.wka=127.0.0.1</argument>
-            <argument>
-              -Dcom.oracle.coherence.common.util.Threads.dumpLocks=FULL
-            </argument>
-            <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}
-            </argument>
+            <argument>-Dcom.oracle.coherence.common.util.Threads.dumpLocks=FULL</argument>
+            <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}</argument>
             <argument>-Dhttp.hostname=${http.hostname}</argument>
             <argument>-Dhttp.port=${http.port}</argument>
+            <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=12345</argument>
             <argument>com.oracle.coherence.demo.application.Launcher</argument>
           </arguments>
         </configuration>
