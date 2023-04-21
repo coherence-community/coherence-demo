@@ -180,6 +180,7 @@
       </exclusions>
     </dependency>
 
+    <!-- Include most recent versions of the following to avoid CVE's -->
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib-common</artifactId>
