@@ -32,7 +32,7 @@
 
     <!-- dependency versions -->
     <bedrock.version>6.0.1</bedrock.version>
-    <coherence.version>23.03</coherence.version>
+    <coherence.version>23.03.1</coherence.version>
     <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.15.2.0</derby.version>
@@ -76,6 +76,12 @@
     <dependency>
       <groupId>${coherence.group.id}</groupId>
       <artifactId>coherence</artifactId>
+      <version>${coherence.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>${coherence.group.id}</groupId>
+      <artifactId>coherence-grpc-proxy</artifactId>
       <version>${coherence.version}</version>
     </dependency>
 
@@ -369,6 +375,7 @@
             <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}</argument>
             <argument>-Dhttp.hostname=${http.hostname}</argument>
             <argument>-Dhttp.port=${http.port}</argument>
+            <argument>-Dcoherence.grpc.server.port=1408</argument>
             <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=12345</argument>
             <argument>com.oracle.coherence.demo.application.Launcher</argument>
           </arguments>
