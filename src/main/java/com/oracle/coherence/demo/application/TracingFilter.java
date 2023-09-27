@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2020, 2023 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -16,17 +16,15 @@
 
 package com.oracle.coherence.demo.application;
 
-import io.opentracing.Scope;
-import io.opentracing.Span;
-import io.opentracing.Tracer;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 
-import io.opentracing.tag.Tags;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanKind;
+import io.opentelemetry.api.trace.Tracer;
 
-import io.opentracing.util.GlobalTracer;
+import io.opentelemetry.context.Scope;
 
 import java.net.URI;
-
-import java.util.HashMap;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -47,7 +45,7 @@ public class TracingFilter
         implements ContainerRequestFilter, ContainerResponseFilter
 {
     /**
-     * Value for OpenTracing {@link Tags#COMPONENT} key.
+     * Value for OpenTelemetry attribute key.
      */
     private static final String JAXRS = "jaxrs";
 
@@ -72,15 +70,16 @@ public class TracingFilter
     @Override
     public void filter(ContainerRequestContext context)
     {
-        Tracer tracer = GlobalTracer.get();
-        Span   span   = tracer.buildSpan(getOperationName())
-                .withTag(Tags.COMPONENT,   JAXRS)
-                .withTag(Tags.SPAN_KIND,   Tags.SPAN_KIND_SERVER)
-                .withTag(Tags.HTTP_METHOD, context.getMethod())
-                .withTag(Tags.HTTP_URL,    getURL(context)).start();
+        Tracer tracer = GlobalOpenTelemetry.getTracer("coherence.demo");
+        Span   span   = tracer.spanBuilder(getOperationName())
+                .setAttribute("component",   JAXRS)
+                .setAttribute("http.method", context.getMethod())
+                .setAttribute("http.url",    getURL(context))
+                .setSpanKind(SpanKind.SERVER)
+                .startSpan();
 
         store(context, SPAN_KEY,  span);
-        store(context, SCOPE_KEY, tracer.activateSpan(span));
+        store(context, SCOPE_KEY, span.makeCurrent());
     }
 
     // ----- ContainerResponseFilter interface ------------------------------
@@ -94,17 +93,12 @@ public class TracingFilter
 
         if (responseContext.getStatusInfo().getFamily()
             == Response.Status.Family.SERVER_ERROR)
-        {
-        Tags.ERROR.set(span, true);
-        span.log(new HashMap<String, String>()
-            {{
-            put("event", "error");
-            }});
-        }
+            {
+            span.addEvent("error");
+            span.setAttribute("http.status", responseContext.getStatus());
+            }
 
-        Tags.HTTP_STATUS.set(span, responseContext.getStatus());
-
-        span.finish();
+        span.end();
         scope.close();
     }
 

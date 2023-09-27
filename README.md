@@ -20,7 +20,7 @@ The application showcases Coherence general features, scalability capabilities i
 * In-Place Processing
 * Federation (Grid Edition feature only)
 * Lambda Support
-* OpenTracing Support
+* OpenTelemetry Support
 
 You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table
 of contents below for instructions.
@@ -42,7 +42,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
   * [Table of Contents](#table-of-contents)
   * [Prerequisites](#prerequisites)
     + [General Prerequisites](#general-prerequisites)
-    + [OpenTracing Prerequisites](#openTracing-prerequisites)
+    + [OpenTelemetry Prerequisites](#openTelemetry-prerequisites)
   * [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
   * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
@@ -57,9 +57,9 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 
 To run the demonstration application, you must have the following software installed:
 
-1. Java 17 SE Development Kit or Runtime environment.
+1. Java 21 SE Development Kit or Runtime environment.
 
-   You can download JDK 17 from [Java SE Development Kit Downloads](https://www.oracle.com/java/technologies/downloads/)
+   You can download JDK 21 from [Java SE Development Kit Downloads](https://www.oracle.com/java/technologies/downloads/)
 
 1. Maven 3.6.0 or later version installed and configured.
 
@@ -68,28 +68,34 @@ To run the demonstration application, you must have the following software insta
 
    For more information about browser compatibility, see https://code.angularjs.org/1.7.5/docs/misc/faq.
 
-### OpenTracing Prerequisites
+### OpenTelemetry Prerequisites
 
-If you wish to demonstrate OpenTracing, then prior to running the demo, start the Jaeger OpenTracing implementation:
+If you wish to demonstrate OpenTelemetry, then prior to running the demo, start the Jaeger OpenTelemetry implementation:
 
 ```bash
-docker run --rm -d --name jaeger \
-        -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
-        -p 5775:5775/udp \
-        -p 6831:6831/udp \
-        -p 6832:6832/udp \
-        -p 5778:5778 \
-        -p 16686:16686 \
-        -p 14268:14268 \
-        -p 9411:9411 \
-        jaegertracing/all-in-one:1.20
+ docker run --rm --name jaeger \
+            -e COLLECTOR_OTLP_ENABLED=true \
+            -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \
+            -p 6831:6831/udp \
+            -p 6832:6832/udp \
+            -p 5778:5778 \
+            -p 16686:16686 \
+            -p 4317:4317 \
+            -p 4318:4318 \
+            -p 14250:14250 \
+            -p 14268:14268 \
+            -p 14269:14269 \
+            -p 9411:9411 \
+            jaegertracing/all-in-one:1.49
+
 ```
 
 Navigate to [http://localhost:16686](http://localhost:16686) in order to access the Jaeger UI.
 
 Note: If Jaeger is already running in your environment locally, you can skip this step.  If Jaeger is available
-at a different location, specify the `JAEGER_ENDPOINT` JVM property when starting the demo to override the default
-location.
+at a different location, specify the appropriate JVM properties to tell OpenTelemetry where spans should be collected.
+See the OpenTelemetry [autoconfigure docs](https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/README.md#otlp-exporter-span-metric-and-log-exporters)
+for more details.
 
 > The following screenshot shows the Jaegar UI and a trace from a JAX-RS call to Coherence
 > to JPA cache store, then backing up of cache entries across to another node.
@@ -133,7 +139,7 @@ The following features are available to demonstrate in the application:
 * Enable real-time price updates.
 * Enable or disable indexes for queries.
 * Add additional data, clear the cache or populate the cache from the **Tools** menu.
-* Show OpenTracing Support
+* Show OpenTelemetry Support
 * Open raw metrics endpoint
 
 Federation Features - Grid Edition Only

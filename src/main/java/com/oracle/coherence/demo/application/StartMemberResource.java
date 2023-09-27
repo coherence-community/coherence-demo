@@ -43,9 +43,7 @@ import com.tangosol.net.Member;
 
 import com.tangosol.util.ResourceRegistry;
 
-import io.opentracing.Span;
-
-import io.opentracing.util.GlobalTracer;
+import io.opentelemetry.api.trace.Span;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -112,11 +110,11 @@ public class StartMemberResource
                                         SystemProperty.of("with.http", false),
                                         SystemProperty.of("coherence.management.http", "none"),
                                         SystemProperty.of("coherence.management", "all"),
-                                        SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
+                                        SystemProperty.of(Launcher.OTEL_SERVICE_NAME_PROPERTY,
                                                           "Coherence Demo (" + clusterName + ')'),
-                                        SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,
-                                                          System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
-                                                                             Launcher.DEFAULT_JAEGER_ENDPOINT)),
+                                        SystemProperty.of(Launcher.OTEL_AUTO_CONFIG_PROPERTY, true),
+                                        SystemProperty.of(Launcher.OTEL_METRICS_EXPORTER_PROPERTY, "none"),
+                                        SystemProperty.of(Launcher.OTEL_LOGS_EXPORTER_PROPERTY, "none"),
                                         Logging.at(0),
                                         RoleName.of(createRoleName(nStableId)),
                                         ClusterPort.of(cluster.getDependencies().getGroupPort()),
@@ -126,7 +124,8 @@ public class StartMemberResource
                                         SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
                                                           System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)),
                                         JvmOptions.include(newArguments.toArray(new String[0])));
-                Span span = GlobalTracer.get().activeSpan();
+
+                Span span = Span.current();
                 Utilities.spanLog(span, "Starting new member");
 
                 // wait for the new cache server to join the cluster

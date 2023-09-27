@@ -1,7 +1,7 @@
 /*
  * File: StartSecondaryResource.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2023 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -113,11 +113,11 @@ public class StartSecondaryResource
                                     SystemProperty.of("coherence.distribution.2server", "false"),
                                     SystemProperty.of("coherence.tracing.ratio", 1.0),
                                     SystemProperty.of("coherence.management.http.port", "0"),
-                                    SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
+                                    SystemProperty.of(Launcher.OTEL_SERVICE_NAME_PROPERTY,
                                                       "Coherence Demo (" + secondaryName + ')'),
-                                    SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,
-                                                      System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
-                                                                         Launcher.DEFAULT_JAEGER_ENDPOINT)),
+                                    SystemProperty.of(Launcher.OTEL_AUTO_CONFIG_PROPERTY, true),
+                                    SystemProperty.of(Launcher.OTEL_METRICS_EXPORTER_PROPERTY, "none"),
+                                    SystemProperty.of(Launcher.OTEL_LOGS_EXPORTER_PROPERTY, "none"),
                                     Logging.at(0),
                                     RoleName.of("CoherenceDemoServer-" + secondaryName),
                                     ClusterPort.of(Launcher.SECONDARY_PORT),

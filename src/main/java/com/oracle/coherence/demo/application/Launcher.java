@@ -21,7 +21,6 @@ package com.oracle.coherence.demo.application;
 import com.oracle.bedrock.util.Pair;
 
 import com.tangosol.net.Coherence;
-import com.tangosol.net.DefaultCacheServer;
 
 import java.time.ZoneId;
 
@@ -69,21 +68,25 @@ public final class Launcher
     public static final String SECONDARY_CLUSTER_PROPERTY = "secondary.cluster";
 
     /**
-     * Default Jaeger tracing endpoint if not overridden by user.
+     * System property to define the OpenTelemetry service name
+     * (as it will be displayed in the UI).
      */
-    public static final String DEFAULT_JAEGER_ENDPOINT = "http://localhost:14268/api/traces";
+    public static final String OTEL_SERVICE_NAME_PROPERTY = "otel.service.name";
 
     /**
-     * System property to define the Jaeger service name (as it will be displayed in the UI).
+     * System property to enable OpenTelemetry auto-configuration.
      */
-    public static final String JAEGER_SERVICE_NAME_PROPERTY = "JAEGER_SERVICE_NAME";
+    public static final String OTEL_AUTO_CONFIG_PROPERTY = "otel.java.global-autoconfigure.enabled";
 
     /**
-     * System property to define the Jaeger tracing endpoint.  If not explicitly overridden,
-     * the value will default to {@value DEFAULT_JAEGER_ENDPOINT}.
+     * System property to configure OpenTelemetry log exports.
      */
-    public static final String JAEGER_ENDPOINT_PROPERTY = "JAEGER_ENDPOINT";
+    public static final String OTEL_LOGS_EXPORTER_PROPERTY = "otel.logs.exporter";
 
+    /**
+     * System property to configure OpenTelemetry metrics exports.
+     */
+    public static final String OTEL_METRICS_EXPORTER_PROPERTY = "otel.metrics.exporter";
 
     /**
      * Cluster port for the primary cluster.
@@ -197,12 +200,13 @@ public final class Launcher
         // set cluster name
         System.setProperty("coherence.cluster", System.getProperty(PRIMARY_CLUSTER_PROPERTY));
 
-        // set properties necessary for Jaeger to function
-        System.setProperty(JAEGER_SERVICE_NAME_PROPERTY,
+        // set properties necessary for OpenTelemetry to function
+        System.setProperty(OTEL_SERVICE_NAME_PROPERTY,
                            "Coherence Demo (" + System.getProperty(PRIMARY_CLUSTER_PROPERTY) + ')');
+        System.setProperty(OTEL_AUTO_CONFIG_PROPERTY, "true");
+        System.setProperty(OTEL_LOGS_EXPORTER_PROPERTY, "none");
+        System.setProperty(OTEL_METRICS_EXPORTER_PROPERTY, "none");
 
-        System.setProperty(JAEGER_ENDPOINT_PROPERTY,
-                           System.getProperty(JAEGER_ENDPOINT_PROPERTY, DEFAULT_JAEGER_ENDPOINT));
 
         // start the Default Cache Server
         Coherence.main(args);

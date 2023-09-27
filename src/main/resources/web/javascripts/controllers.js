@@ -694,11 +694,11 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "content": "fragments/populate.html"
        };
        self.insightContent['tracingEnabled'] = {
-           "header": "OpenTracing Support Enabled",
+           "header": "OpenTelemetry Support Enabled",
            "content": "fragments/tracingEnabled.html"
        };
        self.insightContent['tracingDisabled'] = {
-         "header": "OpenTracing Support Disabled",
+         "header": "OpenTelemetry Support Disabled",
          "content": "fragments/tracingDisabled.html"
        };
        self.insightContent['welcome'] = {

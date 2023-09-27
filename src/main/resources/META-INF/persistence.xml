@@ -7,8 +7,8 @@
     <class>com.oracle.coherence.demo.model.Price</class>
     <class>com.oracle.coherence.demo.model.Trade</class>
     <properties>
-      <property name="jakarta.persistence.jdbc.driver" value="io.opentracing.contrib.jdbc.TracingDriver"/>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:tracing:derby:memory:demo;create=true;traceWithActiveSpanOnly=true"/>
+      <property name="jakarta.persistence.jdbc.driver" value="io.opentelemetry.instrumentation.jdbc.OpenTelemetryDriver"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:otel:derby:memory:demo;create=true;traceWithActiveSpanOnly=true"/>
       <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
       <property name="eclipselink.ddl-generation.output-mode" value="database"/>
       <property name="eclipselink.weaving" value="false"/>

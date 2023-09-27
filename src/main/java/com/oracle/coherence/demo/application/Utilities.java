@@ -1,7 +1,7 @@
 /*
  * File: Utilities.java
  *
- * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2023 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -28,13 +28,13 @@ import com.tangosol.net.cache.TypeAssertion;
 
 import com.tangosol.util.InvocableMap;
 
-import io.opentracing.Scope;
-import io.opentracing.Span;
-import io.opentracing.Tracer;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 
-import io.opentracing.tag.Tags;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanKind;
+import io.opentelemetry.api.trace.Tracer;
 
-import io.opentracing.util.GlobalTracer;
+import io.opentelemetry.context.Scope;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -235,13 +235,14 @@ public final class Utilities
     public static void addIndexes()
     {
         NamedCache<String, Trade> tradesCache = getTradesCache();
-        Tracer                    tracer      = GlobalTracer.get();
-        Span                      span        = tracer.buildSpan("Utilities.AddIndexes")
-                .withTag(Tags.COMPONENT, "demo")
-                .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
+        Tracer                    tracer      = GlobalOpenTelemetry.getTracer("coherence.demo");
+        Span                      span        = tracer.spanBuilder("Utilities.AddIndexes")
+                .setAttribute("component", "demo")
+                .setSpanKind(SpanKind.SERVER)
+                .startSpan();
 
         System.out.print("Adding Indexes...");
-        try (Scope ignored = tracer.activateSpan(span))
+        try (Scope ignored = span.makeCurrent())
         {
             tradesCache.addIndex(Trade::getSymbol, true, null);
             spanLog(span, "Created trade symbol index");
@@ -252,7 +253,7 @@ public final class Utilities
         }
         finally
         {
-            span.finish();
+            span.end();
         }
         System.out.println(" Done");
     }
@@ -264,13 +265,14 @@ public final class Utilities
     public static void removeIndexes()
     {
         NamedCache<String, Trade> tradesCache = getTradesCache();
-        Tracer                    tracer      = GlobalTracer.get();
-        Span                      span        = tracer.buildSpan("Utilities.RemoveIndexes")
-                .withTag(Tags.COMPONENT, "demo")
-                .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
+        Tracer                    tracer      = GlobalOpenTelemetry.getTracer("coherence.demo");
+        Span                      span        = tracer.spanBuilder("Utilities.RemoveIndexes")
+                .setAttribute("component", "demo")
+                .setSpanKind(SpanKind.SERVER)
+                .startSpan();
 
         System.out.print("Removing Indexes...");
-        try (Scope ignored = tracer.activateSpan(span))
+        try (Scope ignored = span.makeCurrent())
         {
             tradesCache.removeIndex(Trade::getSymbol);
             spanLog(span, "Removed trade symbol index");
@@ -281,7 +283,7 @@ public final class Utilities
         }
         finally
         {
-            span.finish();
+            span.end();
         }
 
         System.out.println(" Done");
@@ -295,13 +297,14 @@ public final class Utilities
     public static void populatePrices()
     {
         NamedCache<String, Price> pricesCaches = getPricesCache();
-        Tracer                    tracer       = GlobalTracer.get();
-        Span                      span         = tracer.buildSpan("Utilities.PopulatePrices")
-                .withTag(Tags.COMPONENT, "demo")
-                .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
-                .withTag("symbol.count", SYMBOLS.length).start();
+        Tracer                    tracer       = GlobalOpenTelemetry.getTracer("coherence.demo");
+        Span                      span         = tracer.spanBuilder("Utilities.PopulatePrices")
+                .setAttribute("component", "demo")
+                .setAttribute("symbol.count", SYMBOLS.length)
+                .setSpanKind(SpanKind.SERVER)
+                .startSpan();
 
-        try (Scope ignored = tracer.activateSpan(span))
+        try (Scope ignored = span.makeCurrent())
         {
             for (String symbol : SYMBOLS)
             {
@@ -311,7 +314,7 @@ public final class Utilities
         }
         finally
         {
-            span.finish();
+            span.end();
         }
     }
 
@@ -336,13 +339,14 @@ public final class Utilities
 
         NamedCache<String, Trade> tradesCache = getTradesCache();
         NamedCache<String, Price> priceCache  = getPricesCache();
-        Tracer                    tracer      = GlobalTracer.get();
-        Span                      span        = tracer.buildSpan("Utilities.CreatePositions")
-                .withTag(Tags.COMPONENT, "demo")
-                .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
-                .withTag("symbol.count", SYMBOLS.length).start();
+        Tracer                    tracer      = GlobalOpenTelemetry.getTracer("coherence.demo");
+        Span                      span        = tracer.spanBuilder("Utilities.CreatePositions")
+                .setAttribute("component", "demo")
+                .setAttribute("symbol.count", SYMBOLS.length)
+                .setSpanKind(SpanKind.SERVER)
+                .startSpan();
 
-        try (Scope ignored = tracer.activateSpan(span))
+        try (Scope ignored = span.makeCurrent())
         {
             Map<String,     Price> localPrices = new HashMap<>(priceCache.getAll(priceCache.keySet()));
             HashMap<String, Trade> trades      = new HashMap<>();
@@ -377,7 +381,7 @@ public final class Utilities
         }
         finally
         {
-            span.finish();
+            span.end();
         }
 
         System.out.printf("Creation Complete! (Cache contains %d positions)\n", tradesCache.size());
@@ -394,26 +398,27 @@ public final class Utilities
 
         // choose random symbol to modify
         String symbol = SYMBOLS[random.nextInt(SYMBOLS.length)];
-        Tracer tracer = GlobalTracer.get();
-        Span   span   = tracer.buildSpan("Utilities.UpdatePrices")
-                .withTag(Tags.COMPONENT, "demo")
-                .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
-                .withTag("update.symbol", symbol).start();
+        Tracer tracer = GlobalOpenTelemetry.getTracer("coherence.demo");
+        Span   span   = tracer.spanBuilder("Utilities.UpdatePrices")
+                .setAttribute("component", "demo")
+                .setAttribute("update.symbol", symbol)
+                .setSpanKind(SpanKind.SERVER)
+                .startSpan();
 
-        try (Scope ignored = tracer.activateSpan(span))
+        try (Scope ignored = span.makeCurrent())
         {
             // invoke using static method to ensure all arguments are captured
             priceCache.invoke(symbol, updateStockPrice(random.nextFloat()));
         }
         finally
         {
-            span.finish();
+            span.end();
         }
     }
 
 
     /**
-     * Invokes {@link Span#log(String)} if {@code span} is not {@code null}.
+     * Invokes {@link Span#addEvent(String)} if {@code span} is not {@code null}.
      *
      * @param span     the target {@link Span}
      * @param message  the message to log
@@ -422,7 +427,7 @@ public final class Utilities
     {
         if (span != null)
         {
-            span.log(message);
+            span.addEvent(message);
         }
     }
 
