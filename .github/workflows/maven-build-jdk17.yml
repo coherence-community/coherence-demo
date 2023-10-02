@@ -18,8 +18,8 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - 22.06.2
-          - 22.06.3
+          - 22.06.5
+          - 23.09
 
     steps:
     - name: Checkout
