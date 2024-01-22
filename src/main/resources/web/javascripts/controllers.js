@@ -918,20 +918,20 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     // ---- the function to add "n" trades ----
 
-    self.addTrades = function() { 
-        var val = parseInt(prompt('Enter the number of random trades to add', '1000')); 
-        if (isNaN(val) === false) { 
+    self.addTrades = function() {
+        var val = parseInt(prompt('Enter the number of random trades to add', '1000'));
+        if (isNaN(val) === false) {
             if (self.positions + val > self.maxCacheEntries) {
                 alert("This value would exceed the maximum number of cache entries allowed of " + self.maxCacheEntries);
             }
             else {
                 self.displayNotification('Adding ' + val + ' trades...', 'info', false);
-                $http.get('/service/developer/insert/' + val) .then( function(response) {
+                $http.get('/service/developer/insert/' + val).then( function(response) {
                     self.displayNotification('Operation completed','success', true);
                     self.displayInsightIfEnabled('addTrades');
                 });
             }
-         } 
+         }
     };
 
     // ---- the function to display a notification ----

@@ -18,14 +18,19 @@ jobs:
       fail-fast: false
       matrix:
         coherenceVersion:
-          - 23.09.1-SNAPSHOT
+          - 23.09.3-SNAPSHOT
+          - 23.09.1
+          - 23.09.2
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 17
-      uses: actions/setup-java@v1
+    - uses: actions/checkout@v3
+
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '21'
+        distribution: 'zulu'
 
     - name: Print Versions
       run: mvn -version && ant -version
