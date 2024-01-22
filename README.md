@@ -57,13 +57,13 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 
 To run the demonstration application, you must have the following software installed:
 
-1. Java 17 SE Development Kit or Runtime environment.
+1. Java 21 SE Development Kit or Runtime environment.
 
-   You can download JDK 17 from [Java SE Development Kit Downloads](https://www.oracle.com/java/technologies/downloads/)
+   You can download JDK 21 from [Java SE Development Kit Downloads](https://www.oracle.com/java/technologies/downloads/)
 
-1. Maven 3.6.0 or later version installed and configured.
+2. Maven 3.6.0 or later version installed and configured.
 
-1. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
+3. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
 
    For more information about browser compatibility, see https://code.angularjs.org/1.7.5/docs/misc/faq.

@@ -32,7 +32,7 @@
 
     <!-- dependency versions -->
     <bedrock.version>6.0.1</bedrock.version>
-    <coherence.version>23.09</coherence.version>
+    <coherence.version>23.09.2</coherence.version>
     <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.17.1.0</derby.version>
