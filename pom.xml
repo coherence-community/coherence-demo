@@ -44,7 +44,7 @@
     <jaxrs.version>3.0.0</jaxrs.version>
     <jersey.version>3.0.5</jersey.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
-    <jib.version>2.3.0</jib.version>
+    <jib.version>3.4.0</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <netty.version>4.1.100.Final</netty.version>
     <opentracing.jdbc.version>0.2.10</opentracing.jdbc.version>
