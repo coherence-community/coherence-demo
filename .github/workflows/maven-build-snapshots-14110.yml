@@ -21,7 +21,7 @@ jobs:
           - v14.1.1.0
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up JDK 8 for Build
       uses: actions/setup-java@v4
