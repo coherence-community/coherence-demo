@@ -47,7 +47,7 @@
     <jib.version>3.4.0</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <netty.version>4.1.106.Final</netty.version>
-    <opentracing.jdbc.version>0.2.10</opentracing.jdbc.version>
+    <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
     <!-- maven configuration -->
     <java.version>17</java.version>
