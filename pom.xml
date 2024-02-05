@@ -196,7 +196,7 @@
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib</artifactId>
-      <version>1.8.20</version>
+      <version>1.9.22</version>
     </dependency>
 
     <!-- jax-ws -->
