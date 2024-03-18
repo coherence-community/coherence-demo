@@ -173,28 +173,14 @@ your local machine.
 
 ## Run the Application on Kubernetes
 
-The steps to run the application on Kubernetes comprises the following:
-* Oracle Coherence Operator Helm Chart
+The steps to run the application on Kubernetes comprises:
+
+* Use `kubectl` to install the Oracle Coherence Operator
 * Use `kubectl` to install the Coherence cluster which comprises 2 roles:
   * storage-enabled Coherence servers
   * storage-disabled application with Grizzly HTTP Server
 
 > **Note:** If you want to enable Federation when running on Kubernetes, see [Enable Federation on Kubernetes](#enable-federation-on-kubernetes).
-
-1. **Add Helm Repositories**
-
-    You must have at least version v2.14.3 of `helm`, but these instructions are written for V3.3.+.
-    See [here](https://helm.sh/docs/intro/install/) for information on installing helm for your platform.
-
-    Run the following to add the required helm repositories:
-
-    ```bash
-    $ helm repo add stable https://charts.helm.sh/stable
-    $ helm repo add coherence https://oracle.github.io/coherence-operator/charts
-    $ helm repo update
-    ```
-
-    > Note: The `helm` commands below are for helm 3.3.  Version 2 equivalent commands have also been included.
 
 1. **Create Namespace**
 
@@ -205,7 +191,7 @@ The steps to run the application on Kubernetes comprises the following:
    namespace/coherence-example created
    ```   
 
-1. **Build and Push Docker Image**
+2. **Build and Push Docker Image**
 
    Ensure that you have Docker running locally and execute the following command which will
    used the `jib-maven-plugin` to build a Docker image.
@@ -214,46 +200,37 @@ The steps to run the application on Kubernetes comprises the following:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo:6.0.0-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:8.0.0-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker
    > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
-   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:6.0.0-SNAPSHOT` and
-   > them push using `docker push youname/coherence-demo:6.0.0-SNAPSHOT`.
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:8.0.0-SNAPSHOT` and
+   > them push using `docker push youname/coherence-demo:8.0.0-SNAPSHOT`.
 
-1. **Install the Oracle Coherence Operator**
+3. **Install the Oracle Coherence Operator**
 
-   Install the operator using `helm`:
+   You must have a supported version of Kubernetes. Please see https://github.com/oracle/coherence-operator for more details. 
 
-   ```bash
-   helm install --namespace coherence-example coherence-operator coherence/coherence-operator
-   ```
-
-   Confirm the creation of the chart:
+   Install the operator using `kubectl`. (It will be installed into a new namespace called `coherence`)
 
    ```bash
-   helm ls --namespace coherence-example
-
-   NAME              	NAMESPACE        	REVISION	UPDATED                                 	STATUS  	CHART                   	APP VERSION
-   coherence-operator	coherence-example	1       	2021-01-12 15:25:04.409346768 +0800 AWST	deployed	coherence-operator-3.1.3	3.1.3
-
-   kubectl get pods --namespace coherence-example
-
-   NAME                                 READY   STATUS    RESTARTS   AGE
-   coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          2m12s
+   kubectl apply -f https://github.com/oracle/coherence-operator/releases/download/v3.3.3/coherence-operator.yaml
    ```
 
-   For `helm` version 2.X:
+   Confirm the creation of the operator:
 
    ```bash
-   helm install --namespace coherence-example --name coherence-operator coherence/coherence-operator
-
-   helm ls
+    kubectl get pods -n coherence
+    NAME                                                     READY   STATUS    RESTARTS      AGE
+    coherence-operator-controller-manager-55fd645db8-9tnvq   1/1     Running   1 (11m ago)   12m
+    coherence-operator-controller-manager-55fd645db8-bk46q   1/1     Running   1 (11m ago)   12m
+    coherence-operator-controller-manager-55fd645db8-rlfv8   1/1     Running   0             12m
    ```
 
-1. **Install the Coherence Cluster**
 
-   The Coherence cluster comprises of 2 roles:
+4. **Install the Coherence Cluster**
+
+   The Coherence cluster comprises 2 roles:
 
    * storage - contains the storage-enabled tier which stores application data
    * http - contains a storage-disabled http server which serves the application
@@ -271,10 +248,11 @@ The steps to run the application on Kubernetes comprises the following:
    The pod primary-cluster-storage-0 must be running and ready as shown:
 
    ```bash
-   NAME                                 READY   STATUS    RESTARTS   AGE
-   coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          33m
-   primary-cluster-http-0               1/1     Running   0          3m2s
-   primary-cluster-storage-0            1/1     Running   0          3m4s
+    kubectl get pods -n coherence-example
+    NAME                        READY   STATUS    RESTARTS   AGE
+    primary-cluster-http-0      1/1     Running   0          5s
+    primary-cluster-storage-0   1/1     Running   0          5s
+    primary-cluster-storage-1   1/1     Running   0          5s
    ```
 
    If the pod does not show as `Running`, you can use the following command to diagnose and troubleshoot the pod:
@@ -283,19 +261,19 @@ The steps to run the application on Kubernetes comprises the following:
    kubectl describe pod primary-cluster-storage-0 --namespace coherence-example
    ```
 
-1. **Port Forward the HTTP Port**
+5. **Port Forward the HTTP Port**
 
    ```bash
    kubectl port-forward --namespace coherence-example primary-cluster-http-0 8080:8080
    ```  
 
-1. **Access the Application**</br>
+6. **Access the Application**</br>
 
    Use the following URL to access the application home page:
 
    [http://127.0.0.1:8080/application/index.html](http://127.0.0.1:8080/application/index.html)  
 
-1. **Scale the Application**
+7. **Scale the Application**
 
    When running the application in Kubernetes, the **Add Server** and **Remove Server** options are not available. You need to use `kubectl` to scale the application.
 
@@ -314,7 +292,7 @@ The steps to run the application on Kubernetes comprises the following:
 
    Use `kubectl  --namespace coherence-example rollout status sts/primary-cluster-storage` to view the progress.
 
-1. **Scale the Application down**
+8. **Scale the Application down**
 
    Scale the application to one node by editing `demo-cluster.yaml` and changing
    the `replicas` value for the `storage` role to 1. Then apply using
@@ -329,7 +307,7 @@ The steps to run the application on Kubernetes comprises the following:
    > carried out in a safe manner (checking service statusHA values) to ensure no data is lost.
    > You can confirm this by checking the number of positions are the same as before the scale-down was initiated.                                                                                                                                                                                                                                                                                                                                                                                   
 
-1. Uninstall the Coherence Cluster
+9. Uninstall the Coherence Cluster
 
     Use the following to uninstall the Coherence cluster.
 

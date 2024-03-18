@@ -55,6 +55,6 @@ spec:
     metrics:
       enabled: true
       port: 9612
-  image: coherence-demo:6.0.0-SNAPSHOT
+  image: coherence-demo:8.0.0-SNAPSHOT
   imagePullPolicy: IfNotPresent
   replicas: 1
