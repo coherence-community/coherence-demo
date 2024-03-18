@@ -1,0 +1,26 @@
+The stock has been split for this symbol in this cluster.
+<p>
+Below is and example of the entry processor being used to run the stock split against a symbol.
+<pre>
+    public static void splitStock(String symbol)
+    {
+        NamedCache<String, Trade> tradesCache = getTradesCache();
+        NamedCache<String, Price> priceCache  = getPricesCache();
+
+        double originalPrice = priceCache.get(symbol).getPrice();
+
+        System.out.println("Splitting stock for " + symbol);
+
+        // split the stock
+        tradesCache.invokeAll(Filters.equal(Trade::getSymbol, symbol), entry -> {
+            Trade trade = entry.getValue();
+            trade.split();
+            entry.setValue(trade);
+            return null;
+        });
+
+        System.out.printf("Updating stock price for %s from %,.2f to %,.2f\n", symbol, originalPrice, originalPrice / 2);
+        priceCache.invoke(symbol, Processors.update(Price::setPrice, originalPrice / 2));
+    }
+</pre>
+If you have Federation enabled, the newly split positions will be sent to other cluster.

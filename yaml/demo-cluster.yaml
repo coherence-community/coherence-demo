@@ -21,7 +21,7 @@ spec:
     cacheConfig: cache-config.xml
     metrics:
       enabled: true
-  image: coherence-demo:6.0.0-SNAPSHOT
+  image: coherence-demo:8.0.0-SNAPSHOT
   imagePullPolicy: IfNotPresent
   replicas: 2
 ---

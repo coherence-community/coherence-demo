@@ -22,6 +22,7 @@ import com.tangosol.io.pof.PofReader;
 import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
 
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.util.UUID;
 
 import java.io.IOException;
@@ -41,7 +42,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement(name = "trade")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class Trade implements PortableObject
+@PortableType
+public class Trade
 {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2557078539268609864L;
@@ -180,23 +182,12 @@ public class Trade implements PortableObject
         this.price = price;
     }
 
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
+    /**
+     * Split the stock.
+     */
+    public void split()
     {
-        id     = reader.readString(ID);
-        symbol = reader.readString(SYMBOL);
-        amount = reader.readInt(AMOUNT);
-        price  = reader.readDouble(PRICE);
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeString(ID, id);
-        writer.writeString(SYMBOL, symbol);
-        writer.writeInt(AMOUNT, amount);
-        writer.writeDouble(PRICE, price);
+        amount *= 2;
+        price  /= 2;
     }
 }

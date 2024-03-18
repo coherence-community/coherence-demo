@@ -22,6 +22,7 @@ import com.oracle.coherence.demo.invocables.GetMemberInfo;
 
 import com.oracle.coherence.demo.model.ChartData;
 import com.oracle.coherence.demo.model.MemberInfo;
+import com.oracle.coherence.demo.model.Price;
 import com.oracle.coherence.demo.model.Trade;
 
 import com.oracle.bedrock.util.StopWatch;
@@ -37,6 +38,8 @@ import com.tangosol.util.aggregator.DoubleSum;
 import com.tangosol.util.aggregator.GroupAggregator;
 import com.tangosol.util.aggregator.LongSum;
 
+import com.tangosol.util.aggregator.ReducerAggregator;
+import com.tangosol.util.filter.AlwaysFilter;
 import com.tangosol.util.filter.PresentFilter;
 
 import jakarta.ws.rs.GET;
@@ -46,10 +49,11 @@ import jakarta.ws.rs.Produces;
 
 import jakarta.ws.rs.core.Response;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -79,7 +83,7 @@ public class ChartDataResource
     @Produces({APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
     @SuppressWarnings("unchecked")
     public Response getChartData(@PathParam("updatePrices") boolean updatePrices)
-    {
+            throws ExecutionException, InterruptedException {
         // we're going to query the positions cache
         NamedCache<String, Trade> trades    = Utilities.getTradesCache();
         int                       cacheSize = trades.size();
@@ -96,26 +100,30 @@ public class ChartDataResource
         stopWatch.start();
 
         // determine the frequency of each of the symbols
-        Map<String, Long> symbolFrequency = trades.aggregate(PresentFilter.INSTANCE,
-                                                             GroupAggregator.createInstance(
-                                                                    Trade::getSymbol,
-                                                                    new LongSum<>(Trade::getAmount)));
+        CompletableFuture<Map<String, Long>> symbolFrequencyFuture = trades.async().aggregate(AlwaysFilter.INSTANCE,
+                GroupAggregator.createInstance(
+                        Trade::getSymbol,
+                        new LongSum<>(Trade::getAmount)));
 
         // determine the number of positions with the symbol
-        Map<String, Integer> symbolCount = trades.aggregate(PresentFilter.INSTANCE,
-                                                            GroupAggregator.createInstance(Trade::getSymbol,
-                                                                                           new Count<>()));
+        CompletableFuture<Map<String, Integer>> symbolCountFuture = trades.async().aggregate(AlwaysFilter.INSTANCE(),
+                GroupAggregator.createInstance(Trade::getSymbol, new Count<>()));
 
         // get the current prices for the symbols using Map default methods which access the cache
-        Map<String, Double> symbolPrice = new HashMap<>();
-
-        Utilities.getPricesCache().forEach((key, value) -> symbolPrice.put(key, value.getPrice()));
+        CompletableFuture<Map<String, Double>> symbolPriceFuture = Utilities.getPricesCache().async().aggregate(
+                new ReducerAggregator<>(Price::getPrice));
 
         // determine the original valuation of the positions
-        double originalValuation = cacheSize == 0 ? 0 : trades.aggregate(PresentFilter.INSTANCE,
+        double originalValuation = cacheSize == 0 ? 0 : trades.aggregate(AlwaysFilter.INSTANCE,
                                                                          new DoubleSum<>(Trade::getPurchaseValue));
+        // wait for all async aggregators to finish
+        CompletableFuture.allOf(symbolFrequencyFuture, symbolCountFuture, symbolPriceFuture).get();
 
         stopWatch.stop();
+
+        Map<String, Long> symbolFrequency = symbolFrequencyFuture.get();
+        Map<String, Double> symbolPrice   = symbolPriceFuture.get();
+        Map<String, Integer> symbolCount  = symbolCountFuture.get();
 
         InvocationService invocationService = (InvocationService) CacheFactory.getService("InvocationService");
 

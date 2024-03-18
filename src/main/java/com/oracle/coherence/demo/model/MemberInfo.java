@@ -24,6 +24,7 @@ import com.tangosol.io.pof.PofReader;
 import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
 
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.net.Member;
 
 import java.io.IOException;
@@ -39,7 +40,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "member-info")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class MemberInfo implements PortableObject
+@PortableType
+public class MemberInfo
 {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2555078539266609164L;
@@ -226,29 +228,4 @@ public class MemberInfo implements PortableObject
          {
          return roleName;
          }
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        id             = reader.readInt(ID);
-        maxMemory      = reader.readLong(MAX_MEMORY);
-        freeMemory     = reader.readLong(FREE_MEMORY);
-        totalMemory    = reader.readLong(TOTAL_MEMORY);
-        entryCount     = reader.readInt(ENTRY_COUNT);
-        tracingEnabled = reader.readBoolean(TRACING_ENABLED);
-        roleName       = reader.readString(ROLE_NAME);
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeInt(ID, id);
-        writer.writeLong(MAX_MEMORY, maxMemory);
-        writer.writeLong(FREE_MEMORY, freeMemory);
-        writer.writeLong(TOTAL_MEMORY, totalMemory);
-        writer.writeInt(ENTRY_COUNT, entryCount);
-        writer.writeBoolean(TRACING_ENABLED, tracingEnabled);
-        writer.writeString(ROLE_NAME, roleName);
-    }
 }

@@ -290,6 +290,7 @@
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
+                                            <td>Action</td>
                                             <td>Symbol</td>
                                             <td align="right">Price</td>
                                             <td align="right">Positions</td>
@@ -301,6 +302,17 @@
                                     <tbody>
                                         <tr ng-repeat="symbol in symbolNames track by symbol"
                                             ng-style="{background: priceChange[symbol] > 0 ? '#B2D9B2' : priceChange[symbol] < 0 ? '#FFCCCC' : ''}">
+                                            <td style="width: 50px;">
+                                              <div class="btn-group">
+                                                  <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i></button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href ng-click="addSymbolTrades(symbol)">
+                                                            Add {{ symbol }} Trades
+                                                        </a></li>
+                                                        <li><a href ng-click="stockSplit(symbol)">Stock Split {{ symbol }}</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
                                             <td style="width: 90px;">
                                              {{ symbol }}
                                                 <i class="icon-circle-arrow-up status-success" ng-show="priceChange[symbol] >  0"></i>

@@ -26,8 +26,10 @@ import com.tangosol.net.NamedCache;
 
 import com.tangosol.net.cache.TypeAssertion;
 
+import com.tangosol.util.Filters;
 import com.tangosol.util.InvocableMap;
 
+import com.tangosol.util.Processors;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
@@ -133,7 +135,7 @@ public final class Utilities
      */
     public static void main(String[] args)
     {
-        createPositions(NR_POSITIONS_TO_CREATE);
+        createPositions(null, NR_POSITIONS_TO_CREATE);
     }
 
 
@@ -321,16 +323,41 @@ public final class Utilities
      */
     public static void createPositions()
     {
-        createPositions(NR_POSITIONS_TO_CREATE);
+        createPositions(null, NR_POSITIONS_TO_CREATE);
+    }
+
+    /**
+     * Issue a stock split.
+     */
+    public static void splitStock(String symbol)
+    {
+        NamedCache<String, Trade> tradesCache = getTradesCache();
+        NamedCache<String, Price> priceCache  = getPricesCache();
+
+        double originalPrice = priceCache.get(symbol).getPrice();
+
+        System.out.println("Splitting stock for " + symbol);
+        
+        // split the stock
+        tradesCache.invokeAll(Filters.equal(Trade::getSymbol, symbol), entry -> {
+            Trade trade = entry.getValue();
+            trade.split();
+            entry.setValue(trade);
+            return null;
+        });
+
+        System.out.printf("Updating stock price for %s from %,.2f to %,.2f\n", symbol, originalPrice, originalPrice / 2);
+        priceCache.invoke(symbol, Processors.update(Price::setPrice, originalPrice / 2));
     }
 
 
     /**
      * Create "count" positions in the cache at the current price.
      *
-     * @param count  the number of entries to add
+     * @param symbolToInsert the symbol to add to, if null, then all symbols
+     * @param count          the number of entries to add
      */
-    public static void createPositions(int count)
+    public static void createPositions(String symbolToInsert, int count)
     {
         System.out.printf("Creating %d Positions...\n", count);
 
@@ -342,6 +369,8 @@ public final class Utilities
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
                 .withTag("symbol.count", SYMBOLS.length).start();
 
+        boolean singleSymbol = symbolToInsert != null;
+
         try (Scope ignored = tracer.activateSpan(span))
         {
             Map<String,     Price> localPrices = new HashMap<>(priceCache.getAll(priceCache.keySet()));
@@ -351,7 +380,7 @@ public final class Utilities
             for (int i = 0; i < count; i++)
             {
                 // create a random position
-                String symbol = SYMBOLS[random.nextInt(SYMBOLS.length)];
+                String symbol = singleSymbol ? symbolToInsert : SYMBOLS[random.nextInt(SYMBOLS.length)];
                 int    amount = random.nextInt(1000) + 1;
                 double price  = localPrices.get(symbol).getPrice();
 
@@ -362,7 +391,7 @@ public final class Utilities
                 // batch the putAll's at 10000
                 if (i % 10000 == 0)
                 {
-                    spanLog(span, "Flushed 10000 trades to cache");
+                    spanLog(span, "Flushed 10000 trades to cache" + (singleSymbol ? " for symbol " + symbolToInsert : ""));
                     System.out.println("Flushing 10000 trades from HashMap to Coherence cache...");
                     tradesCache.putAll(trades);
                     trades.clear();

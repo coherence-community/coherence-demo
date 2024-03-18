@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -43,7 +44,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "chart-data")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class ChartData implements PortableObject
+@PortableType
+public class ChartData
 {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -4557078639768809864L;
@@ -288,35 +290,5 @@ public class ChartData implements PortableObject
     public long getAggregationDuration()
     {
         return aggregationDuration;
-    }
-
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        instant             = reader.readLong(INSTANT);
-        aggregationDuration = reader.readLong(AGGREGATION_DURATION);
-        positionCount       = reader.readInt(POSITION_COUNT);
-        symbols             = reader.readCollection(SYMBOLS, new TreeSet<>());
-        symbolFrequency     = reader.readMap(SYMBOL_FREQUENCY, new HashMap<>());
-        symbolPrice         = reader.readMap(SYMBOL_PRICE, new HashMap<>());
-        symbolCount         = reader.readMap(SYMBOL_COUNT, new HashMap<>());
-        originalValuation   = reader.readDouble(ORIGINAL_VALUATION);
-        memberInfo          = reader.readCollection(MEMBER_INFO, new Vector<>());
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeLong(INSTANT, instant);
-        writer.writeLong(AGGREGATION_DURATION, aggregationDuration);
-        writer.writeInt(POSITION_COUNT, positionCount);
-        writer.writeCollection(SYMBOLS, symbols);
-        writer.writeMap(SYMBOL_FREQUENCY, symbolFrequency);
-        writer.writeMap(SYMBOL_PRICE, symbolPrice);
-        writer.writeMap(SYMBOL_COUNT, symbolCount);
-        writer.writeDouble(ORIGINAL_VALUATION, originalValuation);
-        writer.writeCollection(MEMBER_INFO, memberInfo);
     }
 }

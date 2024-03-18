@@ -26,6 +26,7 @@ import com.tangosol.io.pof.PofReader;
 import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
 
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.net.AbstractInvocable;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.CacheService;
@@ -42,7 +43,8 @@ import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE;
  *
  * @author Brian Oliver
  */
-public class GetMemberInfo extends AbstractInvocable implements PortableObject
+@PortableType
+public class GetMemberInfo extends AbstractInvocable
 {
     /**
      * POF index for cacheName attribute.
@@ -109,19 +111,5 @@ public class GetMemberInfo extends AbstractInvocable implements PortableObject
         MemberInfo memberInfo = new MemberInfo(member, runtime, entryCount);
 
         setResult(memberInfo);
-    }
-
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        cacheName = reader.readString(CACHE_NAME);
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeString(CACHE_NAME, cacheName);
     }
 }

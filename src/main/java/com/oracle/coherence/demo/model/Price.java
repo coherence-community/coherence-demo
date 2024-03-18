@@ -24,6 +24,7 @@ import com.tangosol.io.pof.PortableObject;
 
 import java.io.IOException;
 
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.Id;
@@ -41,7 +42,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement(name = "price")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class Price implements PortableObject
+@PortableType
+public class Price
 {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2557678549268609664L;
@@ -121,21 +123,5 @@ public class Price implements PortableObject
     public void setPrice(double price)
     {
         this.price = price;
-    }
-
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        symbol = reader.readString(SYMBOL);
-        price  = reader.readDouble(PRICE);
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeString(SYMBOL, symbol);
-        writer.writeDouble(PRICE, price);
     }
 }

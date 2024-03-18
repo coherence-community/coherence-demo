@@ -104,7 +104,40 @@ public class DeveloperResource
     @Path("insert/{count}")
     public Response getResourceInsert(@PathParam("count") int count)
     {
-        Utilities.createPositions(count);
+        Utilities.createPositions(null, count);
+
+        return Response.ok().build();
+    }
+
+    /**
+     * Insert a number of positions based on the input argument.
+     *
+     * @param count  the number of positions to create
+     *
+     * @return {@link Response#ok}
+     */
+    @GET
+    @Path("insert/{symbol}/{count}")
+    public Response getResourceInsert(@PathParam("symbol") String symbol,
+                                      @PathParam("count") int count)
+    {
+        Utilities.createPositions(symbol, count);
+
+        return Response.ok().build();
+    }
+
+    /**
+     * Split a stock based upon the current price.
+     *
+     * @param symbol
+     *
+     * @return {@link Response#ok}
+     */
+    @GET
+    @Path("split/{symbol}/")
+    public Response getResourceInsert(@PathParam("symbol") String symbol)
+    {
+        Utilities.splitStock(symbol);
 
         return Response.ok().build();
     }

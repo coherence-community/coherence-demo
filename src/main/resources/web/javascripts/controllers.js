@@ -399,7 +399,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                  {"tracingSamplingRatio": memberInfo.tracingEnabled ? -1.0 : 1.0})
     };
 
-     // ---- the function to render the options to enable/disable tracing on the primary cluster ----
+    // ---- the function to render the options to enable/disable tracing on the primary cluster ----
 
     self.tracingOptions = function() {
         var options    = {};
@@ -689,6 +689,14 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "header":  "Add Trades",
            "content": "fragments/addTrades.html"
        };
+       self.insightContent['addTradesForSymbol'] = {
+           "header":  "Add Trades For Symbol",
+           "content": "fragments/addTradesForSymbol.html"
+       };
+       self.insightContent['stockSplit'] = {
+           "header":  "Stock split for Symbol",
+           "content": "fragments/stockSplit.html"
+       };
        self.insightContent['populate'] = {
            "header":  "Populate Trades",
            "content": "fragments/populate.html"
@@ -932,6 +940,37 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                 });
             }
          }
+    };
+
+    self.addSymbolTrades = function(symbol) {
+        var val = parseInt(prompt('Enter the number of random trades to add for ' + symbol, '1000'));
+        if (isNaN(val) === false) {
+            if (self.positions + val > self.maxCacheEntries) {
+                alert("This value would exceed the maximum number of cache entries allowed of " + self.maxCacheEntries);
+            }
+            else {
+                self.displayNotification('Adding ' + val + ' trades for ' + symbol + '...', 'info', false);
+                $http.get('/service/developer/insert/' + symbol + '/' + val).then( function(response) {
+                    self.displayNotification('Operation completed','success', true);
+                    self.displayInsightIfEnabled('addTradesForSymbol');
+                });
+            }
+         }
+    };
+
+    self.stockSplit = function(symbol) {
+        if (self.portfolioRefresh.enabled) {
+            alert("You must stop price updates to split stock");
+        }
+        else {
+           if ($window.confirm('Are you sure you want to split stock for ' + symbol + '?')) {
+                self.displayNotification('Splitting stock ' + symbol + '...', 'info', false);
+                $http.get('/service/developer/split/' + symbol).then( function(response) {
+                    self.displayNotification('Operation completed','success', true);
+                    self.displayInsightIfEnabled('stockSplit');
+                });
+            }
+        }
     };
 
     // ---- the function to display a notification ----
