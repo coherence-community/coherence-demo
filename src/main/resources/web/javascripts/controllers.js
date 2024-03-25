@@ -85,10 +85,6 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.RESUME_FEDERATION         = 'Resume';
     self.MAX_SPARKLINE             = 15;
 
-    let KB = 1024;
-    let MB = KB * KB;
-    let GB = MB * KB;
-
     // define initial states for the application (these will be refreshed asynchronously)
     self.positions         = 0;
     self.valuation         = 0;
