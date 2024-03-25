@@ -18,6 +18,7 @@
 
 package com.oracle.coherence.demo.application;
 
+import com.oracle.coherence.common.base.Logger;
 import com.oracle.coherence.demo.model.Price;
 import com.oracle.coherence.demo.model.Trade;
 
@@ -242,7 +243,7 @@ public final class Utilities
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
 
-        System.out.print("Adding Indexes...");
+        Logger.out("Adding Indexes...");
         try (Scope ignored = tracer.activateSpan(span))
         {
             tradesCache.addIndex(Trade::getSymbol, true, null);
@@ -256,7 +257,7 @@ public final class Utilities
         {
             span.finish();
         }
-        System.out.println(" Done");
+        Logger.out(" Done");
     }
 
 
@@ -271,7 +272,7 @@ public final class Utilities
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
 
-        System.out.print("Removing Indexes...");
+        Logger.out("Removing Indexes...");
         try (Scope ignored = tracer.activateSpan(span))
         {
             tradesCache.removeIndex(Trade::getSymbol);
@@ -286,7 +287,7 @@ public final class Utilities
             span.finish();
         }
 
-        System.out.println(" Done");
+        Logger.out(" Done");
     }
 
 
@@ -336,7 +337,7 @@ public final class Utilities
 
         double originalPrice = priceCache.get(symbol).getPrice();
 
-        System.out.printf("Splitting stock for %s using %d:1%n", symbol, factor);
+        Logger.out(String.format("Splitting stock for %s using %d:1", symbol, factor));
         
         // split the stock
         tradesCache.invokeAll(Filters.equal(Trade::getSymbol, symbol), entry -> {
@@ -346,7 +347,7 @@ public final class Utilities
             return null;
         });
 
-        System.out.printf("Updating stock price for %s from %,.2f to %,.2f%n", symbol, originalPrice, originalPrice / factor);
+        Logger.out(String.format("Updating stock price for %s from $%,.2f to $%,.2f", symbol, originalPrice, originalPrice / factor));
         priceCache.invoke(symbol, Processors.update(Price::setPrice, originalPrice / factor));
     }
 
@@ -359,7 +360,7 @@ public final class Utilities
      */
     public static void createPositions(String symbolToInsert, int count)
     {
-        System.out.printf("Creating %d Positions...\n", count);
+        Logger.out(String.format("Creating %d Positions...", count));
 
         NamedCache<String, Trade> tradesCache = getTradesCache();
         NamedCache<String, Price> priceCache  = getPricesCache();
@@ -391,8 +392,8 @@ public final class Utilities
                 // batch the putAll's at 10000
                 if (i % 10000 == 0)
                 {
-                    spanLog(span, "Flushed 10000 trades to cache" + (singleSymbol ? " for symbol " + symbolToInsert : ""));
-                    System.out.println("Flushing 10000 trades from HashMap to Coherence cache...");
+                    spanLog(span, "Flushed trades to cache" + (singleSymbol ? " for symbol " + symbolToInsert : ""));
+                    Logger.out("Flushing trades from HashMap to Coherence cache...");
                     tradesCache.putAll(trades);
                     trades.clear();
                 }
@@ -409,7 +410,7 @@ public final class Utilities
             span.finish();
         }
 
-        System.out.printf("Creation Complete! (Cache contains %d positions)\n", tradesCache.size());
+        Logger.out(String.format("Creation Complete! (Cache contains %d positions) ", tradesCache.size()));
     }
 
 

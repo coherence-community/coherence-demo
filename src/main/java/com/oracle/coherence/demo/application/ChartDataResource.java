@@ -48,7 +48,6 @@ import jakarta.ws.rs.core.Response;
 import java.util.Map;
 import java.util.Set;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
