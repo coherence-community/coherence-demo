@@ -22,10 +22,6 @@ import com.oracle.coherence.demo.application.Utilities;
 
 import com.oracle.coherence.demo.model.MemberInfo;
 
-import com.tangosol.io.pof.PofReader;
-import com.tangosol.io.pof.PofWriter;
-import com.tangosol.io.pof.PortableObject;
-
 import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.net.AbstractInvocable;
 import com.tangosol.net.CacheFactory;
@@ -33,8 +29,6 @@ import com.tangosol.net.CacheService;
 import com.tangosol.net.ExtensibleConfigurableCacheFactory;
 import com.tangosol.net.Member;
 import com.tangosol.net.NamedCache;
-
-import java.io.IOException;
 
 import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE;
 
@@ -90,7 +84,7 @@ public class GetMemberInfo extends AbstractInvocable
 
         if (namedCache != null)
         {
-            CacheService cacheService = namedCache.getCacheService();
+            CacheService              cacheService = namedCache.getCacheService();
 
             if (cacheService.getBackingMapManager() instanceof ExtensibleConfigurableCacheFactory.Manager)
             {

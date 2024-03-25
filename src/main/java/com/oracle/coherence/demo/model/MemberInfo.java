@@ -189,4 +189,8 @@ public class MemberInfo
          {
          return roleName;
          }
+
+     public void setEntryCount(int entryCount) {
+        this.entryCount = entryCount;
+     }
 }

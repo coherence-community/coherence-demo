@@ -64,6 +64,7 @@ import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
  * @author Brian Oliver
  */
 @Path("/chart-data")
+@SuppressWarnings("rawTypes")
 public class ChartDataResource
 {
     /**

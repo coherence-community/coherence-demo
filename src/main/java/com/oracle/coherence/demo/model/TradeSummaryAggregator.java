@@ -45,8 +45,7 @@ public class TradeSummaryAggregator
 
     @Override
     public boolean accumulate(InvocableMap.Entry<? extends String, ? extends Trade> entry) {
-        Trade trade = entry.getValue();
-        tradeSummary.add(trade.getAmount(), trade.getPurchaseValue());
+        tradeSummary.add(entry.extract(Trade::getAmount), entry.extract(Trade::getPurchaseValue));
         return true;
     }
 

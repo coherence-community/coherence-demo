@@ -502,7 +502,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.displayInsight(self.federationConfiguredInK8s ? "addOrRemoveServerK8sFederation" : "addOrRemoveServerK8s");
         }
         else {
-            let serverCount = parseInt(prompt('Enter the number of servers to start', '1')); 
+            let serverCount = parseInt(prompt('Enter the number of servers to start', '1'));
             if (isNaN(serverCount) === false) {
                 if (self.memberInfo.length + serverCount > self.maxServers) {
                     alert("This value would exceed the maximum number of servers allowed of " + self.maxServers);
