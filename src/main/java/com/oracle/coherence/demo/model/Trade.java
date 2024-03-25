@@ -18,14 +18,10 @@
 
 package com.oracle.coherence.demo.model;
 
-import com.tangosol.io.pof.PofReader;
-import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
 
 import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.util.UUID;
-
-import java.io.IOException;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -47,26 +43,6 @@ public class Trade
 {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2557078539268609864L;
-
-    /**
-     * POF index for id attribute.
-     */
-    private static final int ID = 0;
-
-    /**
-     * POF index for symbol attribute.
-     */
-    private static final int SYMBOL = 1;
-
-    /**
-     * POF index for amount attribute.
-     */
-    private static final int AMOUNT = 2;
-
-    /**
-     * POF index for price attribute.
-     */
-    private static final int PRICE = 3;
 
     /**
      * The unique identifier for this trade.
@@ -184,10 +160,12 @@ public class Trade
 
     /**
      * Split the stock.
+     *
+     * @param factor factor to use for split
      */
-    public void split()
+    public void split(int factor)
     {
-        amount *= 2;
-        price  /= 2;
+        amount *= factor;
+        price  /= factor;
     }
 }

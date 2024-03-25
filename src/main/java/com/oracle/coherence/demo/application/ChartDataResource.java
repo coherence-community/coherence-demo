@@ -27,20 +27,16 @@ import com.oracle.coherence.demo.model.Trade;
 
 import com.oracle.bedrock.util.StopWatch;
 
+import com.oracle.coherence.demo.model.TradeSummary;
+import com.oracle.coherence.demo.model.TradeSummaryAggregator;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.DistributedCacheService;
 import com.tangosol.net.InvocationService;
 import com.tangosol.net.Member;
 import com.tangosol.net.NamedCache;
 
-import com.tangosol.util.aggregator.Count;
-import com.tangosol.util.aggregator.DoubleSum;
 import com.tangosol.util.aggregator.GroupAggregator;
-import com.tangosol.util.aggregator.LongSum;
-
 import com.tangosol.util.aggregator.ReducerAggregator;
-import com.tangosol.util.filter.AlwaysFilter;
-import com.tangosol.util.filter.PresentFilter;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -52,7 +48,6 @@ import jakarta.ws.rs.core.Response;
 import java.util.Map;
 import java.util.Set;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -99,31 +94,11 @@ public class ChartDataResource
 
         stopWatch.start();
 
-        // determine the frequency of each of the symbols
-        CompletableFuture<Map<String, Long>> symbolFrequencyFuture = trades.async().aggregate(AlwaysFilter.INSTANCE,
-                GroupAggregator.createInstance(
-                        Trade::getSymbol,
-                        new LongSum<>(Trade::getAmount)));
-
-        // determine the number of positions with the symbol
-        CompletableFuture<Map<String, Integer>> symbolCountFuture = trades.async().aggregate(AlwaysFilter.INSTANCE(),
-                GroupAggregator.createInstance(Trade::getSymbol, new Count<>()));
-
-        // get the current prices for the symbols using Map default methods which access the cache
-        CompletableFuture<Map<String, Double>> symbolPriceFuture = Utilities.getPricesCache().async().aggregate(
-                new ReducerAggregator<>(Price::getPrice));
-
-        // determine the original valuation of the positions
-        double originalValuation = cacheSize == 0 ? 0 : trades.aggregate(AlwaysFilter.INSTANCE,
-                                                                         new DoubleSum<>(Trade::getPurchaseValue));
-        // wait for all async aggregators to finish
-        CompletableFuture.allOf(symbolFrequencyFuture, symbolCountFuture, symbolPriceFuture).get();
-
+        Map<String, TradeSummary> mapTradesBySymbol = trades.aggregate(GroupAggregator.createInstance(Trade::getSymbol,
+                                                                                              new TradeSummaryAggregator()));
         stopWatch.stop();
-
-        Map<String, Long> symbolFrequency = symbolFrequencyFuture.get();
-        Map<String, Double> symbolPrice   = symbolPriceFuture.get();
-        Map<String, Integer> symbolCount  = symbolCountFuture.get();
+        
+        Map<String, Double> symbolPrice = Utilities.getPricesCache().aggregate(new ReducerAggregator<>(Price::getPrice));
 
         InvocationService invocationService = (InvocationService) CacheFactory.getService("InvocationService");
 
@@ -133,19 +108,14 @@ public class ChartDataResource
 
         // determine the member information
         Map<Member, MemberInfo> memberInfoMap =
-            (Map<Member, MemberInfo>) invocationService.query(new GetMemberInfo(trades.getCacheName()),
-                                                              storageEnabledMembers);
+            (Map<Member, MemberInfo>) invocationService.query(new GetMemberInfo(trades.getCacheName()), storageEnabledMembers);
 
         // establish the chart data
         ChartData data = new ChartData(CacheFactory.getCluster().getTimeMillis(),
-                                       cacheSize,
-                                       symbolFrequency.keySet(),
-                                       symbolFrequency,
-                                       originalValuation,
-                                       memberInfoMap.values(),
-                                       stopWatch.getElapsedTimeIn(TimeUnit.MILLISECONDS),
+                                       mapTradesBySymbol,
                                        symbolPrice,
-                                       symbolCount);
+                                       memberInfoMap.values(),
+                                       stopWatch.getElapsedTimeIn(TimeUnit.MILLISECONDS));
 
         return Response.ok(data).build();
     }

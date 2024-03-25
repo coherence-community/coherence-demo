@@ -18,11 +18,7 @@
 
 package com.oracle.coherence.demo.model;
 
-import com.tangosol.io.pof.PofReader;
-import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
-
-import java.io.IOException;
 
 import com.tangosol.io.pof.schema.annotation.PortableType;
 import jakarta.persistence.Entity;

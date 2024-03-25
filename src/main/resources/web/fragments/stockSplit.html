@@ -2,7 +2,7 @@ The stock has been split for this symbol in this cluster.
 <p>
 Below is and example of the entry processor being used to run the stock split against a symbol.
 <pre>
-    public static void splitStock(String symbol)
+    public static void splitStock(String symbol, int factor)
     {
         NamedCache<String, Trade> tradesCache = getTradesCache();
         NamedCache<String, Price> priceCache  = getPricesCache();
@@ -14,7 +14,7 @@ Below is and example of the entry processor being used to run the stock split ag
         // split the stock
         tradesCache.invokeAll(Filters.equal(Trade::getSymbol, symbol), entry -> {
             Trade trade = entry.getValue();
-            trade.split();
+            trade.split(factor);
             entry.setValue(trade);
             return null;
         });

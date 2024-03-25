@@ -129,15 +129,17 @@ public class DeveloperResource
     /**
      * Split a stock based upon the current price.
      *
-     * @param symbol
+     * @param symbol symbol to split
+     * @param factor factor, e.g. 2 = 2:1, 3 = 3:1
      *
      * @return {@link Response#ok}
      */
     @GET
-    @Path("split/{symbol}/")
-    public Response getResourceInsert(@PathParam("symbol") String symbol)
+    @Path("split/{symbol}/{factor}")
+    public Response getResourceSplit(@PathParam("symbol") String symbol,
+                                     @PathParam("factor") int factor)
     {
-        Utilities.splitStock(symbol);
+        Utilities.splitStock(symbol, factor);
 
         return Response.ok().build();
     }

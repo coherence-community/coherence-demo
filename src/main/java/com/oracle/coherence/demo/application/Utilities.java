@@ -329,25 +329,25 @@ public final class Utilities
     /**
      * Issue a stock split.
      */
-    public static void splitStock(String symbol)
+    public static void splitStock(String symbol, int factor)
     {
         NamedCache<String, Trade> tradesCache = getTradesCache();
         NamedCache<String, Price> priceCache  = getPricesCache();
 
         double originalPrice = priceCache.get(symbol).getPrice();
 
-        System.out.println("Splitting stock for " + symbol);
+        System.out.printf("Splitting stock for %s using %d:1\n", symbol, factor);
         
         // split the stock
         tradesCache.invokeAll(Filters.equal(Trade::getSymbol, symbol), entry -> {
             Trade trade = entry.getValue();
-            trade.split();
+            trade.split(factor);
             entry.setValue(trade);
             return null;
         });
 
-        System.out.printf("Updating stock price for %s from %,.2f to %,.2f\n", symbol, originalPrice, originalPrice / 2);
-        priceCache.invoke(symbol, Processors.update(Price::setPrice, originalPrice / 2));
+        System.out.printf("Updating stock price for %s from %,.2f to %,.2f\n", symbol, originalPrice, originalPrice / factor);
+        priceCache.invoke(symbol, Processors.update(Price::setPrice, originalPrice / factor));
     }
 
 

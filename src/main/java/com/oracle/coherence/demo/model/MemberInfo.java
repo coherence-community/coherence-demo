@@ -20,14 +20,10 @@ package com.oracle.coherence.demo.model;
 
 import com.tangosol.internal.tracing.TracingHelper;
 
-import com.tangosol.io.pof.PofReader;
-import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
 
 import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.net.Member;
-
-import java.io.IOException;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -45,41 +41,6 @@ public class MemberInfo
 {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2555078539266609164L;
-
-    /**
-     * POF index for id attribute.
-     */
-    private static final int ID = 0;
-
-    /**
-     * POF index for maxMemory attribute.
-     */
-    private static final int MAX_MEMORY = 1;
-
-    /**
-     * POF index for freeMemory attribute.
-     */
-    private static final int FREE_MEMORY = 2;
-
-    /**
-     * POF index for totalMemory attribute.
-     */
-    private static final int TOTAL_MEMORY = 3;
-
-    /**
-     * POF index for entryCount attribute.
-     */
-    private static final int ENTRY_COUNT = 4;
-
-    /**
-     * POF index of {@link #tracingEnabled} attribute.
-     */
-    private static final int TRACING_ENABLED = 5;
-
-    /**
-     * POF index for the {@link #roleName} attribute.
-     */
-    private static final int ROLE_NAME = 6;
 
     /**
      * The unique identifier for the {@link MemberInfo}.
