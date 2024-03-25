@@ -88,7 +88,6 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     let KB = 1024;
     let MB = KB * KB;
     let GB = MB * KB;
-    let TB = GB * KB;
 
     // define initial states for the application (these will be refreshed asynchronously)
     self.positions         = 0;

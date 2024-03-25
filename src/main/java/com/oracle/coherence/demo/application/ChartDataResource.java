@@ -78,8 +78,7 @@ public class ChartDataResource
     @Path("{updatePrices}")
     @Produces({APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
     @SuppressWarnings("unchecked")
-    public Response getChartData(@PathParam("updatePrices") boolean updatePrices)
-            throws ExecutionException, InterruptedException {
+    public Response getChartData(@PathParam("updatePrices") boolean updatePrices) {
         // we're going to query the positions cache
         NamedCache<String, Trade> trades    = Utilities.getTradesCache();
         int                       cacheSize = trades.size();
@@ -109,7 +108,7 @@ public class ChartDataResource
 
         // determine the member information
         Map<Member, MemberInfo> memberInfoMap =
-            (Map<Member, MemberInfo>) invocationService.query(new GetMemberInfo(trades.getCacheName()), storageEnabledMembers);
+                invocationService.query(new GetMemberInfo(trades.getCacheName()), storageEnabledMembers);
 
         // establish the chart data
         ChartData data = new ChartData(CacheFactory.getCluster().getTimeMillis(),

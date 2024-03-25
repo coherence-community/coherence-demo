@@ -31,7 +31,7 @@ public class TradeSummaryAggregator
     /**
      * The trade summary.
      */
-    private TradeSummary tradeSummary;
+    private transient TradeSummary tradeSummary;
 
     public TradeSummaryAggregator() {
         super();

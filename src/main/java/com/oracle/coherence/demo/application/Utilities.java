@@ -336,7 +336,7 @@ public final class Utilities
 
         double originalPrice = priceCache.get(symbol).getPrice();
 
-        System.out.printf("Splitting stock for %s using %d:1\n", symbol, factor);
+        System.out.printf("Splitting stock for %s using %d:1%n", symbol, factor);
         
         // split the stock
         tradesCache.invokeAll(Filters.equal(Trade::getSymbol, symbol), entry -> {
@@ -346,7 +346,7 @@ public final class Utilities
             return null;
         });
 
-        System.out.printf("Updating stock price for %s from %,.2f to %,.2f\n", symbol, originalPrice, originalPrice / factor);
+        System.out.printf("Updating stock price for %s from %,.2f to %,.2f%n", symbol, originalPrice, originalPrice / factor);
         priceCache.invoke(symbol, Processors.update(Price::setPrice, originalPrice / factor));
     }
 
