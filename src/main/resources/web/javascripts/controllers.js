@@ -1,7 +1,7 @@
 /*
  * File: controllers.js
  *
- * Copyright (c) 2019, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2019, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -75,7 +75,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     // define 'self' as a means of referring to this controller
     // from with in other closures
-    var self = $scope;
+    let self = $scope;
 
     // application constants
     self.MAXIMUM_AGGREGATION_TICKS = 20;
@@ -85,16 +85,11 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.RESUME_FEDERATION         = 'Resume';
     self.MAX_SPARKLINE             = 15;
 
-    var KB = 1024;
-    var MB = KB * KB;
-    var GB = MB * KB;
-    var TB = GB * KB;
-
     // define initial states for the application (these will be refreshed asynchronously)
     self.positions         = 0;
     self.valuation         = 0;
     self.symbolNames       = [];
-    self.symbolFrequency   = {};
+    self.symbolQuantity   = {};
     self.symbolCount       = {};
     self.memberInfo        = [];
     self.currentPrice      = {};
@@ -104,7 +99,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.currentBytesSent  = 0;
     self.lastBytesSent     = -1;
     self.bytesSentData     = [];
-    self.totalFrequency    = 0;
+    self.totalQuantity    = 0;
     self.lastStatusMessage = '';
     self.displayStatus     = false;
     self.averageQueryTime  = 0;
@@ -144,11 +139,11 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     self.displayingSplash = false;
 
-    var skipSplashCookie     = 'com.oracle.coherence.demo.skipSplashScreen';
-    var disableInsightCookie = 'com.oracle.coherence.demo.DemoDisableInsight';
+    let skipSplashCookie     = 'com.oracle.coherence.demo.skipSplashScreen';
+    let disableInsightCookie = 'com.oracle.coherence.demo.DemoDisableInsight';
 
     // cookies retrieved for splash
-    var insightCookies = {
+    let insightCookies = {
        skipSplash:     $cookies.get(skipSplashCookie),
        disableInsight: $cookies.get(disableInsightCookie)
     };
@@ -177,9 +172,9 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         self.runningMode = self.isRunningInKubernetes ? " - running in Kubernetes" : "";
         
         // setup cluster name
-        var params       = $location.hash().substring(1).split("&");
-        var clusterParam = params[0].split("=");
-        var cluster      = clusterParam[1];
+        let params       = $location.hash().substring(1).split("&");
+        let clusterParam = params[0].split("=");
+        let cluster      = clusterParam[1];
 
         if (self.federationConfiguredInK8s && !self.isThisPrimaryCluster)
            {
@@ -196,7 +191,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         // obtain the cluster names from the developer resource as they can be overridden
         // via -Dprimary.cluster or -Dsecondary.cluster
         $http.get('/service/developer/clusterNames').then(function(response) {
-            var clusterNames = response.data.split(':');
+            let clusterNames = response.data.split(':');
             self.primaryClusterName   = clusterNames[0];
             self.secondaryClusterName = clusterNames[1];
 
@@ -210,12 +205,12 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     self.symbolsChartData = [];
 
-    // setup the members distribution chart ----
+    // setup the member's distribution chart ----
 
     self.memberChartData = [{ memberId: 0, entryCount: 0 }];
 
     // data distribution graph
-    var distributionChart = Morris.Bar({
+    let distributionChart = Morris.Bar({
             element: 'dataDistributionGraph',
             data: self.memberChartData ,
             xkey: 'memberId',
@@ -229,7 +224,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.aggregationChartData = [];
 
     // aggregation time graph
-    var aggregationChart = Morris.Line({
+    let aggregationChart = Morris.Line({
             element: 'aggregationGraph',
             data: self.aggregationChartData ,
             xkey: 'timestamp',
@@ -243,7 +238,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         });
 
     // mini chart for showing federation data
-    var federationChart = Morris.Bar({
+    let federationChart = Morris.Bar({
             element: 'federationGraph',
             data: [0, 0] ,
             xkey: 'timestamp',
@@ -264,45 +259,44 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         // refresh the application state when the chart-data is returned
         $http.get('/service/chart-data/' + self.portfolioRefresh.enabled).then(function (response) {
 
-            var chartData = response.data;
+            let chartData = response.data;
 
-            self.symbolNames = chartData.symbols.sort();;
+            let tradeSummary = chartData.tradeSummary;
+            self.symbolNames = Object.keys(tradeSummary).sort();
             self.symbolsChartData = [];
-            self.symbolFrequency = {};
+            self.symbolQuantity = {};
             self.symbolCount = {};
 
-            var valuationTotal = 0;
+            let valuationTotal = 0;
 
             // on first time, set the last price to the current
             if (self.firstRefresh) {
-                self.lastPrice = chartData.symbolPrice;
+                self.lastPrice = chartData.currentPrice;
             }
 
-            var frequencySum = 0;
+            let quantitySum = 0;
+            let positionCount = 0;
 
-            // update the chart with current valuations for each symbol
-            self.symbolNames.forEach(function(symbolName) {
+            for (const symbolName of self.symbolNames) {
+                // frequency
+                let quantity   = tradeSummary[symbolName].quantity;
+                quantitySum    += quantity
 
-                // get the frequency for each symbol
-                var frequency   = chartData.symbolFrequency[symbolName];
-                frequencySum   += frequency;
+                self.symbolQuantity[symbolName] = quantity;
 
-                self.symbolFrequency[symbolName] = frequency;
-
-                // get the count of positions for each symbol
-                var count = chartData.symbolCount[symbolName];
+                let count = tradeSummary[symbolName].count
+                positionCount += count;
                 self.symbolCount[symbolName] = count;
 
                 // get the current price and determine the amount
-                var amount = frequency * chartData.symbolPrice[symbolName];
+                let amount = quantity * chartData.currentPrice[symbolName];
+                valuationTotal += amount
 
                 // calculate the delta
-                self.priceChange[symbolName] = chartData.symbolPrice[symbolName] - self.lastPrice[symbolName];
-
-                valuationTotal += amount;
+                self.priceChange[symbolName] = chartData.currentPrice[symbolName] - self.lastPrice[symbolName];
 
                 self.symbolsChartData.push({"label":symbolName, "value": amount});
-            });
+            }
 
             // check to see if the valuation went up or down
             self.valuationDirection = valuationTotal === self.valuation ? 'N/A' :
@@ -313,22 +307,22 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                  self.valuationDirection === 'up'  ? "'dark-green;" : "'red'") + ';';
 
             // update the valuation
-            self.valuation      = valuationTotal;
-            self.totalFrequency = frequencySum;
-            self.currentPrice   = chartData.symbolPrice;
+            self.valuation     = valuationTotal;
+            self.totalQuantity = quantitySum;
+            self.currentPrice  = chartData.currentPrice;
 
             // update the total positions
-            self.positions = chartData.positionCount;
+            self.positions = positionCount;
 
             // save the last price
-            self.lastPrice = chartData.symbolPrice;
+            self.lastPrice = chartData.currentPrice;
 
             // store the latest member information (sorted by member)
             self.memberInfo = chartData.memberInfo.sort(function(m1, m2) {
                 return m1.id - m2.id;
             });
 
-            var currentMemberCount = (self.memberInfo.length !== undefined ? self.memberInfo.length : 0);
+            let currentMemberCount = (self.memberInfo.length !== undefined ? self.memberInfo.length : 0);
 
             // check to see if member count has changed
             if (self.lastMemberCount !== undefined && self.lastMemberCount !== currentMemberCount) {
@@ -337,7 +331,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.lastMemberCount = currentMemberCount;
 
             // update the member-info based charts
-            var newData = [];
+            let newData = [];
             self.memberInfo.forEach(function(member) {
                 newData.push({ memberId: member.id, entryCount: member.entryCount });
             });
@@ -352,7 +346,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             aggregationChart.setData(self.aggregationChartData);
 
             // determine rolling average
-            var totalAggregation = 0;
+            let totalAggregation = 0;
             self.aggregationChartData.forEach(function(entry) {
                 totalAggregation += entry.aggregationTime;
             });
@@ -362,8 +356,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             if (self.secondaryCluster === 'enabled') {
                 $http.get('/service/jmx/query/Coherence:type=Federation,name=' + self.secondaryClusterName +
                     ',subType=Destination,*/TotalBytesSent').then(function(response) {
-                    var data           = response.data;
-                    var totalBytesSent = 0;
+                    let data           = response.data;
+                    let totalBytesSent = 0;
                     data.forEach(function(values) {
                         totalBytesSent += values.attributes.TotalBytesSent;
                     });
@@ -374,7 +368,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                     self.lastBytesSent = self.currentBytesSent;
                 }
 
-                var deltaMessages = self.currentBytesSent - self.lastBytesSent;
+                let deltaMessages = self.currentBytesSent - self.lastBytesSent;
 
                 // add value to federation graph
                 self.bytesSentData.push({timestamp: new Date().getMilliseconds(), bytes: deltaMessages < 0 ? 0 : deltaMessages});
@@ -399,13 +393,13 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                  {"tracingSamplingRatio": memberInfo.tracingEnabled ? -1.0 : 1.0})
     };
 
-     // ---- the function to render the options to enable/disable tracing on the primary cluster ----
+    // ---- the function to render the options to enable/disable tracing on the primary cluster ----
 
     self.tracingOptions = function() {
-        var options    = {};
-        var memberInfo = self.memberInfo;
+        let options    = {};
+        let memberInfo = self.memberInfo;
 
-        var tracingClusterWide = memberInfo.map(function(member) {
+        let tracingClusterWide = memberInfo.map(function(member) {
                                      return member.tracingEnabled;
                                  }).reduce(function (acc, tracingEnabled) {
                                      return acc & tracingEnabled;
@@ -418,7 +412,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         }
 
         if (self.lastMemberCount > 1) {
-            var tracingOdd = memberInfo.filter(function (member) {
+            let tracingOdd = memberInfo.filter(function (member) {
                                  return member.roleName.endsWith("Odd");
                              }).map(function (member) {
                                  return member.tracingEnabled;
@@ -426,7 +420,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                                  return sum & tracingEnabled;
                              }, true);
 
-            var tracingEven = memberInfo.filter(function (member) {
+            let tracingEven = memberInfo.filter(function (member) {
                                   return member.roleName.endsWith("Even");
                               }).map(function (member) {
                                   return member.tracingEnabled;
@@ -453,11 +447,11 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     // ---- the function to enable/disable tracing on the primary cluster ----
 
     self.tracingSelected = function () {
-        var postData = {
+        let postData = {
             "role":         "",
             "tracingRatio": -1.0
         };
-        var message;
+        let message;
 
         if (self.selectedOption.endsWith("even")) {
             postData.role = "CoherenceDemoServerEven"
@@ -484,7 +478,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.configureTracing = function() {
         self.modalContent = $sce.trustAsHtml('<p>Loading...</p>');
         // using XHR so we can more easily compose html rather than using strings
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.open('GET', "fragments/tracing.html", true);
         xhr.onreadystatechange = function() {
           if (this.readyState !== 4 || this.status !== 200) {
@@ -503,8 +497,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             self.displayInsight(self.federationConfiguredInK8s ? "addOrRemoveServerK8sFederation" : "addOrRemoveServerK8s");
         }
         else {
-            var serverCount = parseInt(prompt('Enter the number of servers to start', '1')); 
-            if (isNaN(serverCount) === false) { 
+            let serverCount = parseInt(prompt('Enter the number of servers to start', '1'));
+            if (isNaN(serverCount) === false) {
                 if (self.memberInfo.length + serverCount > self.maxServers) {
                     alert("This value would exceed the maximum number of servers allowed of " + self.maxServers);
                 }
@@ -586,17 +580,17 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     // ---- the function to display demo insight ----
 
     self.displayInsight = function(item) {
-        var insight       = self.insightContent[item];
+        let insight       = self.insightContent[item];
         self.modalContent = $sce.trustAsHtml('<p>Loading...</p>');
 
         if (insight) {
-            var htmlFragment = insight.content;
+            let htmlFragment = insight.content;
             self.modalHeader = insight.header;
 
             self.displayingSplash = htmlFragment === 'fragments/welcome.html';
 
             // using XHR so we can more easily compose html rather than using strings
-            var xhr = new XMLHttpRequest();
+            let xhr = new XMLHttpRequest();
             xhr.open('GET', htmlFragment, true);
             xhr.onreadystatechange = function() {
                 if (this.readyState !== 4 || this.status !== 200) {
@@ -688,6 +682,14 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
        self.insightContent['addTrades'] = {
            "header":  "Add Trades",
            "content": "fragments/addTrades.html"
+       };
+       self.insightContent['addTradesForSymbol'] = {
+           "header":  "Add Trades For Symbol",
+           "content": "fragments/addTradesForSymbol.html"
+       };
+       self.insightContent['stockSplit'] = {
+           "header":  "Stock split for Symbol",
+           "content": "fragments/stockSplit.html"
        };
        self.insightContent['populate'] = {
            "header":  "Populate Trades",
@@ -812,8 +814,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         // get the hostname from the server so that if we specify -Dhttp.hostname
         // to be something other than 127.0.0.1 the secondary cluster URL will work.
         $http.get('/service/developer/hostname').then(function(response) {
-            var secondaryPort =  Number($location.port()) + 1;
-            var secondaryURL  = $location.protocol() + '://' + response.data + ':' + secondaryPort +
+            let secondaryPort =  Number($location.port()) + 1;
+            let secondaryURL  = $location.protocol() + '://' + response.data + ':' + secondaryPort +
                            '/application/index.html#?clusterName=' + self.secondaryClusterName;
             $window.open(secondaryURL);
         });
@@ -839,7 +841,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     self.persistenceOperation = function(operation) {
         self.persistenceResult = 'Working...';
-        var description = operation === 'createSnapshot' ? 'Creating' : 'Recovering';
+        let description = operation === 'createSnapshot' ? 'Creating' : 'Recovering';
         self.displayNotification(description + ' snapshot...', 'info', false);
         $http.get('/service/persistence/' + operation).then(function(response) {
             self.persistenceResult = response.data;
@@ -853,7 +855,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
 
     self.startDeveloper = function(command) {
         // default to continue processing command. Only shutdown has confirmation
-        var continueCommand = true;
+        let continueCommand = true;
 
         if (command === 'populate') {
             self.displayNotification('Adding 100,000 trades...', 'info', false);
@@ -919,8 +921,8 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     // ---- the function to add "n" trades ----
 
     self.addTrades = function() {
-        var val = parseInt(prompt('Enter the number of random trades to add', '1000'));
-        if (isNaN(val) === false) {
+        let val = parseInt(prompt('Enter the number of random trades to add', '1000'));
+        if (!isNaN(val)) {
             if (self.positions + val > self.maxCacheEntries) {
                 alert("This value would exceed the maximum number of cache entries allowed of " + self.maxCacheEntries);
             }
@@ -931,7 +933,45 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                     self.displayInsightIfEnabled('addTrades');
                 });
             }
-         }
+         } else {
+             alert('Invalid value')
+        }
+    };
+
+    self.addSymbolTrades = function(symbol) {
+        let val = parseInt(prompt('Enter the number of random trades to add for ' + symbol, '1000'));
+        if (!isNaN(val)) {
+            if (self.positions + val > self.maxCacheEntries) {
+                alert("This value would exceed the maximum number of cache entries allowed of " + self.maxCacheEntries);
+            }
+            else {
+                self.displayNotification('Adding ' + val + ' trades for ' + symbol + '...', 'info', false);
+                $http.get('/service/developer/insert/' + symbol + '/' + val).then( function(response) {
+                    self.displayNotification('Operation completed','success', true);
+                    self.displayInsightIfEnabled('addTradesForSymbol');
+                });
+            }
+        } else {
+           alert('Invalid value')
+        }
+    };
+
+    self.stockSplit = function(symbol) {
+        if (self.portfolioRefresh.enabled) {
+            alert("You must stop price updates to split stock");
+        }
+        else {
+           let factor = parseInt(prompt('Enter the factor. e.g. for 2:1 enter 2, for 5:1 enter 5 for ' + symbol, '2'));
+           if (!isNaN(factor)) {
+                self.displayNotification('Splitting stock ' + symbol + ' using ' + factor + ':1 ...', 'info', false);
+                $http.get('/service/developer/split/' + symbol + '/' + factor).then( function(response) {
+                    self.displayNotification('Operation completed','success', true);
+                    self.displayInsightIfEnabled('stockSplit');
+                });
+            } else {
+               alert('Invalid value')
+           }
+        }
     };
 
     // ---- the function to display a notification ----

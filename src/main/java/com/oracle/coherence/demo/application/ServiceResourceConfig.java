@@ -27,13 +27,13 @@ import org.glassfish.jersey.server.ResourceConfig;
  * @author Brian Oliver
  */
 @ApplicationPath("service")
-public class ServiceResourceConfig extends ResourceConfig
-{
+public class ServiceResourceConfig
+        extends ResourceConfig {
+    
     /**
      * Constructs a {@link ServiceResourceConfig}.
      */
-    public ServiceResourceConfig()
-    {
+    public ServiceResourceConfig() {
         register(MemberInfoResource.class);
         register(StartMemberResource.class);
         register(StopMemberResource.class);
@@ -45,5 +45,4 @@ public class ServiceResourceConfig extends ResourceConfig
         register(ManagementResource.class);
         register(TracingFilter.class);
     }
-
 }

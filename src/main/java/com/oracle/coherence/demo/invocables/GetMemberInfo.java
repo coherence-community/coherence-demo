@@ -22,18 +22,13 @@ import com.oracle.coherence.demo.application.Utilities;
 
 import com.oracle.coherence.demo.model.MemberInfo;
 
-import com.tangosol.io.pof.PofReader;
-import com.tangosol.io.pof.PofWriter;
-import com.tangosol.io.pof.PortableObject;
-
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.net.AbstractInvocable;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.CacheService;
 import com.tangosol.net.ExtensibleConfigurableCacheFactory;
 import com.tangosol.net.Member;
 import com.tangosol.net.NamedCache;
-
-import java.io.IOException;
 
 import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE;
 
@@ -42,59 +37,44 @@ import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE;
  *
  * @author Brian Oliver
  */
-public class GetMemberInfo extends AbstractInvocable implements PortableObject
-{
-    /**
-     * POF index for cacheName attribute.
-     */
-    private static final int CACHE_NAME = 0;
-
+@PortableType
+public class GetMemberInfo
+        extends AbstractInvocable {
     /**
      * The cache name to get information about.
      */
     private String cacheName;
 
-
     /**
      * Constructs a {@link GetMemberInfo} (for serialization).
      */
     @SuppressWarnings("unused")
-    public GetMemberInfo()
-    {
+    public GetMemberInfo() {
     }
-
 
     /**
      * Constructs a {@link GetMemberInfo} for a specified cache.
      *
      * @param cacheName  name of the cache to get information for.
      */
-    public GetMemberInfo(String cacheName)
-    {
+    public GetMemberInfo(String cacheName) {
         super();
         this.cacheName = cacheName;
     }
 
-
     @SuppressWarnings("rawtypes")
     @Override
-    public void run()
-    {
+    public void run() {
         // calculate number of entries for the specified named cache
         int entryCount = 0;
         NamedCache namedCache = TRADE_CACHE.equals(cacheName)
-                                    ? Utilities.getTradesCache()
-                                    : Utilities.getPricesCache();
+                                ? Utilities.getTradesCache()
+                                : Utilities.getPricesCache();
 
-        if (namedCache != null)
-        {
+        if (namedCache != null) {
             CacheService cacheService = namedCache.getCacheService();
 
-            if (cacheService.getBackingMapManager() instanceof ExtensibleConfigurableCacheFactory.Manager)
-            {
-                ExtensibleConfigurableCacheFactory.Manager backingMapManager =
-                    (ExtensibleConfigurableCacheFactory.Manager) cacheService.getBackingMapManager();
-
+            if (cacheService.getBackingMapManager() instanceof ExtensibleConfigurableCacheFactory.Manager backingMapManager) {
                 entryCount = backingMapManager.getBackingMap(cacheName).size();
             }
         }
@@ -109,19 +89,5 @@ public class GetMemberInfo extends AbstractInvocable implements PortableObject
         MemberInfo memberInfo = new MemberInfo(member, runtime, entryCount);
 
         setResult(memberInfo);
-    }
-
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        cacheName = reader.readString(CACHE_NAME);
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeString(CACHE_NAME, cacheName);
     }
 }

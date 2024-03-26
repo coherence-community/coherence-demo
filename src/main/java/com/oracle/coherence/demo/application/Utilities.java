@@ -18,6 +18,7 @@
 
 package com.oracle.coherence.demo.application;
 
+import com.oracle.coherence.common.base.Logger;
 import com.oracle.coherence.demo.model.Price;
 import com.oracle.coherence.demo.model.Trade;
 
@@ -26,8 +27,10 @@ import com.tangosol.net.NamedCache;
 
 import com.tangosol.net.cache.TypeAssertion;
 
+import com.tangosol.util.Filters;
 import com.tangosol.util.InvocableMap;
 
+import com.tangosol.util.Processors;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
@@ -133,7 +136,7 @@ public final class Utilities
      */
     public static void main(String[] args)
     {
-        createPositions(NR_POSITIONS_TO_CREATE);
+        createPositions(null, NR_POSITIONS_TO_CREATE);
     }
 
 
@@ -240,21 +243,21 @@ public final class Utilities
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
 
-        System.out.print("Adding Indexes...");
+        Logger.out("Adding Indexes...");
         try (Scope ignored = tracer.activateSpan(span))
         {
             tradesCache.addIndex(Trade::getSymbol, true, null);
             spanLog(span, "Created trade symbol index");
             tradesCache.addIndex(Trade::getPurchaseValue, false, null);
             spanLog(span, "Created trade purchase value index");
-            tradesCache.addIndex(Trade::getAmount, false, null);
+            tradesCache.addIndex(Trade::getQuantity, false, null);
             spanLog(span, "Created trade amount index");
         }
         finally
         {
             span.finish();
         }
-        System.out.println(" Done");
+        Logger.out(" Done");
     }
 
 
@@ -269,14 +272,14 @@ public final class Utilities
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
 
-        System.out.print("Removing Indexes...");
+        Logger.out("Removing Indexes...");
         try (Scope ignored = tracer.activateSpan(span))
         {
             tradesCache.removeIndex(Trade::getSymbol);
             spanLog(span, "Removed trade symbol index");
             tradesCache.removeIndex(Trade::getPurchaseValue);
             spanLog(span, "Removed trade purchase value index");
-            tradesCache.removeIndex(Trade::getAmount);
+            tradesCache.removeIndex(Trade::getQuantity);
             spanLog(span, "Removed trade amount index");
         }
         finally
@@ -284,7 +287,7 @@ public final class Utilities
             span.finish();
         }
 
-        System.out.println(" Done");
+        Logger.out(" Done");
     }
 
 
@@ -321,18 +324,43 @@ public final class Utilities
      */
     public static void createPositions()
     {
-        createPositions(NR_POSITIONS_TO_CREATE);
+        createPositions(null, NR_POSITIONS_TO_CREATE);
+    }
+
+    /**
+     * Issue a stock split.
+     */
+    public static void splitStock(String symbol, int factor)
+    {
+        NamedCache<String, Trade> tradesCache = getTradesCache();
+        NamedCache<String, Price> priceCache  = getPricesCache();
+
+        double originalPrice = priceCache.get(symbol).getPrice();
+
+        Logger.out(String.format("Splitting stock for %s using %d:1", symbol, factor));
+        
+        // split the stock
+        tradesCache.invokeAll(Filters.equal(Trade::getSymbol, symbol), entry -> {
+            Trade trade = entry.getValue();
+            trade.split(factor);
+            entry.setValue(trade);
+            return null;
+        });
+
+        Logger.out(String.format("Updating stock price for %s from $%,.2f to $%,.2f", symbol, originalPrice, originalPrice / factor));
+        priceCache.invoke(symbol, Processors.update(Price::setPrice, originalPrice / factor));
     }
 
 
     /**
      * Create "count" positions in the cache at the current price.
      *
-     * @param count  the number of entries to add
+     * @param symbolToInsert the symbol to add to, if null, then all symbols
+     * @param count          the number of entries to add
      */
-    public static void createPositions(int count)
+    public static void createPositions(String symbolToInsert, int count)
     {
-        System.out.printf("Creating %d Positions...\n", count);
+        Logger.out(String.format("Creating %d Positions...", count));
 
         NamedCache<String, Trade> tradesCache = getTradesCache();
         NamedCache<String, Price> priceCache  = getPricesCache();
@@ -341,6 +369,8 @@ public final class Utilities
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
                 .withTag("symbol.count", SYMBOLS.length).start();
+
+        boolean singleSymbol = symbolToInsert != null;
 
         try (Scope ignored = tracer.activateSpan(span))
         {
@@ -351,7 +381,7 @@ public final class Utilities
             for (int i = 0; i < count; i++)
             {
                 // create a random position
-                String symbol = SYMBOLS[random.nextInt(SYMBOLS.length)];
+                String symbol = singleSymbol ? symbolToInsert : SYMBOLS[random.nextInt(SYMBOLS.length)];
                 int    amount = random.nextInt(1000) + 1;
                 double price  = localPrices.get(symbol).getPrice();
 
@@ -359,11 +389,11 @@ public final class Utilities
 
                 trades.put(trade.getId(), trade);
 
-                // batch the putAll's at 10000
-                if (i % 10000 == 0)
+                // batch the putAll's at 100,000
+                if (i % 100_000 == 0)
                 {
-                    spanLog(span, "Flushed 10000 trades to cache");
-                    System.out.println("Flushing 10000 trades from HashMap to Coherence cache...");
+                    spanLog(span, "Flushed trades to cache" + (singleSymbol ? " for symbol " + symbolToInsert : ""));
+                    Logger.out("Flushing trades from HashMap to Coherence cache...");
                     tradesCache.putAll(trades);
                     trades.clear();
                 }
@@ -380,7 +410,7 @@ public final class Utilities
             span.finish();
         }
 
-        System.out.printf("Creation Complete! (Cache contains %d positions)\n", tradesCache.size());
+        Logger.out(String.format("Creation Complete! (Cache contains %d positions) ", tradesCache.size()));
     }
 
 

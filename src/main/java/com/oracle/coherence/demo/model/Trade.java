@@ -18,13 +18,10 @@
 
 package com.oracle.coherence.demo.model;
 
-import com.tangosol.io.pof.PofReader;
-import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
 
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.util.UUID;
-
-import java.io.IOException;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -41,30 +38,10 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement(name = "trade")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class Trade implements PortableObject
-{
+@PortableType
+public class Trade {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2557078539268609864L;
-
-    /**
-     * POF index for id attribute.
-     */
-    private static final int ID = 0;
-
-    /**
-     * POF index for symbol attribute.
-     */
-    private static final int SYMBOL = 1;
-
-    /**
-     * POF index for amount attribute.
-     */
-    private static final int AMOUNT = 2;
-
-    /**
-     * POF index for price attribute.
-     */
-    private static final int PRICE = 3;
 
     /**
      * The unique identifier for this trade.
@@ -78,9 +55,9 @@ public class Trade implements PortableObject
     private String symbol;
 
     /**
-     * The number of shares for the {@link Trade}.
+     * The quantity of shares for the {@link Trade}.
      */
-    private int amount;
+    private int quantity;
 
     /**
      * The price at which the shares in the {@link Trade} were acquired.
@@ -91,8 +68,7 @@ public class Trade implements PortableObject
     /**
      * Default Constructor (required and used only by {@link PortableObject}).
      */
-    public Trade()
-    {
+    public Trade() {
         // required for Serializable and PortableObject
     }
 
@@ -100,18 +76,17 @@ public class Trade implements PortableObject
     /**
      * The standard constructor for a {@link Trade}.
      *
-     * @param symbol  symbol (ticker code) of the {@link Trade}
-     * @param amount  number of shares (quantity) for the {@link Trade}
-     * @param price   price of the shares
+     * @param symbol    symbol (ticker code) of the {@link Trade}
+     * @param quantity  number of shares (quantity) for the {@link Trade}
+     * @param price     price of the shares
      */
     public Trade(String symbol,
-                 int    amount,
-                 double price)
-    {
-        this.id     = new UUID().toString();
+                 int quantity,
+                 double price) {
+        this.id = new UUID().toString();
         this.symbol = symbol;
-        this.amount = amount;
-        this.price  = price;
+        this.quantity = quantity;
+        this.price = price;
     }
 
 
@@ -120,8 +95,7 @@ public class Trade implements PortableObject
      *
      * @return the identifier
      */
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
@@ -131,8 +105,7 @@ public class Trade implements PortableObject
      *
      * @return the symbol
      */
-    public String getSymbol()
-    {
+    public String getSymbol() {
         return symbol;
     }
 
@@ -142,8 +115,7 @@ public class Trade implements PortableObject
      *
      * @return the price
      */
-    public double getPrice()
-    {
+    public double getPrice() {
         return price;
     }
 
@@ -151,11 +123,10 @@ public class Trade implements PortableObject
     /**
      * Obtain the number of shares acquired for the {@link Trade}.
      *
-     * @return the amount
+     * @return the quantity
      */
-    public int getAmount()
-    {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
 
@@ -164,9 +135,8 @@ public class Trade implements PortableObject
      *
      * @return the value
      */
-    public double getPurchaseValue()
-    {
-        return getAmount() * getPrice();
+    public double getPurchaseValue() {
+        return getQuantity() * getPrice();
     }
 
 
@@ -175,28 +145,17 @@ public class Trade implements PortableObject
      *
      * @param price the new price.
      */
-    public void setPrice(double price)
-    {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        id     = reader.readString(ID);
-        symbol = reader.readString(SYMBOL);
-        amount = reader.readInt(AMOUNT);
-        price  = reader.readDouble(PRICE);
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeString(ID, id);
-        writer.writeString(SYMBOL, symbol);
-        writer.writeInt(AMOUNT, amount);
-        writer.writeDouble(PRICE, price);
+    /**
+     * Split the stock.
+     *
+     * @param factor factor to use for split
+     */
+    public void split(int factor) {
+        quantity *= factor;
+        price /= factor;
     }
 }

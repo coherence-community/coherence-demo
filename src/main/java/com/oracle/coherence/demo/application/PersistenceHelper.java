@@ -32,8 +32,8 @@ import java.util.Arrays;
  *
  * @author Tim Middleton
  */
-public class PersistenceHelper
-{
+public class PersistenceHelper {
+
     /**
      * JMX operation to create a snapshot.
      */
@@ -97,19 +97,16 @@ public class PersistenceHelper
      */
     private final Registry registry;
 
-
     /**
      * Construct a new PersistenceHelper which can be used to issue
      * persistence related commands for the examples.
      */
-    public PersistenceHelper()
-    {
+    public PersistenceHelper() {
         Cluster cluster = CacheFactory.ensureCluster();
 
         registry = cluster.getManagement();
 
-        if (registry == null)
-        {
+        if (registry == null) {
             throw new RuntimeException("Unable to retrieve Registry from cluster");
         }
 
@@ -117,16 +114,13 @@ public class PersistenceHelper
 
         // wait for registration of Cluster as the registration is done
         // async and may not be complete before our first call after ensureCluster()
-        try
-        {
+        try {
             waitForRegistration(registry, Registry.CLUSTER_TYPE);
         }
-        catch (InterruptedException e)
-        {
+        catch (InterruptedException e) {
             throw Base.ensureRuntimeException(e, "Unable to find MBean");
         }
     }
-
 
     /**
      * Obtain a list the snapshots for the specified service.
@@ -135,13 +129,11 @@ public class PersistenceHelper
      *
      * @return the snapshots for the specified service
      */
-    public String[] listSnapshots(String serviceName)
-    {
+    public String[] listSnapshots(String serviceName) {
         String[] snapshots = (String[]) getAttribute(ensureGlobalName(getMBeanName(serviceName)), "Snapshots");
 
         return snapshots == null ? NO_SNAPSHOTS : snapshots;
     }
-
 
     /**
      * Obtain a list of archived snapshots for a given service.
@@ -151,14 +143,12 @@ public class PersistenceHelper
      * @return a {@link String}[] of archived snapshots for the given service
      */
     @SuppressWarnings("unused")
-    public String[] listArchivedSnapshots(String serviceName)
-    {
+    public String[] listArchivedSnapshots(String serviceName) {
         return (String[]) mbsProxy.invoke(ensureGlobalName(getMBeanName(serviceName)),
-                                          "listArchivedSnapshots",
-                                          new String[0],
-                                          new String[0]);
+                "listArchivedSnapshots",
+                new String[0],
+                new String[0]);
     }
-
 
     /**
      * Resume a given service.
@@ -166,14 +156,12 @@ public class PersistenceHelper
      * @param serviceName the service to resume
      */
     @SuppressWarnings("unused")
-    public void resumeService(String serviceName)
-    {
+    public void resumeService(String serviceName) {
         mbsProxy.invoke(Registry.CLUSTER_TYPE,
-                        RESUME_SERVICE,
-                        new String[] {serviceName},
-                        new String[] {"java.lang.String"});
+                RESUME_SERVICE,
+                new String[] {serviceName},
+                new String[] {"java.lang.String"});
     }
-
 
     /**
      * Suspend a given service.
@@ -181,14 +169,12 @@ public class PersistenceHelper
      * @param serviceName the service to suspend
      */
     @SuppressWarnings("unused")
-    public void suspendService(String serviceName)
-    {
+    public void suspendService(String serviceName) {
         mbsProxy.invoke(Registry.CLUSTER_TYPE,
-                        SUSPEND_SERVICE,
-                        new String[] {serviceName},
-                        new String[] {"java.lang.String"});
+                SUSPEND_SERVICE,
+                new String[] {serviceName},
+                new String[] {"java.lang.String"});
     }
-
 
     /**
      * Issue an operation and wait for the operation to be complete by
@@ -208,33 +194,27 @@ public class PersistenceHelper
      */
     public void invokeOperationWithWait(String operation,
                                         String snapshot,
-                                        String serviceName)
-    {
-        try
-        {
+                                        String serviceName) {
+        try {
             String beanName = ensureGlobalName(getMBeanName(serviceName));
 
             mbsProxy.invoke(beanName, operation, new String[] {snapshot}, new String[] {"java.lang.String"});
 
-            while (true)
-            {
+            while (true) {
                 Base.sleep(SLEEP_TIME);
 
-                if ((boolean) getAttribute(beanName, "Idle"))
-                {
+                if ((boolean) getAttribute(beanName, "Idle")) {
                     // idle means the operation has completed as we are guaranteed an up-to-date
                     // attribute value just after an operation was called
                     return;
                 }
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw Base.ensureRuntimeException(e, "Unable to complete operation " + operation + " for service "
-                                              + serviceName);
+                                                 + serviceName);
         }
     }
-
 
     /**
      * Validate that a snapshot exists for a given service.
@@ -245,20 +225,16 @@ public class PersistenceHelper
      * @return true if the snapshot exists for the service
      */
     public boolean snapshotExists(String serviceName,
-                                  String snapshotName)
-    {
-        try
-        {
+                                  String snapshotName) {
+        try {
             String[] aSnapshots = listSnapshots(serviceName);
 
             return aSnapshots != null && Arrays.asList(aSnapshots).contains(snapshotName);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw Base.ensureRuntimeException(e, "Error listing snapshots");
         }
     }
-
 
     /**
      * Wait for the given MBean to be registered.
@@ -269,21 +245,17 @@ public class PersistenceHelper
      * @throws InterruptedException if the MBean is not registered
      */
     public static void waitForRegistration(Registry registry,
-                                           String   beanName) throws InterruptedException
-    {
+                                           String beanName) throws InterruptedException {
         int nMaxRetries = 100;
 
-        while (!registry.getMBeanServerProxy().isMBeanRegistered(beanName))
-        {
+        while (!registry.getMBeanServerProxy().isMBeanRegistered(beanName)) {
             Base.sleep(100L);
 
-            if (--nMaxRetries == 0)
-            {
-                throw new RuntimeException("Unable to find registered MBean " + beanName);
+            if (--nMaxRetries == 0) {
+                throw new InterruptedException("Unable to find registered MBean " + beanName);
             }
         }
     }
-
 
     /**
      * Obtain the PersistenceManagerMBean name for a given service.
@@ -292,12 +264,10 @@ public class PersistenceHelper
      *
      * @return the MBean name
      */
-    public static String getMBeanName(String service)
-    {
+    public static String getMBeanName(String service) {
         return Registry.PERSISTENCE_SNAPSHOT_TYPE + ",service=" + service + "," + Registry.KEY_RESPONSIBILITY
                + "PersistenceCoordinator";
     }
-
 
     /**
      * Return a global name for the given MBean Name.
@@ -306,11 +276,9 @@ public class PersistenceHelper
      *
      * @return the global name.
      */
-    private String ensureGlobalName(String name)
-    {
+    private String ensureGlobalName(String name) {
         return registry.ensureGlobalName(name);
     }
-
 
     /**
      * Return an attribute name from an MBean.
@@ -321,8 +289,7 @@ public class PersistenceHelper
      * @return the value of the attribute
      */
     private Object getAttribute(String objectName,
-                                String attribute)
-    {
+                                String attribute) {
         return mbsProxy.getAttribute(objectName, attribute);
     }
 }

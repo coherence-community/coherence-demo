@@ -28,13 +28,13 @@ import jakarta.ws.rs.ApplicationPath;
  * @author Brian Oliver
  */
 @ApplicationPath("application")
-public class ApplicationResourceConfig extends ResourceConfig
-{
+public class ApplicationResourceConfig
+        extends ResourceConfig {
+
     /**
      * Constructs the {@link ApplicationResourceConfig}.
      */
-    public ApplicationResourceConfig()
-    {
+    public ApplicationResourceConfig() {
         register(StaticResource.class);
     }
 }

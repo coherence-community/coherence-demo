@@ -18,12 +18,9 @@
 
 package com.oracle.coherence.demo.model;
 
-import com.tangosol.io.pof.PofReader;
-import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
 
-import java.io.IOException;
-
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.Id;
@@ -41,8 +38,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement(name = "price")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class Price implements PortableObject
-{
+@PortableType
+public class Price {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2557678549268609664L;
 
@@ -71,8 +68,7 @@ public class Price implements PortableObject
     /**
      * Default Constructor (required and used only by {@link PortableObject}).
      */
-    public Price()
-    {
+    public Price() {
         // required for Serializable and PortableObject
     }
 
@@ -84,20 +80,18 @@ public class Price implements PortableObject
      * @param price The current price of the symbol
      */
     public Price(String symbol,
-                 double price)
-    {
+                 double price) {
         this.symbol = symbol;
-        this.price  = price;
+        this.price = price;
     }
 
 
     /**
      * Obtain the symbol (ticker code) of the equity (stock) for the {@link Trade}.
      *
-     * @return  the symbol
+     * @return the symbol
      */
-    public String getSymbol()
-    {
+    public String getSymbol() {
         return symbol;
     }
 
@@ -107,8 +101,7 @@ public class Price implements PortableObject
      *
      * @return the price
      */
-    public double getPrice()
-    {
+    public double getPrice() {
         return price;
     }
 
@@ -118,24 +111,7 @@ public class Price implements PortableObject
      *
      * @param price the new price.
      */
-    public void setPrice(double price)
-    {
+    public void setPrice(double price) {
         this.price = price;
-    }
-
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        symbol = reader.readString(SYMBOL);
-        price  = reader.readDouble(PRICE);
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeString(SYMBOL, symbol);
-        writer.writeDouble(PRICE, price);
     }
 }

@@ -47,8 +47,8 @@ import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
  * @author Tim Middleton
  */
 @Path("/developer")
-public class DeveloperResource
-{
+public class DeveloperResource {
+
     /**
      * Name of primary cluster.
      */
@@ -65,30 +65,29 @@ public class DeveloperResource
      * @return the result as JSON
      */
     @GET
-    @Produces({APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
+    @Produces( {APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
     @Path("environment")
-    public Response getEnvironmentInfo()
-    {
-        Map<String, Object> mapEnv =  new HashMap<>();
+    public Response getEnvironmentInfo() {
+        Map<String, Object> mapEnv = new HashMap<>();
 
         String clusterName = CacheFactory.ensureCluster().getClusterName();
         String edition     = CacheFactory.getEdition();
 
-        mapEnv.put("runningInKubernetes",       Utilities.isRunningInKubernetes());
-        mapEnv.put("metricsEnabled",            Utilities.isMetricsEnabled());
-        mapEnv.put("coherenceVersion",          Utilities.getCoherenceVersion());
-        mapEnv.put("coherenceVersionAsInt",     Utilities.getCoherenceVersionAsInt());
-        mapEnv.put("primaryCluster",            clusterName.equals(PRIMARY_CLUSTER));
+        mapEnv.put("runningInKubernetes", Utilities.isRunningInKubernetes());
+        mapEnv.put("metricsEnabled", Utilities.isMetricsEnabled());
+        mapEnv.put("coherenceVersion", Utilities.getCoherenceVersion());
+        mapEnv.put("coherenceVersionAsInt", Utilities.getCoherenceVersionAsInt());
+        mapEnv.put("primaryCluster", clusterName.equals(PRIMARY_CLUSTER));
         mapEnv.put("federationConfiguredInK8s", Utilities.isFederationConfiguredInK8s());
-        mapEnv.put("thisClusterName",           clusterName);
-        mapEnv.put("coherenceEdition",          edition);
-        mapEnv.put("coherenceEditionFull",      ("CE".equals(edition) ? "Community" : "Grid") + " Edition");
-        mapEnv.put("javaVersion",               System.getProperty("java.version") + " " +
-                                                System.getProperty("java.vendor"));
+        mapEnv.put("thisClusterName", clusterName);
+        mapEnv.put("coherenceEdition", edition);
+        mapEnv.put("coherenceEditionFull", ("CE".equals(edition) ? "Community" : "Grid") + " Edition");
+        mapEnv.put("javaVersion", System.getProperty("java.version") + " " +
+                                  System.getProperty("java.vendor"));
         // properties for limiting resource usage
-        mapEnv.put("maxServers",                System.getProperty("max.servers", "1000"));
-        mapEnv.put("maxCacheEntries",           System.getProperty("max.cache.entries", "99999999999"));
-        mapEnv.put("disableShutdown",           Boolean.valueOf(System.getProperty("disable.shutdown", "false")));
+        mapEnv.put("maxServers", System.getProperty("max.servers", "1000"));
+        mapEnv.put("maxCacheEntries", System.getProperty("max.cache.entries", "99999999999"));
+        mapEnv.put("disableShutdown", Boolean.valueOf(System.getProperty("disable.shutdown", "false")));
 
         return Response.status(Response.Status.OK).entity(mapEnv).build();
     }
@@ -102,37 +101,64 @@ public class DeveloperResource
      */
     @GET
     @Path("insert/{count}")
-    public Response getResourceInsert(@PathParam("count") int count)
-    {
-        Utilities.createPositions(count);
+    public Response getResourceInsert(@PathParam("count") int count) {
+        Utilities.createPositions(null, count);
 
         return Response.ok().build();
     }
 
+    /**
+     * Insert a number of positions based on the input argument.
+     *
+     * @param count  the number of positions to create
+     *
+     * @return {@link Response#ok}
+     */
+    @GET
+    @Path("insert/{symbol}/{count}")
+    public Response getResourceInsert(@PathParam("symbol") String symbol,
+                                      @PathParam("count") int count) {
+        Utilities.createPositions(symbol, count);
 
-     /**
-      * Adds or removes indexes based in input arguments.
-      *
-      * @param enabled  flag determining whether to add or remove the indexes
-      *
-      * @return {@link Response#ok}
-      */
+        return Response.ok().build();
+    }
+
+    /**
+     * Split a stock based upon the current price.
+     *
+     * @param symbol symbol to split
+     * @param factor factor, e.g. 2 = 2:1, 3 = 3:1
+     *
+     * @return {@link Response#ok}
+     */
+    @GET
+    @Path("split/{symbol}/{factor}")
+    public Response getResourceSplit(@PathParam("symbol") String symbol,
+                                     @PathParam("factor") int factor) {
+        Utilities.splitStock(symbol, factor);
+
+        return Response.ok().build();
+    }
+
+    /**
+     * Adds or removes indexes based in input arguments.
+     *
+     * @param enabled  flag determining whether to add or remove the indexes
+     *
+     * @return {@link Response#ok}
+     */
     @GET
     @Path("indexes/{enabled}")
-    public Response getResourceIndexes(@PathParam("enabled") boolean enabled)
-    {
-        if (enabled)
-        {
+    public Response getResourceIndexes(@PathParam("enabled") boolean enabled) {
+        if (enabled) {
             Utilities.addIndexes();
         }
-        else
-        {
+        else {
             Utilities.removeIndexes();
         }
 
         return Response.ok().build();
     }
-
 
     /**
      * Invoke the specified developer resource command.
@@ -164,61 +190,54 @@ public class DeveloperResource
      */
     @GET
     @Path("{command}")
-    @Produces({TEXT_PLAIN})
-    public Response getResource(@PathParam("command") String command)
-    {
+    @Produces( {TEXT_PLAIN})
+    public Response getResource(@PathParam("command") String command) {
         Object response = null;
 
-        try
-        {
+        try {
             NamedCache<String, Trade> trades = Utilities.getTradesCache();
 
-            switch (command)
-            {
-            case "clear" :
-                trades.clear();
-                break;
+            switch (command) {
+                case "clear":
+                    trades.clear();
+                    break;
 
-            case "populate" :
-                Utilities.createPositions();
-                break;
+                case "populate":
+                    Utilities.createPositions();
+                    break;
 
-            case "shutdown" :
-                System.out.println("Coherence Demo has been shutdown. Please close any browsers.");
-                System.exit(0);
-                break;
+                case "shutdown":
+                    System.out.println("Coherence Demo has been shutdown. Please close any browsers.");
+                    System.exit(0);
+                    break;
 
-            case "hostname" :
-                String lbrHostname = System.getProperty("lbr.hostname");
-                // check for an overriding load balancer hostname first
-                if (lbrHostname != null)
-                {
-                    response = lbrHostname;
-                }
-                else
-                {
-                    response = System.getProperty("http.hostname", "127.0.0.1");
-                }
+                case "hostname":
+                    String lbrHostname = System.getProperty("lbr.hostname");
+                    // check for an overriding load balancer hostname first
+                    if (lbrHostname != null) {
+                        response = lbrHostname;
+                    }
+                    else {
+                        response = System.getProperty("http.hostname", "127.0.0.1");
+                    }
 
-                break;
+                    break;
 
-            case "clusterNames" :
-                response = PRIMARY_CLUSTER + ':' + SECONDARY_CLUSTER;
-                break;
+                case "clusterNames":
+                    response = PRIMARY_CLUSTER + ':' + SECONDARY_CLUSTER;
+                    break;
 
-            default :
-                return Response.status(Response.Status.NOT_FOUND).build();
+                default:
+                    return Response.status(Response.Status.NOT_FOUND).build();
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
 
             return Response.serverError().build();
         }
 
-        if (response != null)
-        {
+        if (response != null) {
             return Response.ok(response).build();
         }
 

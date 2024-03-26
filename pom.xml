@@ -24,21 +24,21 @@
 
   <groupId>com.oracle.coherence</groupId>
   <artifactId>coherence-demo</artifactId>
-  <version>7.0.1-SNAPSHOT</version>
+  <version>8.0.0-SNAPSHOT</version>
 
   <properties>
     <!-- The groupId of the Coherence product -->
     <coherence.group.id>com.oracle.coherence.ce</coherence.group.id>
 
     <!-- dependency versions -->
-    <bedrock.version>6.0.1</bedrock.version>
-    <coherence.version>23.09.2</coherence.version>
+    <bedrock.version>7.0.3</bedrock.version>
+    <coherence.version>24.03</coherence.version>
     <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0.1</copy.rename.maven.plugin.version>
     <derby.version>10.17.1.0</derby.version>
     <docker.version>${project.version}</docker.version>
-    <eclipselink.version>3.0.2</eclipselink.version>
-    <jackson.version>2.14.1</jackson.version>
+    <eclipselink.version>4.0.2</eclipselink.version>
+    <jackson.version>2.17.0</jackson.version>
     <jackson.databind.version>${jackson.version}</jackson.databind.version>
     <jaeger.version>1.8.1</jaeger.version>
     <jaxrs.version>3.0.0</jaxrs.version>
@@ -55,10 +55,11 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.release>17</maven.compiler.release>
-    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+    <maven.compiler.plugin.version>3.12.1</maven.compiler.plugin.version>
     <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
     <maven.enforcer.plugin.version>1.3.1</maven.enforcer.plugin.version>
     <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
+    <maven.jandex.plugin.version>1.2.3</maven.jandex.plugin.version>
     <maven.javadoc.plugin.version>3.4.0</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
@@ -381,6 +382,34 @@
           </arguments>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>com.oracle.coherence.ce</groupId>
+        <artifactId>pof-maven-plugin</artifactId>
+        <version>24.03</version>
+        <executions>
+          <execution>
+            <id>instrument</id>
+            <goals>
+              <goal>instrument</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jboss.jandex</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>${maven.jandex.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -524,7 +553,7 @@
             <version>${jib.version}</version>
             <configuration>
               <from>
-                <image>gcr.io/distroless/java17</image>
+                <image>openjdk:21-jdk</image>
               </from>
               <to>
                 <image>${project.artifactId}</image>

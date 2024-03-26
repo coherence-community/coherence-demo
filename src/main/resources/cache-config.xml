@@ -23,17 +23,7 @@
               xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd">
 
     <defaults>
-     <serializer>
-          <instance>
-             <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
-             <init-params>
-                <init-param>
-                   <param-type>String</param-type>
-                   <param-value>pof-config.xml</param-value>
-                </init-param>
-             </init-params>
-          </instance>
-       </serializer>
+        <serializer>pof</serializer>
     </defaults>
 
     <!-- Interceptor to bootstrap the demo application -->
@@ -66,7 +56,9 @@
             <backing-map-scheme>
                 <read-write-backing-map-scheme>
                     <internal-cache-scheme>
-                        <local-scheme/>
+                        <local-scheme>
+                            <unit-calculator>BINARY</unit-calculator>
+                        </local-scheme>
                     </internal-cache-scheme>
                     <write-max-batch-size>5000</write-max-batch-size>
                     <!-- Define the cache scheme. -->

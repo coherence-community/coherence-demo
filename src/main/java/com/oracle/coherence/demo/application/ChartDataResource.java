@@ -22,22 +22,21 @@ import com.oracle.coherence.demo.invocables.GetMemberInfo;
 
 import com.oracle.coherence.demo.model.ChartData;
 import com.oracle.coherence.demo.model.MemberInfo;
+import com.oracle.coherence.demo.model.Price;
 import com.oracle.coherence.demo.model.Trade;
 
 import com.oracle.bedrock.util.StopWatch;
 
+import com.oracle.coherence.demo.model.TradeSummary;
+import com.oracle.coherence.demo.model.TradeSummaryAggregator;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.DistributedCacheService;
 import com.tangosol.net.InvocationService;
 import com.tangosol.net.Member;
 import com.tangosol.net.NamedCache;
 
-import com.tangosol.util.aggregator.Count;
-import com.tangosol.util.aggregator.DoubleSum;
 import com.tangosol.util.aggregator.GroupAggregator;
-import com.tangosol.util.aggregator.LongSum;
-
-import com.tangosol.util.filter.PresentFilter;
+import com.tangosol.util.aggregator.ReducerAggregator;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -46,7 +45,6 @@ import jakarta.ws.rs.Produces;
 
 import jakarta.ws.rs.core.Response;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,8 +63,9 @@ import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
  * @author Brian Oliver
  */
 @Path("/chart-data")
-public class ChartDataResource
-{
+@SuppressWarnings("rawTypes")
+public class ChartDataResource {
+
     /**
      * Obtain the chart data as JSON, optionally updating the prices.
      *
@@ -76,10 +75,9 @@ public class ChartDataResource
      */
     @GET
     @Path("{updatePrices}")
-    @Produces({APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
+    @Produces( {APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
     @SuppressWarnings("unchecked")
-    public Response getChartData(@PathParam("updatePrices") boolean updatePrices)
-    {
+    public Response getChartData(@PathParam("updatePrices") boolean updatePrices) {
         // we're going to query the positions cache
         NamedCache<String, Trade> trades    = Utilities.getTradesCache();
         int                       cacheSize = trades.size();
@@ -88,56 +86,34 @@ public class ChartDataResource
         StopWatch stopWatch = new StopWatch();
 
         // update prices outside the timer, so we don't affect the overall stopwatch time
-        if (updatePrices && cacheSize > 0)
-        {
+        if (updatePrices && cacheSize > 0) {
             Utilities.updatePrices();
         }
 
         stopWatch.start();
 
-        // determine the frequency of each of the symbols
-        Map<String, Long> symbolFrequency = trades.aggregate(PresentFilter.INSTANCE,
-                                                             GroupAggregator.createInstance(
-                                                                    Trade::getSymbol,
-                                                                    new LongSum<>(Trade::getAmount)));
-
-        // determine the number of positions with the symbol
-        Map<String, Integer> symbolCount = trades.aggregate(PresentFilter.INSTANCE,
-                                                            GroupAggregator.createInstance(Trade::getSymbol,
-                                                                                           new Count<>()));
-
-        // get the current prices for the symbols using Map default methods which access the cache
-        Map<String, Double> symbolPrice = new HashMap<>();
-
-        Utilities.getPricesCache().forEach((key, value) -> symbolPrice.put(key, value.getPrice()));
-
-        // determine the original valuation of the positions
-        double originalValuation = cacheSize == 0 ? 0 : trades.aggregate(PresentFilter.INSTANCE,
-                                                                         new DoubleSum<>(Trade::getPurchaseValue));
-
+        Map<String, TradeSummary> mapTradesBySymbol = trades.aggregate(GroupAggregator.createInstance(Trade::getSymbol,
+                new TradeSummaryAggregator()));
         stopWatch.stop();
+
+        Map<String, Double> symbolPrice = Utilities.getPricesCache().aggregate(new ReducerAggregator<>(Price::getPrice));
 
         InvocationService invocationService = (InvocationService) CacheFactory.getService("InvocationService");
 
         // determine the storage enabled members for the membership query
         Set<Member> storageEnabledMembers =
-            ((DistributedCacheService) trades.getCacheService()).getOwnershipEnabledMembers();
+                ((DistributedCacheService) trades.getCacheService()).getOwnershipEnabledMembers();
 
         // determine the member information
         Map<Member, MemberInfo> memberInfoMap =
-            (Map<Member, MemberInfo>) invocationService.query(new GetMemberInfo(trades.getCacheName()),
-                                                              storageEnabledMembers);
+                invocationService.query(new GetMemberInfo(trades.getCacheName()), storageEnabledMembers);
 
         // establish the chart data
         ChartData data = new ChartData(CacheFactory.getCluster().getTimeMillis(),
-                                       cacheSize,
-                                       symbolFrequency.keySet(),
-                                       symbolFrequency,
-                                       originalValuation,
-                                       memberInfoMap.values(),
-                                       stopWatch.getElapsedTimeIn(TimeUnit.MILLISECONDS),
-                                       symbolPrice,
-                                       symbolCount);
+                mapTradesBySymbol,
+                symbolPrice,
+                memberInfoMap.values(),
+                stopWatch.getElapsedTimeIn(TimeUnit.MILLISECONDS));
 
         return Response.ok(data).build();
     }

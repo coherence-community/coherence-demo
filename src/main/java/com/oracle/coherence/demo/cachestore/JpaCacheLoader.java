@@ -35,8 +35,10 @@ import java.util.Map;
  *
  * @author Tim Middleton
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
-public class JpaCacheLoader extends Base implements CacheLoader {
+@SuppressWarnings( {"unchecked", "rawtypes"})
+public class JpaCacheLoader
+        extends Base
+        implements CacheLoader {
     /**
      * {@link Map} of factories keyed on unit name.
      */
@@ -57,7 +59,6 @@ public class JpaCacheLoader extends Base implements CacheLoader {
      */
     protected EntityManagerFactory emf;
 
-
     /**
      * Construct a {@link JpaCacheLoader} with no {@link ClassLoader}.
      *
@@ -65,11 +66,9 @@ public class JpaCacheLoader extends Base implements CacheLoader {
      * @param entityClassName  entity class
      * @param unitName         unit name
      */
-    public JpaCacheLoader(String entityName, String entityClassName, String unitName)
-    {
+    public JpaCacheLoader(String entityName, String entityClassName, String unitName) {
         initialize(entityName, entityClassName, unitName, null);
     }
-
 
     /**
      * Construct a {@link JpaCacheLoader} with a {@link ClassLoader}.
@@ -79,56 +78,45 @@ public class JpaCacheLoader extends Base implements CacheLoader {
      * @param unitName         unit name
      * @param loader           class loader
      */
-    public JpaCacheLoader(String entityName, String entityClassName, String unitName, ClassLoader loader)
-    {
+    public JpaCacheLoader(String entityName, String entityClassName, String unitName, ClassLoader loader) {
         initialize(entityName, entityClassName, unitName, loader);
     }
 
-
     @Override
-    public Object load(Object key)
-    {
+    public Object load(Object key) {
         EntityManager em = getEntityManager();
 
         Object value;
         try {
             value = em.find(entityClass, key);
         }
-        finally
-        {
+        finally {
             em.close();
         }
 
         return value;
     }
 
-
     @Override
-    public Map loadAll(Collection keys)
-    {
+    public Map loadAll(Collection keys) {
         EntityManager em = getEntityManager();
 
-        try
-        {
+        try {
             Map mapResult = new HashMap();
 
-            for (Object key : keys)
-            {
-                    Object value = em.find(entityClass, key);
-                    if (value != null)
-                    {
-                        mapResult.put(key, value);
-                    }
+            for (Object key : keys) {
+                Object value = em.find(entityClass, key);
+                if (value != null) {
+                    mapResult.put(key, value);
+                }
             }
 
             return mapResult;
         }
-        finally
-        {
+        finally {
             em.close();
         }
     }
-
 
     /**
      * Initialize the {@link JpaCacheLoader}.
@@ -138,48 +126,38 @@ public class JpaCacheLoader extends Base implements CacheLoader {
      * @param unitName         unit name
      * @param loader           class loader
      */
-    protected void initialize(String entityName, String entityClassName, String unitName, ClassLoader loader)
-    {
-        if (entityName == null | entityClassName == null | unitName == null)
-        {
+    protected void initialize(String entityName, String entityClassName, String unitName, ClassLoader loader) {
+        if (entityName == null || entityClassName == null || unitName == null) {
             throw new IllegalArgumentException(
                     "Entity name, fully-qualified entity class name, and persistence unit name must be specified");
         }
-        else
-        {
+        else {
             this.entityName = entityName;
-            if (loader == null)
-            {
+            if (loader == null) {
                 loader = getContextClassLoader();
             }
 
-            try
-            {
+            try {
                 this.entityClass = loader.loadClass(entityClassName);
             }
-            catch (ClassNotFoundException var8)
-            {
+            catch (ClassNotFoundException var8) {
                 throw ensureRuntimeException(var8, "Class " + entityClassName + " could not be loaded");
             }
 
-            synchronized (mapFactories)
-            {
+            synchronized (mapFactories) {
                 emf = (EntityManagerFactory) mapFactories.get(unitName);
-                if (emf == null)
-                {
+                if (emf == null) {
                     mapFactories.put(unitName, emf = Persistence.createEntityManagerFactory(unitName));
                 }
             }
         }
     }
 
-
     /**
      * Return the {@link EntityManager}.
-     * @return  the {@link EntityManager}
+     * @return the {@link EntityManager}
      */
-    protected EntityManager getEntityManager()
-    {
+    protected EntityManager getEntityManager() {
         return this.emf.createEntityManager();
     }
 }

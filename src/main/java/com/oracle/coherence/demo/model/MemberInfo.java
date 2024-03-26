@@ -20,13 +20,10 @@ package com.oracle.coherence.demo.model;
 
 import com.tangosol.internal.tracing.TracingHelper;
 
-import com.tangosol.io.pof.PofReader;
-import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
 
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.net.Member;
-
-import java.io.IOException;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -39,45 +36,10 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "member-info")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class MemberInfo implements PortableObject
-{
+@PortableType
+public class MemberInfo {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2555078539266609164L;
-
-    /**
-     * POF index for id attribute.
-     */
-    private static final int ID = 0;
-
-    /**
-     * POF index for maxMemory attribute.
-     */
-    private static final int MAX_MEMORY = 1;
-
-    /**
-     * POF index for freeMemory attribute.
-     */
-    private static final int FREE_MEMORY = 2;
-
-    /**
-     * POF index for totalMemory attribute.
-     */
-    private static final int TOTAL_MEMORY = 3;
-
-    /**
-     * POF index for entryCount attribute.
-     */
-    private static final int ENTRY_COUNT = 4;
-
-    /**
-     * POF index of {@link #tracingEnabled} attribute.
-     */
-    private static final int TRACING_ENABLED = 5;
-
-    /**
-     * POF index for the {@link #roleName} attribute.
-     */
-    private static final int ROLE_NAME = 6;
 
     /**
      * The unique identifier for the {@link MemberInfo}.
@@ -119,8 +81,7 @@ public class MemberInfo implements PortableObject
      * Default Constructor (required and used only by {@link PortableObject}).
      */
     @SuppressWarnings("unused")
-    public MemberInfo()
-    {
+    public MemberInfo() {
         // required for Serializable and PortableObject
     }
 
@@ -133,17 +94,16 @@ public class MemberInfo implements PortableObject
      * @param runtime     the {@link Runtime}
      * @param entryCount  the number of entries
      */
-    public MemberInfo(Member  member,
+    public MemberInfo(Member member,
                       Runtime runtime,
-                      int     entryCount)
-    {
-        this.id             = member.getId();
-        this.maxMemory      = runtime.maxMemory();
-        this.totalMemory    = runtime.totalMemory();
-        this.freeMemory     = runtime.freeMemory();
-        this.entryCount     = entryCount;
+                      int entryCount) {
+        this.id = member.getId();
+        this.maxMemory = runtime.maxMemory();
+        this.totalMemory = runtime.totalMemory();
+        this.freeMemory = runtime.freeMemory();
+        this.entryCount = entryCount;
         this.tracingEnabled = TracingHelper.isEnabled();
-        this.roleName       = member.getRoleName();
+        this.roleName = member.getRoleName();
     }
 
 
@@ -152,8 +112,7 @@ public class MemberInfo implements PortableObject
      *
      * @return the identifier
      */
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
@@ -164,8 +123,7 @@ public class MemberInfo implements PortableObject
      * @return the maximum memory
      */
     @SuppressWarnings("unused")
-    public long getMaxMemory()
-    {
+    public long getMaxMemory() {
         return maxMemory;
     }
 
@@ -176,8 +134,7 @@ public class MemberInfo implements PortableObject
      * @return the total memory
      */
     @SuppressWarnings("unused")
-    public long getTotalMemory()
-    {
+    public long getTotalMemory() {
         return totalMemory;
     }
 
@@ -188,8 +145,7 @@ public class MemberInfo implements PortableObject
      * @return the free memory
      */
     @SuppressWarnings("unused")
-    public long getFreeMemory()
-    {
+    public long getFreeMemory() {
         return freeMemory;
     }
 
@@ -200,8 +156,7 @@ public class MemberInfo implements PortableObject
      * @return the entry count
      */
     @SuppressWarnings("unused")
-    public int getEntryCount()
-    {
+    public int getEntryCount() {
         return entryCount;
     }
 
@@ -211,10 +166,9 @@ public class MemberInfo implements PortableObject
      * @return {@code true} if tracing is enabled on this member
      */
     @SuppressWarnings("unused")
-    public boolean isTracingEnabled()
-        {
+    public boolean isTracingEnabled() {
         return tracingEnabled;
-        }
+    }
 
     /**
      * Return this member's role name.
@@ -222,33 +176,11 @@ public class MemberInfo implements PortableObject
      * @return this member's role name
      */
     @SuppressWarnings("unused")
-     public String getRoleName()
-         {
-         return roleName;
-         }
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        id             = reader.readInt(ID);
-        maxMemory      = reader.readLong(MAX_MEMORY);
-        freeMemory     = reader.readLong(FREE_MEMORY);
-        totalMemory    = reader.readLong(TOTAL_MEMORY);
-        entryCount     = reader.readInt(ENTRY_COUNT);
-        tracingEnabled = reader.readBoolean(TRACING_ENABLED);
-        roleName       = reader.readString(ROLE_NAME);
+    public String getRoleName() {
+        return roleName;
     }
 
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeInt(ID, id);
-        writer.writeLong(MAX_MEMORY, maxMemory);
-        writer.writeLong(FREE_MEMORY, freeMemory);
-        writer.writeLong(TOTAL_MEMORY, totalMemory);
-        writer.writeInt(ENTRY_COUNT, entryCount);
-        writer.writeBoolean(TRACING_ENABLED, tracingEnabled);
-        writer.writeString(ROLE_NAME, roleName);
+    public void setEntryCount(int entryCount) {
+        this.entryCount = entryCount;
     }
 }
