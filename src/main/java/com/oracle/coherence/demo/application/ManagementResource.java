@@ -109,7 +109,7 @@ public class ManagementResource {
                     MBeanInfo            info          = mbs.getMBeanInfo(objectName);
                     MBeanAttributeInfo[] attrInfo      = info.getAttributes();
 
-                    String[] attrsToRetrieve = new String[setAttributes.size() == 0
+                    String[] attrsToRetrieve = new String[setAttributes.isEmpty()
                                                           ? attrInfo.length
                                                           : setAttributes.size()];
                     int i = 0;
@@ -118,7 +118,7 @@ public class ManagementResource {
                     for (MBeanAttributeInfo attributeInfo : attrInfo) {
                         String attrName = attributeInfo.getName();
 
-                        if (setAttributes.size() == 0 || setAttributes.contains(attrName)) {
+                        if (setAttributes.isEmpty() || setAttributes.contains(attrName)) {
                             attrsToRetrieve[i++] = attrName;
                         }
                     }
@@ -137,8 +137,8 @@ public class ManagementResource {
                     // add the attribute values
                     for (Attribute attr : lstAttr) {
                         Object value = attr.getValue();
-                        if (value instanceof Object[]) {
-                            value = Arrays.toString((Object[]) value);
+                        if (value instanceof Object[] valueNew) {
+                            value = Arrays.toString(valueNew);
                         }
                         mapAttributes.put(attr.getName(), value);
                     }

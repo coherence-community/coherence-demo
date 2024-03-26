@@ -162,6 +162,7 @@ public class JpaCacheStore
             }
         }
         catch (RuntimeException ignored) {
+            // ignore
         }
     }
 }

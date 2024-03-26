@@ -41,7 +41,7 @@ public class AbstractClusterMemberResource {
      *
      * @return the next available ID
      */
-    protected synchronized static int getStableId() {
+    protected static synchronized int getStableId() {
         for (int i = 0, len = Byte.SIZE; i < len; i++) {
             if ((s_UsedIds >> i & 1) == 0) {
                 s_UsedIds |= 1 << i;
@@ -57,7 +57,7 @@ public class AbstractClusterMemberResource {
      * @param sMemberId  the member ID
      * @param nStableId  the stable ID
      */
-    protected synchronized static void associateMemberToStableId(String sMemberId, Integer nStableId) {
+    protected static synchronized void associateMemberToStableId(String sMemberId, Integer nStableId) {
         MEMBER_TO_STABLE_ID.put(sMemberId, nStableId);
     }
 
@@ -66,7 +66,7 @@ public class AbstractClusterMemberResource {
      *
      * @param sMemberId  the member ID
      */
-    protected synchronized static void releaseMemberToStableIdAssociation(String sMemberId) {
+    protected static synchronized void releaseMemberToStableIdAssociation(String sMemberId) {
         int nId = MEMBER_TO_STABLE_ID.remove(sMemberId);
         releaseId(nId);
     }

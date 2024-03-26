@@ -252,7 +252,7 @@ public class PersistenceHelper {
             Base.sleep(100L);
 
             if (--nMaxRetries == 0) {
-                throw new RuntimeException("Unable to find registered MBean " + beanName);
+                throw new InterruptedException("Unable to find registered MBean " + beanName);
             }
         }
     }

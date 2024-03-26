@@ -127,7 +127,7 @@ public class JpaCacheLoader
      * @param loader           class loader
      */
     protected void initialize(String entityName, String entityClassName, String unitName, ClassLoader loader) {
-        if (entityName == null | entityClassName == null | unitName == null) {
+        if (entityName == null || entityClassName == null || unitName == null) {
             throw new IllegalArgumentException(
                     "Entity name, fully-qualified entity class name, and persistence unit name must be specified");
         }

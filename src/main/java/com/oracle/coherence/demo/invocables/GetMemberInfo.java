@@ -74,10 +74,7 @@ public class GetMemberInfo
         if (namedCache != null) {
             CacheService cacheService = namedCache.getCacheService();
 
-            if (cacheService.getBackingMapManager() instanceof ExtensibleConfigurableCacheFactory.Manager) {
-                ExtensibleConfigurableCacheFactory.Manager backingMapManager =
-                        (ExtensibleConfigurableCacheFactory.Manager) cacheService.getBackingMapManager();
-
+            if (cacheService.getBackingMapManager() instanceof ExtensibleConfigurableCacheFactory.Manager backingMapManager) {
                 entryCount = backingMapManager.getBackingMap(cacheName).size();
             }
         }
