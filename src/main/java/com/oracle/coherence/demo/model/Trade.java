@@ -39,8 +39,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "trade")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @PortableType
-public class Trade
-{
+public class Trade {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2557078539268609864L;
 
@@ -56,9 +55,9 @@ public class Trade
     private String symbol;
 
     /**
-     * The number of shares for the {@link Trade}.
+     * The quantity of shares for the {@link Trade}.
      */
-    private int amount;
+    private int quantity;
 
     /**
      * The price at which the shares in the {@link Trade} were acquired.
@@ -69,8 +68,7 @@ public class Trade
     /**
      * Default Constructor (required and used only by {@link PortableObject}).
      */
-    public Trade()
-    {
+    public Trade() {
         // required for Serializable and PortableObject
     }
 
@@ -78,18 +76,17 @@ public class Trade
     /**
      * The standard constructor for a {@link Trade}.
      *
-     * @param symbol  symbol (ticker code) of the {@link Trade}
-     * @param amount  number of shares (quantity) for the {@link Trade}
-     * @param price   price of the shares
+     * @param symbol    symbol (ticker code) of the {@link Trade}
+     * @param quantity  number of shares (quantity) for the {@link Trade}
+     * @param price     price of the shares
      */
     public Trade(String symbol,
-                 int    amount,
-                 double price)
-    {
-        this.id     = new UUID().toString();
+                 int quantity,
+                 double price) {
+        this.id = new UUID().toString();
         this.symbol = symbol;
-        this.amount = amount;
-        this.price  = price;
+        this.quantity = quantity;
+        this.price = price;
     }
 
 
@@ -98,8 +95,7 @@ public class Trade
      *
      * @return the identifier
      */
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
@@ -109,8 +105,7 @@ public class Trade
      *
      * @return the symbol
      */
-    public String getSymbol()
-    {
+    public String getSymbol() {
         return symbol;
     }
 
@@ -120,8 +115,7 @@ public class Trade
      *
      * @return the price
      */
-    public double getPrice()
-    {
+    public double getPrice() {
         return price;
     }
 
@@ -129,11 +123,10 @@ public class Trade
     /**
      * Obtain the number of shares acquired for the {@link Trade}.
      *
-     * @return the amount
+     * @return the quantity
      */
-    public int getAmount()
-    {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
 
@@ -142,9 +135,8 @@ public class Trade
      *
      * @return the value
      */
-    public double getPurchaseValue()
-    {
-        return getAmount() * getPrice();
+    public double getPurchaseValue() {
+        return getQuantity() * getPrice();
     }
 
 
@@ -153,8 +145,7 @@ public class Trade
      *
      * @param price the new price.
      */
-    public void setPrice(double price)
-    {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -163,9 +154,8 @@ public class Trade
      *
      * @param factor factor to use for split
      */
-    public void split(int factor)
-    {
-        amount *= factor;
-        price  /= factor;
+    public void split(int factor) {
+        quantity *= factor;
+        price /= factor;
     }
 }

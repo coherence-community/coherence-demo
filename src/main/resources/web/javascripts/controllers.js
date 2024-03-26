@@ -89,7 +89,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.positions         = 0;
     self.valuation         = 0;
     self.symbolNames       = [];
-    self.symbolFrequency   = {};
+    self.symbolQuantity   = {};
     self.symbolCount       = {};
     self.memberInfo        = [];
     self.currentPrice      = {};
@@ -99,7 +99,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.currentBytesSent  = 0;
     self.lastBytesSent     = -1;
     self.bytesSentData     = [];
-    self.totalFrequency    = 0;
+    self.totalQuantity    = 0;
     self.lastStatusMessage = '';
     self.displayStatus     = false;
     self.averageQueryTime  = 0;
@@ -264,7 +264,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             let tradeSummary = chartData.tradeSummary;
             self.symbolNames = Object.keys(tradeSummary).sort();
             self.symbolsChartData = [];
-            self.symbolFrequency = {};
+            self.symbolQuantity = {};
             self.symbolCount = {};
 
             let valuationTotal = 0;
@@ -274,22 +274,22 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                 self.lastPrice = chartData.currentPrice;
             }
 
-            let frequencySum = 0;
+            let quantitySum = 0;
             let positionCount = 0;
 
             for (const symbolName of self.symbolNames) {
                 // frequency
-                let frequency   = tradeSummary[symbolName].frequency;
-                frequencySum    += frequency
+                let quantity   = tradeSummary[symbolName].quantity;
+                quantitySum    += quantity
 
-                self.symbolFrequency[symbolName] = frequency;
+                self.symbolQuantity[symbolName] = quantity;
 
                 let count = tradeSummary[symbolName].count
                 positionCount += count;
                 self.symbolCount[symbolName] = count;
 
                 // get the current price and determine the amount
-                let amount = frequency * chartData.currentPrice[symbolName];
+                let amount = quantity * chartData.currentPrice[symbolName];
                 valuationTotal += amount
 
                 // calculate the delta
@@ -307,9 +307,9 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
                  self.valuationDirection === 'up'  ? "'dark-green;" : "'red'") + ';';
 
             // update the valuation
-            self.valuation      = valuationTotal;
-            self.totalFrequency = frequencySum;
-            self.currentPrice   = chartData.currentPrice;
+            self.valuation     = valuationTotal;
+            self.totalQuantity = quantitySum;
+            self.currentPrice  = chartData.currentPrice;
 
             // update the total positions
             self.positions = positionCount;

@@ -38,8 +38,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "chart-data")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @PortableType
-public class ChartData
-{
+public class ChartData {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -4557078639768809864L;
 
@@ -72,8 +71,7 @@ public class ChartData
      * Default Constructor (required and used only by {@link PortableObject}).
      */
     @SuppressWarnings("unused")
-    public ChartData()
-    {
+    public ChartData() {
         // required for Serializable and PortableObject
     }
 
@@ -86,17 +84,16 @@ public class ChartData
      * @param memberInfo          {@link MemberInfo} containing detailed information
      * @param aggregationDuration time to calculate aggregations
      */
-    public ChartData(long                      instant,
+    public ChartData(long instant,
                      Map<String, TradeSummary> mapTradeSummary,
-                     Map<String, Double>       currentPrice,
-                     Collection<MemberInfo>    memberInfo,
-                     long                      aggregationDuration)
-    {
-        this.instant             = instant;
-        this.memberInfo          = new Vector<>(memberInfo);
+                     Map<String, Double> currentPrice,
+                     Collection<MemberInfo> memberInfo,
+                     long aggregationDuration) {
+        this.instant = instant;
+        this.memberInfo = new Vector<>(memberInfo);
         this.aggregationDuration = aggregationDuration;
-        this.currentPrice        = currentPrice;
-        this.tradeSummary        = mapTradeSummary;
+        this.currentPrice = currentPrice;
+        this.tradeSummary = mapTradeSummary;
     }
 
 
@@ -106,8 +103,7 @@ public class ChartData
      * @return the time
      */
     @SuppressWarnings("unused")
-    public long getInstant()
-    {
+    public long getInstant() {
         return instant;
     }
 
@@ -118,8 +114,7 @@ public class ChartData
      * @return symbol count
      */
     @SuppressWarnings("unused")
-    public Map<String, TradeSummary> getTradeSummary()
-    {
+    public Map<String, TradeSummary> getTradeSummary() {
         return tradeSummary;
     }
 
@@ -138,8 +133,7 @@ public class ChartData
      * @return the list of {@link MemberInfo}
      */
     @SuppressWarnings("unused")
-    public List<MemberInfo> getMemberInfo()
-    {
+    public List<MemberInfo> getMemberInfo() {
         return memberInfo;
     }
 
@@ -149,8 +143,7 @@ public class ChartData
      * @return the duration
      */
     @SuppressWarnings("unused")
-    public long getAggregationDuration()
-    {
+    public long getAggregationDuration() {
         return aggregationDuration;
     }
 }

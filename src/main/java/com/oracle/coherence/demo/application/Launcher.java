@@ -56,8 +56,7 @@ import java.util.Map;
  *
  * @author Brian Oliver
  */
-public final class Launcher
-{
+public final class Launcher {
     /**
      * System property to override the primary cluster name.
      */
@@ -83,7 +82,6 @@ public final class Launcher
      * the value will default to {@value DEFAULT_JAEGER_ENDPOINT}.
      */
     public static final String JAEGER_ENDPOINT_PROPERTY = "JAEGER_ENDPOINT";
-
 
     /**
      * Cluster port for the primary cluster.
@@ -113,8 +111,7 @@ public final class Launcher
     private static final Map<String, Pair<String, String>> MAP_ZONES;
 
 
-    static
-    {
+    static {
         // initialize the list of default cluster names
         MAP_ZONES = new HashMap<>();
 
@@ -151,23 +148,19 @@ public final class Launcher
         MAP_ZONES.put("Japan", new Pair<>("Tokyo", "London"));
     }
 
-    // ----- constructors ---------------------------------------------------
-
     /**
      * Instances not allowed.
      */
-    private Launcher()
-        {
+    private Launcher() {
         throw new IllegalStateException("illegal instantiation");
-        }
+    }
 
     /**
      * Entry point for the demo application.
      *
      * @param args  unused
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         // set JVisualVM refresh time to 5 seconds for demo purposes only
         System.setProperty("com.oracle.coherence.jvisualvm.refreshtime", "5");
 
@@ -192,28 +185,26 @@ public final class Launcher
         // set properties for cluster names, so they are passed to other processes
         System.setProperty(PRIMARY_CLUSTER_PROPERTY, System.getProperty(PRIMARY_CLUSTER_PROPERTY, PRIMARY_DEFAULT));
         System.setProperty(SECONDARY_CLUSTER_PROPERTY,
-                           System.getProperty(SECONDARY_CLUSTER_PROPERTY, SECONDARY_DEFAULT));
+                System.getProperty(SECONDARY_CLUSTER_PROPERTY, SECONDARY_DEFAULT));
 
         // set cluster name
         System.setProperty("coherence.cluster", System.getProperty(PRIMARY_CLUSTER_PROPERTY));
 
         // set properties necessary for Jaeger to function
         System.setProperty(JAEGER_SERVICE_NAME_PROPERTY,
-                           "Coherence Demo (" + System.getProperty(PRIMARY_CLUSTER_PROPERTY) + ')');
+                "Coherence Demo (" + System.getProperty(PRIMARY_CLUSTER_PROPERTY) + ')');
 
         System.setProperty(JAEGER_ENDPOINT_PROPERTY,
-                           System.getProperty(JAEGER_ENDPOINT_PROPERTY, DEFAULT_JAEGER_ENDPOINT));
+                System.getProperty(JAEGER_ENDPOINT_PROPERTY, DEFAULT_JAEGER_ENDPOINT));
 
         // start the Default Cache Server
         Coherence.main(args);
     }
 
-
     /**
      * Chose defaults for primary and secondary cluster based upon your location.
      */
-    private static void chooseDefaults()
-    {
+    private static void chooseDefaults() {
         String zone   = ZoneId.systemDefault().toString();
         Locale locale = Locale.getDefault();
 
@@ -223,52 +214,42 @@ public final class Launcher
         // try direct matches first
         Pair<String, String> entry = MAP_ZONES.get(zone);
 
-        if (entry != null)
-        {
-            PRIMARY_DEFAULT   = entry.getX();
+        if (entry != null) {
+            PRIMARY_DEFAULT = entry.getX();
             SECONDARY_DEFAULT = entry.getY();
         }
-        else
-        {
+        else {
             // no direct match so make some broad assumptions
-            if (zone.startsWith("Australia"))
-            {
-                PRIMARY_DEFAULT   = "Sydney";
+            if (zone.startsWith("Australia")) {
+                PRIMARY_DEFAULT = "Sydney";
                 SECONDARY_DEFAULT = "Perth";
             }
-            else if (zone.startsWith("Africa"))
-            {
-                PRIMARY_DEFAULT   = "Cape Town";
+            else if (zone.startsWith("Africa")) {
+                PRIMARY_DEFAULT = "Cape Town";
                 SECONDARY_DEFAULT = "London";
             }
-            else if (zone.startsWith("Brazil"))
-            {
-                PRIMARY_DEFAULT   = "Brasilia";
+            else if (zone.startsWith("Brazil")) {
+                PRIMARY_DEFAULT = "Brasilia";
                 SECONDARY_DEFAULT = "London";
             }
-            else if (zone.startsWith("Canada"))
-            {
-                PRIMARY_DEFAULT   = "Vancouver";
+            else if (zone.startsWith("Canada")) {
+                PRIMARY_DEFAULT = "Vancouver";
                 SECONDARY_DEFAULT = "Montreal";
             }
-            else if (zone.startsWith("Europe"))
-            {
-                PRIMARY_DEFAULT   = "London";
+            else if (zone.startsWith("Europe")) {
+                PRIMARY_DEFAULT = "London";
                 SECONDARY_DEFAULT = "NewYork";
             }
-            else if (zone.startsWith("Pacific"))
-            {
-                PRIMARY_DEFAULT   = "Honolulu";
+            else if (zone.startsWith("Pacific")) {
+                PRIMARY_DEFAULT = "Honolulu";
                 SECONDARY_DEFAULT = "San Francisco";
             }
-            else if (zone.startsWith("US") || zone.startsWith("America") || locale.getCountry().equalsIgnoreCase("US"))
-            {
-                PRIMARY_DEFAULT   = "New York";
+            else if (zone.startsWith("US") || zone.startsWith("America") || locale.getCountry().equalsIgnoreCase("US")) {
+                PRIMARY_DEFAULT = "New York";
                 SECONDARY_DEFAULT = "San Francisco";
             }
-            else
-            {
-                PRIMARY_DEFAULT   = "Primary";
+            else {
+                PRIMARY_DEFAULT = "Primary";
                 SECONDARY_DEFAULT = "Secondary";
             }
         }

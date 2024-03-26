@@ -38,58 +38,45 @@ import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE;
  * @author Brian Oliver
  */
 @PortableType
-public class GetMemberInfo extends AbstractInvocable
-{
-    /**
-     * POF index for cacheName attribute.
-     */
-    private static final int CACHE_NAME = 0;
-
+public class GetMemberInfo
+        extends AbstractInvocable {
     /**
      * The cache name to get information about.
      */
     private String cacheName;
 
-
     /**
      * Constructs a {@link GetMemberInfo} (for serialization).
      */
     @SuppressWarnings("unused")
-    public GetMemberInfo()
-    {
+    public GetMemberInfo() {
     }
-
 
     /**
      * Constructs a {@link GetMemberInfo} for a specified cache.
      *
      * @param cacheName  name of the cache to get information for.
      */
-    public GetMemberInfo(String cacheName)
-    {
+    public GetMemberInfo(String cacheName) {
         super();
         this.cacheName = cacheName;
     }
 
-
     @SuppressWarnings("rawtypes")
     @Override
-    public void run()
-    {
+    public void run() {
         // calculate number of entries for the specified named cache
         int entryCount = 0;
         NamedCache namedCache = TRADE_CACHE.equals(cacheName)
-                                    ? Utilities.getTradesCache()
-                                    : Utilities.getPricesCache();
+                                ? Utilities.getTradesCache()
+                                : Utilities.getPricesCache();
 
-        if (namedCache != null)
-        {
-            CacheService              cacheService = namedCache.getCacheService();
+        if (namedCache != null) {
+            CacheService cacheService = namedCache.getCacheService();
 
-            if (cacheService.getBackingMapManager() instanceof ExtensibleConfigurableCacheFactory.Manager)
-            {
+            if (cacheService.getBackingMapManager() instanceof ExtensibleConfigurableCacheFactory.Manager) {
                 ExtensibleConfigurableCacheFactory.Manager backingMapManager =
-                    (ExtensibleConfigurableCacheFactory.Manager) cacheService.getBackingMapManager();
+                        (ExtensibleConfigurableCacheFactory.Manager) cacheService.getBackingMapManager();
 
                 entryCount = backingMapManager.getBackingMap(cacheName).size();
             }

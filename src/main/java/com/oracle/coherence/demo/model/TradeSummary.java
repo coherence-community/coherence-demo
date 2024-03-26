@@ -30,51 +30,110 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @PortableType
 public class TradeSummary {
 
-    private long frequency;
-    private int  count;
+
+    /**
+     * The total number of shares acquired for the {@link Trade}.
+     */
+    private long quantity;
+
+    /**
+     * The number of trades.
+     */
+    private int count;
+
+    /**
+     * The purchase value.
+     */
     private double purchaseValue;
 
     public TradeSummary() {
     }
-    
-    public TradeSummary(long frequency, int count, double originalValuation) {
-        this.frequency = frequency;
+
+    /**
+     *
+     * @param quantity  total number of shares acquired for the {@link Trade}
+     * @param count   number of trades
+     * @param purchaseValue total purchase valuation
+     */
+    public TradeSummary(long quantity, int count, double purchaseValue) {
+        this.quantity = quantity;
         this.count = count;
-        this.purchaseValue = originalValuation;
+        this.purchaseValue = purchaseValue;
     }
 
-    public void add(long amount, double purchaseValue) {
-        this.frequency += amount;
+    /**
+     * Add the quantity and purchase value to the summary.
+     *
+     * @param quantity  total number of shares acquired for the {@link Trade}
+     * @param purchaseValue total purchase valuation
+     */
+    public void add(long quantity, double purchaseValue) {
+        this.quantity += quantity;
         this.count++;
         this.purchaseValue += purchaseValue;
     }
 
+    /**
+     * Combine the given {@link TradeSummary} with this one.
+     *
+     * @param tradeSummary {@link TradeSummary} to combine
+     */
     public void combine(TradeSummary tradeSummary) {
-        this.frequency += tradeSummary.frequency;
+        this.quantity += tradeSummary.quantity;
         this.count += tradeSummary.count;
         this.purchaseValue += tradeSummary.purchaseValue;
     }
 
-    public long getFrequency() {
-        return frequency;
+    /**
+     * Obtain the total number of shares acquired for the {@link Trade}.
+     *
+     * @return the total number of shares acquired for the {@link Trade}
+     */
+    public long getQuantity() {
+        return quantity;
     }
 
-    public void setFrequency(long frequency) {
-        this.frequency = frequency;
+    /**
+     * Set the total number of shares acquired for the {@link Trade}.
+     *
+     * @param quantity the total number of shares acquired for the {@link Trade}
+     */
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
     }
 
+    /**
+     * Obtain the total number of trades.
+     *
+     * @return the total number of trades
+     */
     public int getCount() {
         return count;
     }
 
+    /**
+     * Set the total number of trades.
+     * 
+     * @param count the total number of trades
+     */
     public void setCount(int count) {
         this.count = count;
     }
 
+    /**
+     * Obtain the total purchase value.
+     *
+     * @return the total purchase value
+     */
     public double getPurchaseValue() {
         return purchaseValue;
     }
 
+    /**
+     * Set the total purchase value.
+     * 
+     * @param purchaseValue the total purchase value
+     */
     public void setPurchaseValue(double purchaseValue) {
         this.purchaseValue = purchaseValue;
     }

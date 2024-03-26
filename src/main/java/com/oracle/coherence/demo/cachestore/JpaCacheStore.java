@@ -31,8 +31,10 @@ import java.util.Map;
  *
  * @author Tim Middleton
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
-public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
+@SuppressWarnings( {"unchecked", "rawtypes"})
+public class JpaCacheStore
+        extends JpaCacheLoader
+        implements CacheStore {
     /**
      * Construct a {@link JpaCacheStore} with no {@link ClassLoader}.
      *
@@ -41,8 +43,7 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
      * @param unitName         unit name
      */
     @SuppressWarnings("unused")
-    public JpaCacheStore(String entityName, String entityClassName, String unitName)
-    {
+    public JpaCacheStore(String entityName, String entityClassName, String unitName) {
         super(entityName, entityClassName, unitName);
     }
 
@@ -55,140 +56,112 @@ public class JpaCacheStore extends JpaCacheLoader implements CacheStore {
      * @param loader           class loader
      */
     @SuppressWarnings("unused")
-    public JpaCacheStore(String entityName, String entityClassName, String unitName, ClassLoader loader)
-    {
+    public JpaCacheStore(String entityName, String entityClassName, String unitName, ClassLoader loader) {
         super(entityName, entityClassName, unitName, loader);
     }
 
-
     @Override
-    public void store(Object key, Object value)
-    {
+    public void store(Object key, Object value) {
         EntityManager     em = this.getEntityManager();
         EntityTransaction tx = null;
 
-        try
-        {
+        try {
             tx = em.getTransaction();
             tx.begin();
             em.merge(value);
             tx.commit();
         }
-        catch (RuntimeException e)
-        {
+        catch (RuntimeException e) {
             this.rollback(tx);
             throw e;
         }
-        finally
-        {
+        finally {
             em.close();
         }
     }
 
-
     @Override
-    public void storeAll(Map map)
-    {
+    public void storeAll(Map map) {
         EntityManager     em = this.getEntityManager();
-        EntityTransaction tx = null;
-
-        try
-        {
-            tx = em.getTransaction();
-            tx.begin();
-
-            for (Object value : map.values())
-            {
-                em.merge(value);
-            }
-
-            tx.commit();
-        }
-        catch (RuntimeException e)
-        {
-            this.rollback(tx);
-            throw e;
-        }
-        finally
-        {
-            em.close();
-        }
-    }
-
-
-    @Override
-    public void erase(Object key)
-    {
-        EntityManager     em = this.getEntityManager();
-        EntityTransaction tx = null;
-
-        try
-        {
-            tx = em.getTransaction();
-            tx.begin();
-            Object value = em.find(entityClass, key);
-            if (value != null)
-            {
-                em.remove(value);
-            }
-
-            tx.commit();
-        }
-        catch (RuntimeException e)
-        {
-            this.rollback(tx);
-            throw e;
-        }
-        finally
-        {
-            em.close();
-        }
-    }
-
-
-    @Override
-    public void eraseAll(Collection keys)
-    {
-       EntityManager      em = this.getEntityManager();
         EntityTransaction tx = null;
 
         try {
             tx = em.getTransaction();
             tx.begin();
 
-            for (Object key : keys)
-            {
+            for (Object value : map.values()) {
+                em.merge(value);
+            }
+
+            tx.commit();
+        }
+        catch (RuntimeException e) {
+            this.rollback(tx);
+            throw e;
+        }
+        finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public void erase(Object key) {
+        EntityManager     em = this.getEntityManager();
+        EntityTransaction tx = null;
+
+        try {
+            tx = em.getTransaction();
+            tx.begin();
+            Object value = em.find(entityClass, key);
+            if (value != null) {
+                em.remove(value);
+            }
+
+            tx.commit();
+        }
+        catch (RuntimeException e) {
+            this.rollback(tx);
+            throw e;
+        }
+        finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public void eraseAll(Collection keys) {
+        EntityManager     em = this.getEntityManager();
+        EntityTransaction tx = null;
+
+        try {
+            tx = em.getTransaction();
+            tx.begin();
+
+            for (Object key : keys) {
                 Object value = em.find(entityClass, key);
-                if (value != null)
-                {
+                if (value != null) {
                     em.remove(value);
                 }
             }
 
             tx.commit();
         }
-        catch (RuntimeException e)
-        {
+        catch (RuntimeException e) {
             this.rollback(tx);
             throw e;
         }
-        finally
-        {
+        finally {
             em.close();
         }
     }
 
-    protected void rollback(EntityTransaction tx)
-    {
-        try
-        {
-            if (tx != null && tx.isActive())
-            {
+    protected void rollback(EntityTransaction tx) {
+        try {
+            if (tx != null && tx.isActive()) {
                 tx.rollback();
             }
         }
-        catch (RuntimeException ignored)
-        {
+        catch (RuntimeException ignored) {
         }
     }
 }

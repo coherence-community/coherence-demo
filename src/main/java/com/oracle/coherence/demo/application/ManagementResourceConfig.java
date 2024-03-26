@@ -28,10 +28,9 @@ import org.glassfish.jersey.server.ResourceConfig;
  * @author Tim Middleton
  */
 public class ManagementResourceConfig
-        extends ResourceConfig
-{
-    public ManagementResourceConfig()
-    {
+        extends ResourceConfig {
+
+    public ManagementResourceConfig() {
         RestManagement.configure(this);
     }
 }

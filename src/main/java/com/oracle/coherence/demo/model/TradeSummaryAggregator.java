@@ -26,18 +26,21 @@ import com.tangosol.util.InvocableMap;
  */
 @PortableType
 public class TradeSummaryAggregator
-         implements InvocableMap.StreamingAggregator<String, Trade, TradeSummary, TradeSummary> {
+        implements InvocableMap.StreamingAggregator<String, Trade, TradeSummary, TradeSummary> {
 
     /**
      * The trade summary.
      */
     private transient TradeSummary tradeSummary;
 
+    /**
+     * Construct a {@link TradeSummaryAggregator}.
+     */
     public TradeSummaryAggregator() {
         super();
         this.tradeSummary = new TradeSummary();
     }
-    
+
     @Override
     public InvocableMap.StreamingAggregator<String, Trade, TradeSummary, TradeSummary> supply() {
         return new TradeSummaryAggregator();
@@ -45,7 +48,7 @@ public class TradeSummaryAggregator
 
     @Override
     public boolean accumulate(InvocableMap.Entry<? extends String, ? extends Trade> entry) {
-        tradeSummary.add(entry.extract(Trade::getAmount), entry.extract(Trade::getPurchaseValue));
+        tradeSummary.add(entry.extract(Trade::getQuantity), entry.extract(Trade::getPurchaseValue));
         return true;
     }
 

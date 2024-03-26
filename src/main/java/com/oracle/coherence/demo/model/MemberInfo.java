@@ -37,8 +37,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "member-info")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @PortableType
-public class MemberInfo
-{
+public class MemberInfo {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2555078539266609164L;
 
@@ -82,8 +81,7 @@ public class MemberInfo
      * Default Constructor (required and used only by {@link PortableObject}).
      */
     @SuppressWarnings("unused")
-    public MemberInfo()
-    {
+    public MemberInfo() {
         // required for Serializable and PortableObject
     }
 
@@ -96,17 +94,16 @@ public class MemberInfo
      * @param runtime     the {@link Runtime}
      * @param entryCount  the number of entries
      */
-    public MemberInfo(Member  member,
+    public MemberInfo(Member member,
                       Runtime runtime,
-                      int     entryCount)
-    {
-        this.id             = member.getId();
-        this.maxMemory      = runtime.maxMemory();
-        this.totalMemory    = runtime.totalMemory();
-        this.freeMemory     = runtime.freeMemory();
-        this.entryCount     = entryCount;
+                      int entryCount) {
+        this.id = member.getId();
+        this.maxMemory = runtime.maxMemory();
+        this.totalMemory = runtime.totalMemory();
+        this.freeMemory = runtime.freeMemory();
+        this.entryCount = entryCount;
         this.tracingEnabled = TracingHelper.isEnabled();
-        this.roleName       = member.getRoleName();
+        this.roleName = member.getRoleName();
     }
 
 
@@ -115,8 +112,7 @@ public class MemberInfo
      *
      * @return the identifier
      */
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
@@ -127,8 +123,7 @@ public class MemberInfo
      * @return the maximum memory
      */
     @SuppressWarnings("unused")
-    public long getMaxMemory()
-    {
+    public long getMaxMemory() {
         return maxMemory;
     }
 
@@ -139,8 +134,7 @@ public class MemberInfo
      * @return the total memory
      */
     @SuppressWarnings("unused")
-    public long getTotalMemory()
-    {
+    public long getTotalMemory() {
         return totalMemory;
     }
 
@@ -151,8 +145,7 @@ public class MemberInfo
      * @return the free memory
      */
     @SuppressWarnings("unused")
-    public long getFreeMemory()
-    {
+    public long getFreeMemory() {
         return freeMemory;
     }
 
@@ -163,8 +156,7 @@ public class MemberInfo
      * @return the entry count
      */
     @SuppressWarnings("unused")
-    public int getEntryCount()
-    {
+    public int getEntryCount() {
         return entryCount;
     }
 
@@ -174,10 +166,9 @@ public class MemberInfo
      * @return {@code true} if tracing is enabled on this member
      */
     @SuppressWarnings("unused")
-    public boolean isTracingEnabled()
-        {
+    public boolean isTracingEnabled() {
         return tracingEnabled;
-        }
+    }
 
     /**
      * Return this member's role name.
@@ -185,12 +176,11 @@ public class MemberInfo
      * @return this member's role name
      */
     @SuppressWarnings("unused")
-     public String getRoleName()
-         {
-         return roleName;
-         }
+    public String getRoleName() {
+        return roleName;
+    }
 
-     public void setEntryCount(int entryCount) {
+    public void setEntryCount(int entryCount) {
         this.entryCount = entryCount;
-     }
+    }
 }

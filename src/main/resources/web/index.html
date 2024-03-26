@@ -320,15 +320,15 @@
                                             </td>
                                             <td style="text-align: right;">{{ currentPrice[symbol] | currency:"$":2 }}</td>
                                             <td style="text-align: right;">{{ symbolCount[symbol] | number }}</td>
-                                            <td style="text-align: right;">{{ symbolFrequency[symbol] | number }}</td>
-                                            <td style="text-align: right;">{{ symbolFrequency[symbol] * currentPrice[symbol] | currency:"$":0 }}</td>
+                                            <td style="text-align: right;">{{ symbolQuantity[symbol] | number }}</td>
+                                            <td style="text-align: right;">{{ symbolQuantity[symbol] * currentPrice[symbol] | currency:"$":0 }}</td>
                                         </tr>
                                         <tr>
                                             <td>&nbsp;</td>
                                             <td>&nbsp;</td>
                                             <td style="text-align: right;"><strong>Totals:</strong></td>
                                             <td style="text-align: right;"><strong>{{ positions | number }}</strong></td>
-                                            <td style="text-align: right;"><strong>{{ totalFrequency | number }}</strong></td>
+                                            <td style="text-align: right;"><strong>{{ totalQuantity | number }}</strong></td>
                                             <td style="text-align: right;"><strong>{{ valuation | currency:"$":0 }}</strong></td>
                                         </tr>
                                     </tbody>

@@ -72,8 +72,8 @@ import static com.oracle.bedrock.predicate.Predicates.greaterThan;
  */
 @Path("/start-member/{serverCount}")
 public class StartMemberResource
-        extends AbstractClusterMemberResource
-{
+        extends AbstractClusterMemberResource {
+
     /**
      * Starts additional cluster members.
      *
@@ -82,50 +82,47 @@ public class StartMemberResource
      * @return a response indicating the status of the member creation
      */
     @GET
-    public Response createMember(@PathParam("serverCount") int serverCount)
-    {
-        Cluster cluster     = CacheFactory.getCluster();
-        String  clusterName = cluster.getClusterName();
+    public Response createMember(@PathParam("serverCount") int serverCount) {
+        Cluster      cluster        = CacheFactory.getCluster();
+        String       clusterName    = cluster.getClusterName();
         List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
 
-        for (int i = 1; i <= serverCount; i++)
-        {
+        for (int i = 1; i <= serverCount; i++) {
             // we'll use the local platform to create the new member
-            LocalPlatform platform = LocalPlatform.get();
-            int nStableId = getStableId();
+            LocalPlatform platform  = LocalPlatform.get();
+            int           nStableId = getStableId();
 
             CacheFactory.log("Starting server " + i + " of " + serverCount, CacheFactory.LOG_INFO);
 
-            try
-            {
+            try {
                 // strip off unwanted arguments other than memory
-                List<String> newArguments = inputArguments.stream().filter(s -> s.contains("-Xm")).collect(Collectors.toList());
+                List<String> newArguments = inputArguments.stream().filter(s->s.contains("-Xm")).collect(Collectors.toList());
 
                 // start the new cache server
                 CoherenceCacheServer server =
                         platform.launch(CoherenceCacheServer.class,
-                                        ClassName.of(Coherence.class),
-                                        DisplayName.of("Coherence Demo Server"),
-                                        CacheConfig.of("cache-config.xml"),
-                                        SystemProperty.of("coherence.wka", "127.0.0.1"),
-                                        SystemProperty.of("coherence.ttl", "0"),
-                                        SystemProperty.of("with.http", false),
-                                        SystemProperty.of("coherence.management.http", "none"),
-                                        SystemProperty.of("coherence.management", "all"),
-                                        SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
-                                                          "Coherence Demo (" + clusterName + ')'),
-                                        SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,
-                                                          System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
-                                                                             Launcher.DEFAULT_JAEGER_ENDPOINT)),
-                                        Logging.at(0),
-                                        RoleName.of(createRoleName(nStableId)),
-                                        ClusterPort.of(cluster.getDependencies().getGroupPort()),
-                                        ClusterName.of(cluster.getClusterName()),
-                                        SystemProperty.of(Launcher.PRIMARY_CLUSTER_PROPERTY,
-                                                          System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY)),
-                                        SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
-                                                          System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)),
-                                        JvmOptions.include(newArguments.toArray(new String[0])));
+                                ClassName.of(Coherence.class),
+                                DisplayName.of("Coherence Demo Server"),
+                                CacheConfig.of("cache-config.xml"),
+                                SystemProperty.of("coherence.wka", "127.0.0.1"),
+                                SystemProperty.of("coherence.ttl", "0"),
+                                SystemProperty.of("with.http", false),
+                                SystemProperty.of("coherence.management.http", "none"),
+                                SystemProperty.of("coherence.management", "all"),
+                                SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
+                                        "Coherence Demo (" + clusterName + ')'),
+                                SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,
+                                        System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
+                                                Launcher.DEFAULT_JAEGER_ENDPOINT)),
+                                Logging.at(0),
+                                RoleName.of(createRoleName(nStableId)),
+                                ClusterPort.of(cluster.getDependencies().getGroupPort()),
+                                ClusterName.of(cluster.getClusterName()),
+                                SystemProperty.of(Launcher.PRIMARY_CLUSTER_PROPERTY,
+                                        System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY)),
+                                SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
+                                        System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)),
+                                JvmOptions.include(newArguments.toArray(new String[0])));
                 Span span = GlobalTracer.get().activeSpan();
                 Utilities.spanLog(span, "Starting new member");
 
@@ -146,8 +143,7 @@ public class StartMemberResource
 
                 registry.registerResource(CoherenceCacheServer.class, memberId, server);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 return Response.noContent().build();
             }
         }

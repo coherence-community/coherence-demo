@@ -38,39 +38,35 @@ import java.net.URL;
  * @author Brian Oliver
  */
 @Path("{resource: .*}")
-public class StaticResource
-{
+public class StaticResource {
+
     /**
      * The base folder containing static resources on the class path.
      */
     private static final String BASE_FOLDER = "web";
 
-
-/**
- * Serve static web content.
- *
- * @param resource the static resource
- *
- * @return a successful response if the resource is found, a 404 otherwise, and an error if the resource is
- *         found but cannot be served
- */
-@GET
-public Response getResource(@PathParam("resource") String resource)
-    {
+    /**
+     * Serve static web content.
+     *
+     * @param resource the static resource
+     *
+     * @return a successful response if the resource is found, a 404 otherwise, and an error if the resource is
+     *         found but cannot be served
+     */
+    @GET
+    public Response getResource(@PathParam("resource") String resource) {
         // construct the resource path relative to the base folder
         String resourcePath = BASE_FOLDER + '/' + resource;
 
         // construct a URL to the resource (using the class loader)
         URL url = Resources.findFileOrResource(resourcePath, Base.ensureClassLoader(null));
 
-        try
-        {
+        try {
             return url == null
                    ? Response.status(Response.Status.NOT_FOUND).build() : Response.ok(url.openStream()).build();
 
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             CacheFactory.log("Unexpected error service static resource " + resourcePath);
             CacheFactory.log(e);
             return Response.serverError().build();

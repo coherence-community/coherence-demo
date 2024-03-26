@@ -250,7 +250,7 @@ public final class Utilities
             spanLog(span, "Created trade symbol index");
             tradesCache.addIndex(Trade::getPurchaseValue, false, null);
             spanLog(span, "Created trade purchase value index");
-            tradesCache.addIndex(Trade::getAmount, false, null);
+            tradesCache.addIndex(Trade::getQuantity, false, null);
             spanLog(span, "Created trade amount index");
         }
         finally
@@ -279,7 +279,7 @@ public final class Utilities
             spanLog(span, "Removed trade symbol index");
             tradesCache.removeIndex(Trade::getPurchaseValue);
             spanLog(span, "Removed trade purchase value index");
-            tradesCache.removeIndex(Trade::getAmount);
+            tradesCache.removeIndex(Trade::getQuantity);
             spanLog(span, "Removed trade amount index");
         }
         finally
@@ -389,8 +389,8 @@ public final class Utilities
 
                 trades.put(trade.getId(), trade);
 
-                // batch the putAll's at 10000
-                if (i % 10000 == 0)
+                // batch the putAll's at 100,000
+                if (i % 100_000 == 0)
                 {
                     spanLog(span, "Flushed trades to cache" + (singleSymbol ? " for symbol " + symbolToInsert : ""));
                     Logger.out("Flushing trades from HashMap to Coherence cache...");

@@ -64,8 +64,8 @@ import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
  */
 @Path("/chart-data")
 @SuppressWarnings("rawTypes")
-public class ChartDataResource
-{
+public class ChartDataResource {
+
     /**
      * Obtain the chart data as JSON, optionally updating the prices.
      *
@@ -75,7 +75,7 @@ public class ChartDataResource
      */
     @GET
     @Path("{updatePrices}")
-    @Produces({APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
+    @Produces( {APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
     @SuppressWarnings("unchecked")
     public Response getChartData(@PathParam("updatePrices") boolean updatePrices) {
         // we're going to query the positions cache
@@ -86,24 +86,23 @@ public class ChartDataResource
         StopWatch stopWatch = new StopWatch();
 
         // update prices outside the timer, so we don't affect the overall stopwatch time
-        if (updatePrices && cacheSize > 0)
-        {
+        if (updatePrices && cacheSize > 0) {
             Utilities.updatePrices();
         }
 
         stopWatch.start();
 
         Map<String, TradeSummary> mapTradesBySymbol = trades.aggregate(GroupAggregator.createInstance(Trade::getSymbol,
-                                                                                              new TradeSummaryAggregator()));
+                new TradeSummaryAggregator()));
         stopWatch.stop();
-        
+
         Map<String, Double> symbolPrice = Utilities.getPricesCache().aggregate(new ReducerAggregator<>(Price::getPrice));
 
         InvocationService invocationService = (InvocationService) CacheFactory.getService("InvocationService");
 
         // determine the storage enabled members for the membership query
         Set<Member> storageEnabledMembers =
-            ((DistributedCacheService) trades.getCacheService()).getOwnershipEnabledMembers();
+                ((DistributedCacheService) trades.getCacheService()).getOwnershipEnabledMembers();
 
         // determine the member information
         Map<Member, MemberInfo> memberInfoMap =
@@ -111,10 +110,10 @@ public class ChartDataResource
 
         // establish the chart data
         ChartData data = new ChartData(CacheFactory.getCluster().getTimeMillis(),
-                                       mapTradesBySymbol,
-                                       symbolPrice,
-                                       memberInfoMap.values(),
-                                       stopWatch.getElapsedTimeIn(TimeUnit.MILLISECONDS));
+                mapTradesBySymbol,
+                symbolPrice,
+                memberInfoMap.values(),
+                stopWatch.getElapsedTimeIn(TimeUnit.MILLISECONDS));
 
         return Response.ok(data).build();
     }

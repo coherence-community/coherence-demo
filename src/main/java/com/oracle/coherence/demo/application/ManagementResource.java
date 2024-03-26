@@ -74,8 +74,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
  * @author Tim Middleton
  */
 @Path("/jmx")
-public class ManagementResource
-{
+public class ManagementResource {
+
     /**
      * Run a jmx query and return the results as JSON.
      *
@@ -83,32 +83,27 @@ public class ManagementResource
      * @param displayAttributes  the attributes to display, either * for all attributes or comma
      *                           separated list of attributes
      *
-     * @return                   the results in JSON format
+     * @return the results in JSON format
      */
     @GET
-    @Produces({APPLICATION_JSON})
+    @Produces( {APPLICATION_JSON})
     @Path("query/{queryArgs}/{displayAttributes}")
     public Response getQuery(@PathParam("queryArgs") String queryArgs,
-                             @PathParam("displayAttributes") String displayAttributes)
-    {
+                             @PathParam("displayAttributes") String displayAttributes) {
         Set<QueryResult>      setResults = new HashSet<>();
         MBeanServerConnection mbs        = MBeanHelper.findMBeanServer();
 
-        try
-        {
-            if (mbs != null)
-            {
+        try {
+            if (mbs != null) {
                 Set<ObjectName> setObjects    = mbs.queryNames(new ObjectName(queryArgs), null);
                 Set<String>     setAttributes = new HashSet<>();
 
-                if (!"*".equals(displayAttributes))
-                {
+                if (!"*".equals(displayAttributes)) {
                     String[] attributeList = displayAttributes.split(",");
                     Collections.addAll(setAttributes, attributeList);
                 }
 
-                for (ObjectName objectName : setObjects)
-                {
+                for (ObjectName objectName : setObjects) {
                     Map<String, String>  mapKeys       = new TreeMap<>(objectName.getKeyPropertyList());
                     Map<String, Object>  mapAttributes = new TreeMap<>();
                     MBeanInfo            info          = mbs.getMBeanInfo(objectName);
@@ -120,21 +115,17 @@ public class ManagementResource
                     int i = 0;
 
                     // add the attributes if they are in the attributes or if attributes is "*"
-                    for (MBeanAttributeInfo attributeInfo : attrInfo)
-                    {
+                    for (MBeanAttributeInfo attributeInfo : attrInfo) {
                         String attrName = attributeInfo.getName();
 
-                        if (setAttributes.size() == 0 || setAttributes.contains(attrName))
-                        {
+                        if (setAttributes.size() == 0 || setAttributes.contains(attrName)) {
                             attrsToRetrieve[i++] = attrName;
                         }
                     }
 
                     // validate that all attributes exist
-                    for (String attribute : attrsToRetrieve)
-                    {
-                        if (attribute == null)
-                        {
+                    for (String attribute : attrsToRetrieve) {
+                        if (attribute == null) {
                             throw new RuntimeException("One or more invalid attributes in list: " + setAttributes);
                         }
                     }
@@ -144,11 +135,9 @@ public class ManagementResource
                     List<Attribute> lstAttr = mbs.getAttributes(objectName, attrsToRetrieve).asList();
 
                     // add the attribute values
-                    for (Attribute attr : lstAttr)
-                    {
+                    for (Attribute attr : lstAttr) {
                         Object value = attr.getValue();
-                        if (value instanceof Object[])
-                        {
+                        if (value instanceof Object[]) {
                             value = Arrays.toString((Object[]) value);
                         }
                         mapAttributes.put(attr.getName(), value);
@@ -157,21 +146,18 @@ public class ManagementResource
                     setResults.add(new QueryResult(mapKeys, mapAttributes));
                 }
             }
-            else
-            {
+            else {
                 return Response.serverError().build();
             }
 
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().build();
         }
 
         return Response.ok(setResults).build();
     }
-
 
     /**
      * Execute a reporter report and return the report output as JSON.
@@ -180,39 +166,35 @@ public class ManagementResource
      *                    path in coherence.jar. The report is appended with .xml to find the report.
      *                    E.g. report-cache-size is translated to "reports/report-cache-size.xml.
      *
-     * @return            the report output in JSON format
+     * @return the report output in JSON format
      */
     @GET
-    @Produces({APPLICATION_JSON})
+    @Produces( {APPLICATION_JSON})
     @Path("run-report/{reportName}")
-    public Response getReport(@PathParam("reportName") String reportName)
-    {
+    public Response getReport(@PathParam("reportName") String reportName) {
         MBeanServerConnection mbs            = MBeanHelper.findMBeanServer();
         String                fullReportName = "reports/" + reportName + ".xml";
 
         Set<Map<String, Object>> results = new HashSet<>();
 
-        try
-        {
+        try {
             TabularData reportData = (TabularData) mbs.invoke(
                     new ObjectName(Objects.requireNonNull(getReporterObjectName(mbs))),
-                    "runTabularReport", new Object[]{fullReportName},
-                    new String[]{"java.lang.String"});
+                    "runTabularReport", new Object[] {fullReportName},
+                    new String[] {"java.lang.String"});
 
             //noinspection unchecked
             Collection<CompositeData> values = (Collection<CompositeData>) reportData.values();
-            for (CompositeData compositeData : values)
-            {
-                Set<String> keys =  compositeData.getCompositeType().keySet();
+            for (CompositeData compositeData : values) {
+                Set<String>         keys      = compositeData.getCompositeType().keySet();
                 Map<String, Object> mapValues = new HashMap<>();
 
-                keys.forEach((k) -> mapValues.put(k, compositeData.get(k)));
+                keys.forEach((k)->mapValues.put(k, compositeData.get(k)));
                 results.add(mapValues);
             }
 
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().build();
         }
@@ -225,8 +207,7 @@ public class ManagementResource
      */
     @XmlRootElement(name = "query-results")
     @XmlAccessorType(XmlAccessType.PROPERTY)
-    public static class QueryResult
-        {
+    public static class QueryResult {
         /**
          * The result keys.
          */
@@ -243,8 +224,7 @@ public class ManagementResource
          * @param mapKey         the result keys
          * @param mapAttributes  the result attributes
          */
-        public QueryResult(Map<String, String> mapKey, Map<String, Object> mapAttributes)
-        {
+        public QueryResult(Map<String, String> mapKey, Map<String, Object> mapAttributes) {
             this.mapKey = mapKey;
             this.mapAttributes = mapAttributes;
         }
@@ -254,20 +234,18 @@ public class ManagementResource
          *
          * @return the key
          */
-        public Map<String, String> getKey()
-            {
+        public Map<String, String> getKey() {
             return mapKey;
-            }
+        }
 
         /**
          * Obtain the attributes.
          *
          * @return the attributes.
          */
-        public Map<String, Object> getAttributes()
-            {
+        public Map<String, Object> getAttributes() {
             return mapAttributes;
-            }
+        }
     }
 
 
@@ -279,22 +257,18 @@ public class ManagementResource
      *
      * @return the reporter for the local member ID
      */
-    private String getReporterObjectName(MBeanServerConnection server)
-    {
+    private String getReporterObjectName(MBeanServerConnection server) {
         int localMember = CacheFactory.getCluster().getLocalMember().getId();
         String query =
                 "Coherence:type=Reporter,nodeId=" + localMember + ",*";
-        try
-        {
+        try {
             Set<ObjectName> setResult = server.queryNames(new ObjectName(query),
                     null);
-            for (Object oResult : setResult)
-            {
+            for (Object oResult : setResult) {
                 return oResult.toString();
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new RuntimeException(
                     "Unable to obtain reporter for nodeId=" + localMember + ": " + e.getMessage());
         }
