@@ -18,6 +18,8 @@ hs_err_pid*
 # Build artifacts
 dependency-reduced-pom.xml
 target
+node_modules
+venv
 
 # Runtime artifacts
 derby.log

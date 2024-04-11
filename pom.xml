@@ -46,6 +46,7 @@
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
     <jib.version>3.4.2</jib.version>
     <jib.goal>dockerBuild</jib.goal>
+    <kotlin.version>1.9.23</kotlin.version>
     <netty.version>4.1.106.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
@@ -57,10 +58,10 @@
     <maven.compiler.release>17</maven.compiler.release>
     <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
     <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
-    <maven.enforcer.plugin.version>1.3.1</maven.enforcer.plugin.version>
+    <maven.enforcer.plugin.version>3.4.1</maven.enforcer.plugin.version>
     <maven.exec.plugin.version>3.2.0</maven.exec.plugin.version>
     <maven.jandex.plugin.version>1.2.3</maven.jandex.plugin.version>
-    <maven.javadoc.plugin.version>3.4.0</maven.javadoc.plugin.version>
+    <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
     <maven.source.plugin.version>3.3.0</maven.source.plugin.version>
@@ -191,13 +192,13 @@
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib-common</artifactId>
-      <version>1.9.22</version>
+      <version>${kotlin.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib</artifactId>
-      <version>1.8.20</version>
+      <version>${kotlin.version}</version>
     </dependency>
 
     <!-- jax-ws -->
