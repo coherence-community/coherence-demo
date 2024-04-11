@@ -21,6 +21,7 @@ The application showcases Coherence general features, scalability capabilities i
 * Federation (Grid Edition feature only)
 * Lambda Support
 * OpenTracing Support
+* Polyglot client access from JavaScript, Python and Golang
 
 You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table
 of contents below for instructions.
@@ -45,6 +46,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
     + [OpenTracing Prerequisites](#openTracing-prerequisites)
   * [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
+  - [Run the Polyglot clients](#clients)
   * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
   * [Enable Federation on Kubernetes (Grid Edition Only)](#enable-federation-on-kubernetes-grid-edition-only)
   * [Run the Demonstration using Coherence Grid Edition](#run-the-demonstration-using-coherence-grid-edition)
