@@ -47,7 +47,6 @@ jobs:
       run: |
         mvn -B package --file pom.xml -Dcoherence.version=24.03
         mvn exec:exec > output.log 2>&1 &
-        PID=$!
         sleep 30
 
     - name: Test Go Client
@@ -59,6 +58,9 @@ jobs:
         ./go-demo size
         ./go-demo add-trades ORCL 1000
         ./go-demo stock-split ORCL 2
+        ./go-demo monitor &
+        PID=$1
+        sleep 10 && kill -9 $PID
         cd ..
 
     - name: Test JavaScript Client
@@ -68,7 +70,10 @@ jobs:
         npm install
         node main.js size
         node main.js add-trades DELL 1000
-        node main.js stock-spli DELL 2
+        node main.js stock-split DELL 2
+        node main.js monitor &
+        PID=$1
+        sleep 10 && kill -9 $PID
         cd ..
 
     - name: Test Python Client
@@ -79,4 +84,7 @@ jobs:
         python3 main.py size
         python3 main.py add-trades MSFT 1000
         python3 main.py stock-split MSFT 2
+        python3 main.py monitor &
+        PID=$1
+        sleep 10 && kill -9 $PID
         cd ..
