@@ -191,7 +191,7 @@ func addTrades(trades coherence.NamedCache[string, Trade], prices coherence.Name
 	for i := 0; i < count; i++ {
 		trade := newTrade(symbol, rand.Intn(1000)+1, currentPrice.Price)
 		buffer[trade.ID] = trade
-		if i%100 == 0 {
+		if i%1000 == 0 {
 			err = trades.PutAll(ctx, buffer)
 			if err != nil {
 				return err

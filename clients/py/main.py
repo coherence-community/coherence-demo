@@ -39,6 +39,7 @@ class Trade:
         self.quantity = quantity
         self.id = id
 
+
 session: Session
 prices: NamedCache[str, Price]
 trades: NamedCache[str, Trade]
@@ -165,12 +166,12 @@ async def add_trades(symbol: str, count: int) -> None:
         buffer: dict[str, Price] = {}
         print(f"Adding {count} random trades for {symbol}")
 
-        for i in range(1, count):
+        for i in range(0, count):
             trade_id = str(uuid.uuid1())
             new_trade: Trade = Trade(trade_id, symbol, random.randint(1, 1000),
                                      current_price.price)
             buffer[trade_id] = new_trade
-            if count % 100 == 0:
+            if count % 1000 == 0:
                 await trades.put_all(buffer)
                 buffer.clear()
 
@@ -210,9 +211,12 @@ async def stock_split(symbol: str, factor: int) -> None:
         # 3. Update the price cache for the symbol and divide the price by the factor (or multiply by 1/factor)
 
         print(f"Splitting {symbol} using factor of {factor}")
+        
+        print(f"Update quantity for {symbol}")
         async for _ in trades.invoke_all(Processors.multiply("quantity", factor), None, Filters.equals("symbol", symbol)):
             break  # ignore
 
+        print(f"Update price for {symbol}")
         async for _ in trades.invoke_all(Processors.multiply("price", 1 / factor), None, Filters.equals("symbol", symbol)):
             break  # ignore
 

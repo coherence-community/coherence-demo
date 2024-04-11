@@ -96,7 +96,7 @@ async function addTrades(symbol, count) {
     for (let i = 0; i < count; i++) {
         let trade = createTrade(symbol, Math.floor(Math.random() * 1000), currentPrice.price)
         buffer.set(trade.id, trade)
-        if (i % 100 === 0) {
+        if (i % 1000 === 0) {
             await trades.setAll(buffer)
             buffer.clear()
         }
