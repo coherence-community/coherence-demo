@@ -44,16 +44,6 @@ public class Price {
     private static final long serialVersionUID = -2557678549268609664L;
 
     /**
-     * POF index for symbol attribute.
-     */
-    private static final int SYMBOL = 0;
-
-    /**
-     * POF index for price attribute.
-     */
-    private static final int PRICE = 1;
-
-    /**
      * The symbol (ticker code) of the equity for the {@link Price}.
      */
     @Id

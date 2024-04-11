@@ -149,6 +149,16 @@ public class Trade {
         this.price = price;
     }
 
+
+    /**
+     * Set the number of shares acquired for the {@link Trade}.
+     *
+     * @param quantity the new quantity.
+     */
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     /**
      * Split the stock.
      *
