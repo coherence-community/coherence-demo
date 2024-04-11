@@ -29,6 +29,8 @@ const MapEventType = coh.event.MapEventType
 const session = new Session()
 const prices = session.getCache('Price')
 const trades = session.getCache('Trade')
+
+// currency formatter
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD'
@@ -69,9 +71,9 @@ setImmediate(async () => {
     process.exit(0)
 })
 
-
 // ----- helpers ------------------------------------------------------------
 
+// add a number of trades for a symbol
 async function addTrades(symbol, count) {
     if (count < 0) {
         console.log("Count must not be negative")
@@ -108,6 +110,7 @@ async function addTrades(symbol, count) {
     console.log("Trades cache size is now " + size)
 }
 
+// split a stock using a given factor
 async function stockSplit(symbol, factor) {
     if (factor < 0) {
         console.log("Factor must not be negative")
@@ -145,7 +148,7 @@ async function stockSplit(symbol, factor) {
     await prices.invoke(symbol, Processors.multiply("price", 1 / factor))
 }
 
-
+// monitor any price changes
 async function monitor() {
     console.log("Listening for price changes. Press CTRL-C to finish.")
     const handler = (event) => {
@@ -171,6 +174,7 @@ function usage() {
         "stock-split - stock split, specify symbol and factor")
 }
 
+// create a Trade
 function createTrade(symbol, qty, price) {
     const trade = {
         '@class': 'Trade',

@@ -15,18 +15,13 @@
 #
 import uuid
 import random
+import asyncio
+import sys
 from typing import List
 
 from coherence import Filters, Aggregators, NamedCache, Session, Processors
 from coherence.event import MapListener
 from coherence import serialization
-
-from uuid import uuid4
-
-import asyncio
-import sys
-
-sys.excepthook = lambda *args: None
 
 
 @serialization.proxy("Price")
@@ -34,10 +29,6 @@ class Price:
     def __init__(self, symbol: str, price: float):
         self.symbol = symbol
         self.price = price
-
-
-session: Session
-prices: NamedCache[str, Price]
 
 
 @serialization.proxy("Trade")
@@ -48,13 +39,17 @@ class Trade:
         self.quantity = quantity
         self.id = id
 
-
 session: Session
 prices: NamedCache[str, Price]
 trades: NamedCache[str, Trade]
 
 
-async def init_coherence():
+async def init_coherence() -> None:
+    """
+    Initialized Coherence.
+
+    :return: None
+    """
     global session
     global prices
     global trades
@@ -65,6 +60,11 @@ async def init_coherence():
 
 
 async def run_demo() -> None:
+    """
+    Run the command line demo.
+
+    :return: None
+    """
     global session
 
     try:
@@ -95,7 +95,12 @@ async def run_demo() -> None:
         await session.close()
 
 
-async def display_cache_size():
+async def display_cache_size() -> None:
+    """
+    Displays the size for both the Trade and Price caches.
+
+    :return: None
+    """
     global prices
     global trades
 
@@ -106,7 +111,12 @@ async def display_cache_size():
     print(f"Price cache size: {pricesize}")
 
 
-async def monitor_prices():
+async def monitor_prices() -> None:
+    """
+    Monitors the Price cache for any changes and displays them.
+
+    :return: None
+    """
     global prices
 
     listener: MapListener[str, Price] = MapListener()
@@ -117,7 +127,12 @@ async def monitor_prices():
     await asyncio.sleep(10000)
 
 
-def handle_event(e):
+def handle_event(e) -> None:
+    """
+    Event handler to display the event details
+
+    :return: None
+    """
     symbol = e.key
     old_price = e.old.price
     new_price = e.new.price
@@ -127,7 +142,14 @@ def handle_event(e):
         f"Price changed for {symbol}, new=${new_price:.2f}, old=${old_price:.2f}, change=${change:.2f}")
 
 
-async def add_trades(symbol: str, count: int):
+async def add_trades(symbol: str, count: int) -> None:
+    """
+    Add trades for a symbol.
+
+    :param symbol the symbol to add trades to
+    :param count the number of trades to add
+    :return: None
+    """
     global prices
     global trades
 
@@ -162,7 +184,14 @@ async def add_trades(symbol: str, count: int):
         print(f"Unable to find {symbol}, valid symbols are {symbols}")
 
 
-async def stock_split(symbol: str, factor: int):
+async def stock_split(symbol: str, factor: int) -> None:
+    """
+    Do a stock plit.
+
+    :param symbol the symbol to split
+    :param factor the factor to use for the split, e.g. 2 = 2 to 1
+    :return: None
+    """
     global prices
     global trades
 

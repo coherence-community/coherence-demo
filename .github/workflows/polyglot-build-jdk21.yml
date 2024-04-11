@@ -59,7 +59,7 @@ jobs:
         ./go-demo add-trades ORCL 1000
         ./go-demo stock-split ORCL 2
         ./go-demo monitor &
-        PID=$1
+        PID=$!
         sleep 10 && kill -9 $PID
         cd ..
 
@@ -72,7 +72,7 @@ jobs:
         node main.js add-trades DELL 1000
         node main.js stock-split DELL 2
         node main.js monitor &
-        PID=$1
+        PID=$!
         sleep 10 && kill -9 $PID
         cd ..
 
@@ -85,6 +85,6 @@ jobs:
         python3 main.py add-trades MSFT 1000
         python3 main.py stock-split MSFT 2
         python3 main.py monitor &
-        PID=$1
+        PID=$!
         sleep 10 && kill -9 $PID
         cd ..
