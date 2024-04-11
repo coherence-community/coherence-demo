@@ -46,7 +46,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
     + [OpenTracing Prerequisites](#openTracing-prerequisites)
   * [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
-  - [Run the Polyglot clients](#clients)
+  - [Run the Polyglot clients](clients/README.md)
   * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
   * [Enable Federation on Kubernetes (Grid Edition Only)](#enable-federation-on-kubernetes-grid-edition-only)
   * [Run the Demonstration using Coherence Grid Edition](#run-the-demonstration-using-coherence-grid-edition)
