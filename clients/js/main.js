@@ -1,8 +1,18 @@
 /*
- *Copyright (c) 2020, 2023, Oracle and/or its affiliates.
- * Licensed under the Universal Permissive License v 1.0 as shown at
- * https://oss.oracle.com/licenses/upl.
- */
+ * Copyright (c) 2024 Oracle and/or its affiliates.
+ *
+ * You may not use this file except in compliance with the Universal Permissive
+ * License (UPL), Version 1.0 (the "License.")
+ *
+ * You may obtain a copy of the License at https: //opensource.org/licenses/UPL.
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
+*/
 
 const coh = require('@oracle/coherence')
 const uuid = require('uuid')
@@ -28,6 +38,7 @@ const args = process.argv.slice(2);
 
 if (args.length < 1) {
     usage()
+    process.exit(0)
 }
 
 let command = args[0]
@@ -50,7 +61,7 @@ setImmediate(async () => {
     } else if (command === "add-trades") {
         await addTrades(symbol, count)
     } else if (command === "stock-split") {
-
+        await stockSplit(symbol, count)
     } else {
         usage()
     }
@@ -79,15 +90,23 @@ async function addTrades(symbol, count) {
     // get the current price for the trade
     let currentPrice = await prices.get(symbol)
 
-    for (i = 0; i < count; i++) {
-        trade = createTrade(symbol, Math.floor(Math.random() * 1000), currentPrice.price)
-        await trades.set(trade.id, trade)
+    let buffer = new Map()
+    for (let i = 0; i < count; i++) {
+        let trade = createTrade(symbol, Math.floor(Math.random() * 1000), currentPrice.price)
+        buffer.set(trade.id, trade)
+        if (i % 100 === 0) {
+            await trades.setAll(buffer)
+            buffer.clear()
+        }
+    }
+    
+    if (buffer.size !== 0) {
+        await trades.setAll(buffer)
     }
 
     let size = await trades.size
     console.log("Trades cache size is now " + size)
 }
-
 
 async function stockSplit(symbol, factor) {
     if (factor < 0) {
@@ -102,23 +121,29 @@ async function stockSplit(symbol, factor) {
         return
     }
 
-    console.log("Adding %d random trades for %s...", count, symbol)
+    console.log("Splitting %s using factor of %d...", symbol, factor)
 
     // get the current price for the trade
     let currentPrice = await prices.get(symbol)
 
-   	// the process for the stock split is:
-	// 1. Update each trade and multiply the quantity by thr factor
-	// 2. Update each trade and divide the price by the factor (or multiply by 1/factor)
-	// 3. Update the price cache for the symbol and divide the price by the factor (or multiply by 1/factor)
+    // the process for the stock split is:
+    // 1. Update each trade and multiply the quantity by thr factor
+    // 2. Update each trade and divide the price by the factor (or multiply by 1/factor)
+    // 3. Update the price cache for the symbol and divide the price by the factor (or multiply by 1/factor)
 
-    
+    let filter = Filters.equal("symbol", symbol)
 
-    let size = await trades.size
-    console.log("Trades cache size is now " + size)
+    console.log("Updating quantity for " + symbol + " trades...")
+    await trades.invokeAll(filter, Processors.multiply("quantity", factor))
+
+    console.log("Updating price for " + symbol + " trades...")
+    await trades.invokeAll(filter, Processors.multiply("price", 1 / factor))
+
+    let newPrice = (currentPrice.price / factor)
+
+    console.log("Updating price for " + symbol + " to " + formatter.format(newPrice))
+    await prices.invoke(symbol, Processors.multiply("price", 1 / factor))
 }
-
-
 
 
 async function monitor() {
@@ -131,12 +156,10 @@ async function monitor() {
         console.log("Price changed for " + event.key + ", new=" + formatter.format(newPrice) +
             ", old=" + formatter.format(oldPrice) + ", change=" + formatter.format(change))
     }
-    const listener = new MapListener()
-        .on(MapEventType.UPDATE, handler)
+    const listener = new MapListener().on(MapEventType.UPDATE, handler)
 
     await prices.addMapListener(listener)
     await sleep(100_000_000)
-
 }
 
 function usage() {
@@ -151,7 +174,7 @@ function usage() {
 function createTrade(symbol, qty, price) {
     const trade = {
         '@class': 'Trade',
-        id: uuid.v4().substr(0, 6),
+        id: uuid.v4().toString(),
         symbol: symbol,
         quantity: qty,
         price: price

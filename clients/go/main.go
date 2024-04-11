@@ -12,7 +12,7 @@
 *
 * See the License for the specific language governing permissions and limitations
 * under the License.
-*/
+ */
 
 package main
 
@@ -191,7 +191,7 @@ func addTrades(trades coherence.NamedCache[string, Trade], prices coherence.Name
 	for i := 0; i < count; i++ {
 		trade := newTrade(symbol, rand.Intn(1000)+1, currentPrice.Price)
 		buffer[trade.ID] = trade
-		if i%1000 == 0 {
+		if i%100 == 0 {
 			err = trades.PutAll(ctx, buffer)
 			if err != nil {
 				return err

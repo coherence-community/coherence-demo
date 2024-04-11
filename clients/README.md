@@ -19,11 +19,11 @@ This demonstration covers JavaScript, Python and Golang Coherence clients. If yo
 The Coherence Demonstration already includes the grpc-proxy module as shown below:
 
 ```xml
-    <dependency>
-      <groupId>${coherence.group.id}</groupId>
-      <artifactId>coherence-grpc-proxy</artifactId>
-      <version>${coherence.version}</version>
-    </dependency>
+ <dependency>
+   <groupId>${coherence.group.id}</groupId>
+   <artifactId>coherence-grpc-proxy</artifactId>
+   <version>${coherence.version}</version>
+ </dependency>
 ```
 
 By default, the gRPC proxy listens on an ephemeral port, so we include the following in the `pom.xml` file to specify the default gRPC port of 1480.
@@ -31,16 +31,24 @@ By default, the gRPC proxy listens on an ephemeral port, so we include the follo
 ```bash
 -Dcoherence.grpc.server.port=1408
 ```
-                                        
+
+To ensure the `Trade` and `Price` objects are serialized into Java objects, we create the file `src/main/resources/META-INF/type-aliases.properties`
+which contains the mappings determined by the `@class` JSON attribute on the objects.
+
+```bash
+Trade=com.oracle.coherence.demo.model.Trade
+Price=com.oracle.coherence.demo.model.Price
+```
+           
 ## Running the Polyglot Demos
 
 Each of the language demonstrations provide a simple command line interface, to showcase Coherence API's across gRPC.
 
 They allow you to:
-1. Display the size of the caches
-2. Monitor for changes in stock prices via MapListeners
-3. Add trades for a symbol via PutAll()
-4. Issue a stock-split via EntryProcessors
+1. Display the size of the caches - `size`
+2. Monitor for changes in stock prices via MapListeners - `monitor`
+3. Add trades for a symbol - `add-trades symbol count`
+4. Issue a stock-split via EntryProcessors - `stock-split symbol factor`
 
 Once you have started the Coherence Demonstration, select from the follow to run the language demo of choice.
 
@@ -48,6 +56,7 @@ Once you have started the Coherence Demonstration, select from the follow to run
 - [Python](#python)
 - [Goang](#golang)
 
+See [here](#examples) to see sample runs:   
 
 ## JavaScript
 
@@ -66,7 +75,10 @@ You must have the following installed:
    ```
  
 ### Running the JavaScript demo 
-
+ 
+```bash
+node main.js
+```
 
 ## Python
 
@@ -84,8 +96,10 @@ You must have Python 3.11.x or later installed.
 
 ### Running the Python demo
 
+```bash
+node main.py
+```
 
-       
 ## Golang
 
 The code from this demonstration is available [here](go/main.go).
@@ -107,6 +121,16 @@ You must have the go 1.19 or above installed.
    ```
        
 ### Running the Go demo
+
+```bash
+./go-demo
+```         
+ 
+## Examples
+
+Each of the programs have the same arguments, and you can pass as described above.      
+Here we show an example of running the Go demo, but other languages take the same 
+arguments and have similar output.
 
 1. Display the usage by running `./go-demo`
 
