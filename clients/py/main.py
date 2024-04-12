@@ -14,30 +14,32 @@
 # under the License.
 #
 import uuid
+import datetime
 import random
 import asyncio
 import sys
 from typing import List
+from dataclasses import dataclass
 
 from coherence import Filters, Aggregators, NamedCache, Session, Processors
 from coherence.event import MapListener
 from coherence import serialization
 
 
+@dataclass
 @serialization.proxy("Price")
 class Price:
-    def __init__(self, symbol: str, price: float):
-        self.symbol = symbol
-        self.price = price
+    symbol: str
+    price: float
 
 
+@dataclass
 @serialization.proxy("Trade")
 class Trade:
-    def __init__(self, id: str, symbol: str, quantity: int, price: float):
-        self.symbol = symbol
-        self.price = price
-        self.quantity = quantity
-        self.id = id
+    id: str
+    symbol: str
+    quantity: int
+    price: float
 
 
 session: Session
@@ -47,7 +49,7 @@ trades: NamedCache[str, Trade]
 
 async def init_coherence() -> None:
     """
-    Initialized Coherence.
+    Initialize Coherence.
 
     :return: None
     """
@@ -163,15 +165,16 @@ async def add_trades(symbol: str, count: int) -> None:
     if symbol in symbols:
         current_price: Price = await prices.get(symbol)
 
-        buffer: dict[str, Price] = {}
-        print(f"Adding {count} random trades for {symbol}")
+        buffer: dict[str, Trade] = {}
+        print()
+
+        print(f"{get_time()}: Adding {count} random trades for {symbol}")
 
         for i in range(0, count):
             trade_id = str(uuid.uuid1())
-            new_trade: Trade = Trade(trade_id, symbol, random.randint(1, 1000),
-                                     current_price.price)
+            new_trade: Trade = Trade(trade_id, symbol, random.randint(1, 1000), current_price.price)
             buffer[trade_id] = new_trade
-            if count % 1000 == 0:
+            if i % 1000 == 0:
                 await trades.put_all(buffer)
                 buffer.clear()
 
@@ -180,14 +183,14 @@ async def add_trades(symbol: str, count: int) -> None:
             await trades.put_all(buffer)
 
         size = await trades.size()
-        print(f"Size of Trade cache is now {size}")
+        print(f"{get_time()}: Size of Trade cache is now {size}")
     else:
         print(f"Unable to find {symbol}, valid symbols are {symbols}")
 
 
 async def stock_split(symbol: str, factor: int) -> None:
     """
-    Do a stock plit.
+    Do a stock split.
 
     :param symbol the symbol to split
     :param factor the factor to use for the split, e.g. 2 = 2 to 1
@@ -196,8 +199,8 @@ async def stock_split(symbol: str, factor: int) -> None:
     global prices
     global trades
 
-    if factor <= 0:
-        print("factor must be supplied and be positive")
+    if factor <= 0 or factor > 10:
+        print("factor must be supplied and be positive and less than 10")
         return
 
     symbols: List[str] = await prices.aggregate(Aggregators.distinct("symbol"))
@@ -210,13 +213,14 @@ async def stock_split(symbol: str, factor: int) -> None:
         # 2. Update each trade and divide the price by the factor (or multiply by 1/factor)
         # 3. Update the price cache for the symbol and divide the price by the factor (or multiply by 1/factor)
 
-        print(f"Splitting {symbol} using factor of {factor}")
-        
-        print(f"Update quantity for {symbol}")
+        print()
+        print(f"{get_time()}: Splitting {symbol} using factor of {factor}")
+
+        print(f"{get_time()}: Update quantity for {symbol}")
         async for _ in trades.invoke_all(Processors.multiply("quantity", factor), None, Filters.equals("symbol", symbol)):
             break  # ignore
 
-        print(f"Update price for {symbol}")
+        print(f"{get_time()}: Update price for {symbol}")
         async for _ in trades.invoke_all(Processors.multiply("price", 1 / factor), None, Filters.equals("symbol", symbol)):
             break  # ignore
 
@@ -224,9 +228,13 @@ async def stock_split(symbol: str, factor: int) -> None:
 
         new_price = (current_price.price / factor)
 
-        print(f"Updating price for {symbol} to ${new_price:.2f}")
+        print(f"{get_time()}: Updating price for {symbol} to ${new_price:.2f}")
     else:
         print(f"Unable to find {symbol}, valid symbols are {symbols}")
+
+
+def get_time() -> str:
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 
 
 def usage():
