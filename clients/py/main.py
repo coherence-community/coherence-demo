@@ -18,26 +18,27 @@ import random
 import asyncio
 import sys
 from typing import List
+from dataclasses import dataclass
 
 from coherence import Filters, Aggregators, NamedCache, Session, Processors
 from coherence.event import MapListener
 from coherence import serialization
 
 
+@dataclass
 @serialization.proxy("Price")
 class Price:
-    def __init__(self, symbol: str, price: float):
-        self.symbol = symbol
-        self.price = price
+    symbol: str
+    price: float
 
 
+@dataclass
 @serialization.proxy("Trade")
 class Trade:
-    def __init__(self, id: str, symbol: str, quantity: int, price: float):
-        self.symbol = symbol
-        self.price = price
-        self.quantity = quantity
-        self.id = id
+    id: str
+    symbol: str
+    quantity: int
+    price: float
 
 
 session: Session
@@ -47,7 +48,7 @@ trades: NamedCache[str, Trade]
 
 async def init_coherence() -> None:
     """
-    Initialized Coherence.
+    Initialize Coherence.
 
     :return: None
     """
@@ -163,15 +164,14 @@ async def add_trades(symbol: str, count: int) -> None:
     if symbol in symbols:
         current_price: Price = await prices.get(symbol)
 
-        buffer: dict[str, Price] = {}
+        buffer: dict[str, Trade] = {}
         print(f"Adding {count} random trades for {symbol}")
 
         for i in range(0, count):
             trade_id = str(uuid.uuid1())
-            new_trade: Trade = Trade(trade_id, symbol, random.randint(1, 1000),
-                                     current_price.price)
+            new_trade: Trade = Trade(trade_id, symbol, random.randint(1, 1000), current_price.price)
             buffer[trade_id] = new_trade
-            if count % 1000 == 0:
+            if i % 1000 == 0:
                 await trades.put_all(buffer)
                 buffer.clear()
 
@@ -196,8 +196,8 @@ async def stock_split(symbol: str, factor: int) -> None:
     global prices
     global trades
 
-    if factor <= 0:
-        print("factor must be supplied and be positive")
+    if factor <= 0 or factor > 10:
+        print("factor must be supplied and be positive and less than 10")
         return
 
     symbols: List[str] = await prices.aggregate(Aggregators.distinct("symbol"))
