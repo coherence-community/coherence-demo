@@ -14,6 +14,7 @@
 # under the License.
 #
 import uuid
+import datetime
 import random
 import asyncio
 import sys
@@ -165,7 +166,9 @@ async def add_trades(symbol: str, count: int) -> None:
         current_price: Price = await prices.get(symbol)
 
         buffer: dict[str, Trade] = {}
-        print(f"Adding {count} random trades for {symbol}")
+        print()
+
+        print(f"{get_time()}: Adding {count} random trades for {symbol}")
 
         for i in range(0, count):
             trade_id = str(uuid.uuid1())
@@ -180,14 +183,14 @@ async def add_trades(symbol: str, count: int) -> None:
             await trades.put_all(buffer)
 
         size = await trades.size()
-        print(f"Size of Trade cache is now {size}")
+        print(f"{get_time()}: Size of Trade cache is now {size}")
     else:
         print(f"Unable to find {symbol}, valid symbols are {symbols}")
 
 
 async def stock_split(symbol: str, factor: int) -> None:
     """
-    Do a stock plit.
+    Do a stock split.
 
     :param symbol the symbol to split
     :param factor the factor to use for the split, e.g. 2 = 2 to 1
@@ -210,13 +213,14 @@ async def stock_split(symbol: str, factor: int) -> None:
         # 2. Update each trade and divide the price by the factor (or multiply by 1/factor)
         # 3. Update the price cache for the symbol and divide the price by the factor (or multiply by 1/factor)
 
-        print(f"Splitting {symbol} using factor of {factor}")
-        
-        print(f"Update quantity for {symbol}")
+        print()
+        print(f"{get_time()}: Splitting {symbol} using factor of {factor}")
+
+        print(f"{get_time()}: Update quantity for {symbol}")
         async for _ in trades.invoke_all(Processors.multiply("quantity", factor), None, Filters.equals("symbol", symbol)):
             break  # ignore
 
-        print(f"Update price for {symbol}")
+        print(f"{get_time()}: Update price for {symbol}")
         async for _ in trades.invoke_all(Processors.multiply("price", 1 / factor), None, Filters.equals("symbol", symbol)):
             break  # ignore
 
@@ -224,9 +228,13 @@ async def stock_split(symbol: str, factor: int) -> None:
 
         new_price = (current_price.price / factor)
 
-        print(f"Updating price for {symbol} to ${new_price:.2f}")
+        print(f"{get_time()}: Updating price for {symbol} to ${new_price:.2f}")
     else:
         print(f"Unable to find {symbol}, valid symbols are {symbols}")
+
+
+def get_time() -> str:
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 
 
 def usage():

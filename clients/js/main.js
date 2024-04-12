@@ -87,7 +87,7 @@ async function addTrades(symbol, count) {
         return
     }
 
-    console.log("Adding %d random trades for %s...", count, symbol)
+    console.log(new Date().toISOString() + ": Adding %d random trades for %s...", count, symbol)
 
     // get the current price for the trade
     let currentPrice = await prices.get(symbol)
@@ -107,7 +107,7 @@ async function addTrades(symbol, count) {
     }
 
     let size = await trades.size
-    console.log("Trades cache size is now " + size)
+    console.log(new Date().toISOString() + ": Trades cache size is now " + size)
 }
 
 // split a stock using a given factor
@@ -124,7 +124,7 @@ async function stockSplit(symbol, factor) {
         return
     }
 
-    console.log("Splitting %s using factor of %d...", symbol, factor)
+    console.log(new Date().toISOString() + ": Splitting %s using factor of %d...", symbol, factor)
 
     // get the current price for the trade
     let currentPrice = await prices.get(symbol)
@@ -136,15 +136,15 @@ async function stockSplit(symbol, factor) {
 
     let filter = Filters.equal("symbol", symbol)
 
-    console.log("Updating quantity for " + symbol + " trades...")
+    console.log(new Date().toISOString() + ": Updating quantity for " + symbol + " trades...")
     await trades.invokeAll(filter, Processors.multiply("quantity", factor))
 
-    console.log("Updating price for " + symbol + " trades...")
+    console.log(new Date().toISOString() + ": Updating price for " + symbol + " trades...")
     await trades.invokeAll(filter, Processors.multiply("price", 1 / factor))
 
     let newPrice = (currentPrice.price / factor)
 
-    console.log("Updating price for " + symbol + " to " + formatter.format(newPrice))
+    console.log(new Date().toISOString() + ": Updating price for " + symbol + " to " + formatter.format(newPrice))
     await prices.invoke(symbol, Processors.multiply("price", 1 / factor))
 }
 
