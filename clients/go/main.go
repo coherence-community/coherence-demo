@@ -186,7 +186,7 @@ func addTrades(trades coherence.NamedCache[string, Trade], prices coherence.Name
 	// add using efficient PuAll
 	buffer := make(map[string]Trade, 0)
 
-	fmt.Printf("Adding %d random trades for %s...\n", count, symbol)
+	log.Printf("Adding %d random trades for %s...\n", count, symbol)
 
 	for i := 0; i < count; i++ {
 		trade := newTrade(symbol, rand.Intn(1000)+1, currentPrice.Price)
@@ -210,7 +210,7 @@ func addTrades(trades coherence.NamedCache[string, Trade], prices coherence.Name
 
 	size, err := trades.Size(ctx)
 	if err == nil {
-		fmt.Printf("Trades cache size is now %d\n", size)
+		log.Printf("Trades cache size is now %d\n", size)
 		fmt.Println()
 	}
 

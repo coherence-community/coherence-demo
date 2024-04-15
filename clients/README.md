@@ -151,10 +151,10 @@ arguments and have similar output.
    ./go-demo size
    2024/04/10 13:07:23 session: 68632e4d-70c4-43f4-8532-95ab5f583177 connected to address localhost:1408
 
-   Trade cache size = 200005
-   Price cache size = 6
+   2024/04/10 13:07:24 Trade cache size = 200005
+   2024/04/10 13:07:24 Price cache size = 6
 
-   2024/04/10 13:07:23 closed session 68632e4d-70c4-43f4-8532-95ab5f583177
+   2024/04/10 13:07:25 closed session 68632e4d-70c4-43f4-8532-95ab5f583177
    ```
 
 3. Add trades for a symbol by running `./go-demo add-trades ORCL 100000`
@@ -163,8 +163,8 @@ arguments and have similar output.
    ./go-demo add-trades ORCL 100000
    2024/04/10 13:12:11 session: c070b210-3494-4bf2-962e-24b526c17d56 connected to address localhost:1408
 
-   Adding 100000 random trades for ORCL...
-   Trades cache size is now 300005
+   2024/04/10 13:12:11 Adding 100000 random trades for ORCL...
+   2024/04/10 13:12:11 Trades cache size is now 300005
 
    2024/04/10 13:12:14 closed session c070b210-3494-4bf2-962e-24b526c17d56
    ```
