@@ -21,7 +21,6 @@ package com.oracle.coherence.demo.application;
 import com.oracle.bedrock.util.Pair;
 
 import com.tangosol.net.Coherence;
-import com.tangosol.net.DefaultCacheServer;
 
 import java.time.ZoneId;
 
@@ -31,28 +30,6 @@ import java.util.Map;
 
 /**
  * The launcher for the Coherence Demo application.
- * <p>
- * To launch the application issue the following using Java 8 or 11:
- * <pre>
- *     java -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
- * </pre>
- * <p>
- * To use a different port other than 8080 use:
- * <pre>
- *     java -Dhttp.port=9000 -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
- * </pre>
- *
- * <p>
- * To use a different hostname other than 127.0.0.1 use:
- * <pre>
- *     java -Dhttp.hostname=my-host-name.com -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
- * </pre>
- * <p>
- * To change the cluster names from defaults, use:
- * <pre>
- *     java -Dprimary.cluster=Boston -Dsecondary.cluster=NewYork -jar target/coherence-demo-3.0.0-SNAPSHOT.jar.
- * </pre>
- * <p>
  *
  * @author Brian Oliver
  */

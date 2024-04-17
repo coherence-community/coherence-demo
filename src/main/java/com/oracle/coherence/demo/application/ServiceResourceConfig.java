@@ -39,6 +39,7 @@ public class ServiceResourceConfig
         register(StopMemberResource.class);
         register(ChartDataResource.class);
         register(FederationResource.class);
+        register(EventsResource.class);
         register(StartSecondaryResource.class);
         register(DeveloperResource.class);
         register(PersistenceResource.class);

@@ -42,16 +42,17 @@
     <jackson.databind.version>${jackson.version}</jackson.databind.version>
     <jaeger.version>1.8.1</jaeger.version>
     <jaxrs.version>3.0.0</jaxrs.version>
-    <jersey.version>3.0.5</jersey.version>
+    <jersey.version>3.0.11</jersey.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
+    <jakarta.version>3.0.1</jakarta.version>
     <jib.version>3.4.2</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <kotlin.version>1.9.23</kotlin.version>
-    <netty.version>4.1.106.Final</netty.version>
+    <netty.version>4.1.108.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
     <!-- maven configuration -->
-    <java.version>17</java.version>
+    <java.version>21</java.version>
     <maven.assembly.plugin.version>3.0.0</maven.assembly.plugin.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
@@ -64,7 +65,7 @@
     <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
-    <maven.source.plugin.version>3.3.0</maven.source.plugin.version>
+    <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
     <maven.version>3.6.0</maven.version>
 
     <!-- startup options -->
@@ -241,6 +242,12 @@
 
     <dependency>
       <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-sse</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
       <artifactId>jersey-media-multipart</artifactId>
       <version>${jersey.version}</version>
     </dependency>
@@ -261,6 +268,12 @@
       <groupId>org.glassfish.jersey.containers</groupId>
       <artifactId>jersey-container-servlet</artifactId>
       <version>${jersey.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
+      <version>${jakarta.version}</version>
     </dependency>
 
     <!-- opentracing jdbc -->

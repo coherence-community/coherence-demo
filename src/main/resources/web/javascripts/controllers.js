@@ -938,6 +938,13 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
         }
     };
 
+    self.priceUpdates = function () {
+         let windowName = "new" + new Date().toISOString()
+         let left = (screen.width/2)-250;
+         let top = (screen.height/2)-200;
+          $window.open("/application/sse.html", windowName, "height=400,width=500,top=" + top + ",left=" + left);
+    }
+
     self.addSymbolTrades = function(symbol) {
         let val = parseInt(prompt('Enter the number of random trades to add for ' + symbol, '1000'));
         if (!isNaN(val)) {
