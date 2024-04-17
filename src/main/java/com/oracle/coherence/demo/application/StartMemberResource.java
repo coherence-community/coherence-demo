@@ -36,6 +36,7 @@ import com.oracle.bedrock.runtime.java.options.SystemProperty;
 
 import com.oracle.bedrock.runtime.options.DisplayName;
 
+import com.oracle.coherence.common.base.Logger;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
 import com.tangosol.net.Coherence;
@@ -56,7 +57,6 @@ import jakarta.ws.rs.core.Response;
 import java.lang.management.ManagementFactory;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.oracle.bedrock.deferred.DeferredHelper.eventually;
 import static com.oracle.bedrock.deferred.DeferredHelper.invoking;
@@ -92,11 +92,11 @@ public class StartMemberResource
             LocalPlatform platform  = LocalPlatform.get();
             int           nStableId = getStableId();
 
-            CacheFactory.log("Starting server " + i + " of " + serverCount, CacheFactory.LOG_INFO);
+            Logger.info("Starting server " + i + " of " + serverCount);
 
             try {
                 // strip off unwanted arguments other than memory
-                List<String> newArguments = inputArguments.stream().filter(s->s.contains("-Xm")).collect(Collectors.toList());
+                List<String> newArguments = inputArguments.stream().filter(s->s.contains("-Xm")).toList();
 
                 // start the new cache server
                 CoherenceCacheServer server =

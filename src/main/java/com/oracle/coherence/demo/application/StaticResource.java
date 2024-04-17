@@ -18,7 +18,8 @@
 
 package com.oracle.coherence.demo.application;
 
-import com.tangosol.net.CacheFactory;
+import com.oracle.coherence.common.base.Logger;
+
 import com.tangosol.util.Base;
 import com.tangosol.util.Resources;
 
@@ -67,8 +68,8 @@ public class StaticResource {
 
         }
         catch (IOException e) {
-            CacheFactory.log("Unexpected error service static resource " + resourcePath);
-            CacheFactory.log(e);
+            Logger.info("Unexpected error service static resource " + resourcePath);
+            Logger.info(e);
             return Response.serverError().build();
         }
     }

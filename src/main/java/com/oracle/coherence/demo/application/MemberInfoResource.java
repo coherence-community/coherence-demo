@@ -64,7 +64,7 @@ public class MemberInfoResource {
         // determine the member information
         //noinspection unchecked
         Map<Member, MemberInfo> results =
-                (Map<Member, MemberInfo>) invocationService.query(new GetMemberInfo(trades.getCacheName()),
+                invocationService.query(new GetMemberInfo(trades.getCacheName()),
                         storageEnabledMembers);
 
         return Response.ok(results.values()).build();
