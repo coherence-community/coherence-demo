@@ -48,7 +48,7 @@
     <jib.version>3.4.2</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <kotlin.version>1.9.23</kotlin.version>
-    <netty.version>4.1.106.Final</netty.version>
+    <netty.version>4.1.108.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
     <!-- maven configuration -->
@@ -65,7 +65,7 @@
     <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
-    <maven.source.plugin.version>3.3.0</maven.source.plugin.version>
+    <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
     <maven.version>3.6.0</maven.version>
 
     <!-- startup options -->
