@@ -22,11 +22,7 @@ import com.oracle.coherence.demo.model.Price;
 
 import com.tangosol.net.NamedCache;
 
-import com.tangosol.util.AbstractMapListener;
-import com.tangosol.util.MapEvent;
-import com.tangosol.util.MapListener;
 import com.tangosol.util.listener.SimpleMapListener;
-import com.oracle.coherence.common.base.Logger;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
