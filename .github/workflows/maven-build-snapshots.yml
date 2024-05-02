@@ -53,11 +53,11 @@ jobs:
     - name: Coherence Demo Jar
       uses: actions/upload-artifact@v4
       with:
-        name: coherence-demo-jar
+        name: coherence-demo-jar-${{ matrix.coherenceVersion }}
         path: target/coherence-demo-*.jar
 
     - name: Coherence Demo Javadoc
       uses: actions/upload-artifact@v4
       with:
-        name: coherence-demo-javadoc
+        name: coherence-demo-javadoc-${{ matrix.coherenceVersion }}
         path: target/coherence-demo-*-javadoc.jar
