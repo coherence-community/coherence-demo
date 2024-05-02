@@ -7,7 +7,7 @@ clusters using gRPC. This is achieved via configuring and starting a [gRPCProxy]
 
 > The Coherence gRPC proxy is the server-side implementation of the gRPC services defined within the Coherence gRPC module. The gRPC proxy uses standard gRPC Java libraries to provide Coherence APIs over gRPC.
 
-This demonstration covers JavaScript, Python and Golang Coherence clients. If you would like ot know more about each one, then please see the relevant GitHub pages below:
+This demonstration covers JavaScript, Python and Golang Coherence clients. If you would like to know more about each one, then please see the relevant GitHub pages below:
 
 * https://github.com/oracle/coherence-js-client
 * https://github.com/oracle/coherence-py-client
