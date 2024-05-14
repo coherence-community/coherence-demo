@@ -18,9 +18,8 @@ jobs:
       fail-fast: false
       matrix:
         coherenceVersion:
-          - 23.09.3-SNAPSHOT
-          - 23.09.1
-          - 23.09.2
+          - 24.03.1-SNAPSHOT
+          - 24.03
 
     steps:
     - uses: actions/checkout@v4
