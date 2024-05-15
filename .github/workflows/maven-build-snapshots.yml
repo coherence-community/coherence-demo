@@ -53,6 +53,12 @@ jobs:
         PID=$!
         sleep 30
         curl -s http://127.0.0.1:8080/service/chart-data/false | jq
+        curl -s http://127.0.0.1:8080/service/chart-data/true | jq
+        curl -v http://127.0.0.1:8080/service/start-member/1
+        sleep 10
+        curl -v http://127.0.0.1:8080/service/stop-member/1
+        curl -q http://127.0.0.1:8080/service/developer/hostname
+        curl -q http://127.0.0.1:8080/service/developer/populate
         kill $PID
 
     - name: Coherence Demo Jar
