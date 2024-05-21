@@ -1,4 +1,4 @@
-# Copyright 2023 Oracle Corporation and/or its affiliates.
+# Copyright 2023, 2024 Oracle Corporation and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at
 # https://oss.oracle.com/licenses/upl.
 
@@ -37,7 +37,5 @@ jobs:
       shell: bash
       run: |
         DIR=`mktemp -d`
-        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ${DIR} v0.38.3
+        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ${DIR} v0.51.2
         ${DIR}/trivy fs --exit-code 1 .
-        
-        
