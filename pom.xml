@@ -2,7 +2,7 @@
 <!--
  * File: pom.xml
  *
- * Copyright (c) 2015, 2023 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -45,10 +45,10 @@
     <jersey.version>3.0.11</jersey.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
     <jakarta.version>3.0.1</jakarta.version>
-    <jib.version>3.4.2</jib.version>
+    <jib.version>3.4.3</jib.version>
     <jib.goal>dockerBuild</jib.goal>
-    <kotlin.version>1.9.24</kotlin.version>
-    <netty.version>4.1.109.Final</netty.version>
+    <kotlin.version>2.0.0</kotlin.version>
+    <netty.version>4.1.111.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
     <!-- maven configuration -->
@@ -59,8 +59,8 @@
     <maven.compiler.release>17</maven.compiler.release>
     <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
     <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
-    <maven.enforcer.plugin.version>3.4.1</maven.enforcer.plugin.version>
-    <maven.exec.plugin.version>3.2.0</maven.exec.plugin.version>
+    <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
+    <maven.exec.plugin.version>3.3.0</maven.exec.plugin.version>
     <maven.jandex.plugin.version>1.2.3</maven.jandex.plugin.version>
     <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
