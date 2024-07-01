@@ -62,7 +62,7 @@
     <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
     <maven.exec.plugin.version>3.3.0</maven.exec.plugin.version>
     <maven.jandex.plugin.version>1.2.3</maven.jandex.plugin.version>
-    <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
+    <maven.javadoc.plugin.version>3.7.0</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
     <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
