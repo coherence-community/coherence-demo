@@ -118,7 +118,7 @@ public class PersistenceHelper {
             waitForRegistration(registry, Registry.CLUSTER_TYPE);
         }
         catch (InterruptedException e) {
-            throw new RuntimeException("Unable to find MBean", e);
+            throw new IllegalStateException("Unable to find MBean: " + e.getMessage());
         }
     }
 
