@@ -1,7 +1,7 @@
 /*
  * File: PersistenceHelper.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -118,7 +118,7 @@ public class PersistenceHelper {
             waitForRegistration(registry, Registry.CLUSTER_TYPE);
         }
         catch (InterruptedException e) {
-            throw Base.ensureRuntimeException(e, "Unable to find MBean");
+            throw new RuntimeException("Unable to find MBean", e);
         }
     }
 

@@ -262,7 +262,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             let chartData = response.data;
 
             let tradeSummary = chartData.tradeSummary;
-            self.symbolNames = Object.keys(tradeSummary).sort();
+            self.symbolNames = Object.keys(tradeSummary).sort((i1, i2) => i1[1].localeCompare(i2[1]));
             self.symbolsChartData = [];
             self.symbolQuantity = {};
             self.symbolCount = {};

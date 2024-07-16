@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2020, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -26,7 +26,7 @@ import io.opentracing.util.GlobalTracer;
 
 import java.net.URI;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -89,9 +89,7 @@ public class TracingFilter
         if (responseContext.getStatusInfo().getFamily()
             == Response.Status.Family.SERVER_ERROR) {
             Tags.ERROR.set(span, true);
-            span.log(new HashMap<String, String>() {{
-                put("event", "error");
-            }});
+            span.log(Map.of("event", "error"));
         }
 
         Tags.HTTP_STATUS.set(span, responseContext.getStatus());
