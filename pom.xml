@@ -24,7 +24,7 @@
 
   <groupId>com.oracle.coherence</groupId>
   <artifactId>coherence-demo</artifactId>
-  <version>8.0.0-SNAPSHOT</version>
+  <version>8.0.1-SNAPSHOT</version>
 
   <properties>
     <!-- The groupId of the Coherence product -->
@@ -32,7 +32,7 @@
 
     <!-- dependency versions -->
     <bedrock.version>7.0.4</bedrock.version>
-    <coherence.version>24.03</coherence.version>
+    <coherence.version>24.03.1</coherence.version>
     <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0.1</copy.rename.maven.plugin.version>
     <derby.version>10.17.1.0</derby.version>
@@ -48,7 +48,7 @@
     <jib.version>3.4.3</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <kotlin.version>2.0.0</kotlin.version>
-    <netty.version>4.1.111.Final</netty.version>
+    <netty.version>4.1.110.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
     <!-- maven configuration -->
@@ -400,7 +400,7 @@
       <plugin>
         <groupId>com.oracle.coherence.ce</groupId>
         <artifactId>pof-maven-plugin</artifactId>
-        <version>24.03</version>
+        <version>${coherence.version}</version>
         <executions>
           <execution>
             <id>instrument</id>

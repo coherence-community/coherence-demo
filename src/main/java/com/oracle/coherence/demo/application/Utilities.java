@@ -1,7 +1,7 @@
 /*
  * File: Utilities.java
  *
- * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -23,9 +23,8 @@ import com.oracle.coherence.demo.model.Price;
 import com.oracle.coherence.demo.model.Trade;
 
 import com.tangosol.net.CacheFactory;
+import com.tangosol.net.Coherence;
 import com.tangosol.net.NamedCache;
-
-import com.tangosol.net.cache.TypeAssertion;
 
 import com.tangosol.util.Filters;
 import com.tangosol.util.InvocableMap;
@@ -89,20 +88,6 @@ public final class Utilities
     public static final String VISUALVM = System.getProperty("visualvm.executable", "");
 
     /**
-     * The {@link TypeAssertion} for the trades cache.
-     */
-    public static final TypeAssertion<String, Trade> TRADE_CACHE_TYPE =
-            TypeAssertion.withTypes(String.class, Trade.class);
-
-
-    /**
-     * The {@link TypeAssertion} for the prices cache.
-     */
-    public static final TypeAssertion<String, Price> PRICE_CACHE_TYPE =
-            TypeAssertion.withTypes(String.class, Price.class);
-
-
-    /**
      * The name of the trades cache.
      */
     public static final String TRADE_CACHE = "Trade";
@@ -147,7 +132,7 @@ public final class Utilities
      */
     public static NamedCache<String, Trade> getTradesCache()
     {
-        return CacheFactory.getTypedCache(TRADE_CACHE, TRADE_CACHE_TYPE);
+        return Coherence.getInstance().getSession().getCache(TRADE_CACHE);
     }
 
 
@@ -158,7 +143,7 @@ public final class Utilities
      */
     public static NamedCache<String, Price> getPricesCache()
     {
-        return CacheFactory.getTypedCache(PRICE_CACHE, PRICE_CACHE_TYPE);
+        return Coherence.getInstance().getSession().getCache(PRICE_CACHE);
     }
 
 
