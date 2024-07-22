@@ -3,7 +3,7 @@
 <!--
  * File: cache-config.xml
  *
- * Copyright (c) 2020, 2023 Oracle and/or its affiliates.
+ * Copyright (c) 2020, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -39,14 +39,10 @@
         <cache-mapping>
             <cache-name>Trade</cache-name>
             <scheme-name>distributed-scheme</scheme-name>
-            <key-type>java.lang.String</key-type>
-            <value-type>com.oracle.coherence.demo.model.Trade</value-type>
         </cache-mapping>
         <cache-mapping>
             <cache-name>Price</cache-name>
             <scheme-name>distributed-scheme</scheme-name>
-            <key-type>java.lang.String</key-type>
-            <value-type>com.oracle.coherence.demo.model.Price</value-type>
         </cache-mapping>
     </caching-scheme-mapping>
 
