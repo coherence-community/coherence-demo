@@ -27,7 +27,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "summary")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@PortableType
+@PortableType(id = 1005)
 public class TradeSummary {
 
 

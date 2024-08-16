@@ -391,16 +391,16 @@
             <argument>-Dhttp.hostname=${http.hostname}</argument>
             <argument>-Dhttp.port=${http.port}</argument>
             <argument>-Dcoherence.grpc.server.port=1408</argument>
-            <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=12345</argument>
+<!--            <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=12345</argument>-->
             <argument>com.oracle.coherence.demo.application.Launcher</argument>
           </arguments>
         </configuration>
       </plugin>
 
       <plugin>
-        <groupId>com.oracle.coherence.ce</groupId>
+        <groupId>${coherence.group.id}</groupId>
         <artifactId>pof-maven-plugin</artifactId>
-        <version>24.03.1</version>
+        <version>${coherence.version}</version>
         <executions>
           <execution>
             <id>instrument</id>
