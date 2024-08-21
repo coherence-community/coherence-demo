@@ -391,7 +391,7 @@
             <argument>-Dhttp.hostname=${http.hostname}</argument>
             <argument>-Dhttp.port=${http.port}</argument>
             <argument>-Dcoherence.grpc.server.port=1408</argument>
-            <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=12345</argument>
+<!--            <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=12345</argument>-->
             <argument>com.oracle.coherence.demo.application.Launcher</argument>
           </arguments>
         </configuration>

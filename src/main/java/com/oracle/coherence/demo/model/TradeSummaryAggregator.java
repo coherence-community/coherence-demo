@@ -24,7 +24,7 @@ import com.tangosol.util.InvocableMap;
 /**
  * An aggregator to efficiently summarise trade information across all trades.
  */
-@PortableType
+@PortableType(id = 1006)
 public class TradeSummaryAggregator
         implements InvocableMap.StreamingAggregator<String, Trade, TradeSummary, TradeSummary> {
 

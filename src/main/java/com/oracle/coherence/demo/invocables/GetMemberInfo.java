@@ -1,7 +1,7 @@
 /*
  * File: GetMemberInfo.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -37,7 +37,7 @@ import static com.oracle.coherence.demo.application.Utilities.TRADE_CACHE;
  *
  * @author Brian Oliver
  */
-@PortableType
+@PortableType(id = 1000)
 public class GetMemberInfo
         extends AbstractInvocable {
     /**
