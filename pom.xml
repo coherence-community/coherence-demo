@@ -51,6 +51,9 @@
     <netty.version>4.1.110.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
+    <pof.maven.plugin.version>${coherence.version}</pof.maven.plugin.version>
+    <pof.maven.plugin.group>${coherence.group.id}</pof.maven.plugin.group>
+
     <!-- maven configuration -->
     <java.version>21</java.version>
     <maven.assembly.plugin.version>3.0.0</maven.assembly.plugin.version>
@@ -392,9 +395,9 @@
       </plugin>
 
       <plugin>
-        <groupId>com.oracle.coherence.ce</groupId>
+        <groupId>${pof.maven.plugin.group}</groupId>
         <artifactId>pof-maven-plugin</artifactId>
-        <version>24.03.1</version>
+        <version>${pof.maven.plugin.version}</version>
         <executions>
           <execution>
             <id>instrument</id>
