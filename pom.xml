@@ -31,7 +31,7 @@
     <coherence.group.id>com.oracle.coherence.ce</coherence.group.id>
 
     <!-- dependency versions -->
-    <bedrock.version>7.0.4</bedrock.version>
+    <bedrock.version>7.0.5</bedrock.version>
     <coherence.version>24.03.1</coherence.version>
     <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0.1</copy.rename.maven.plugin.version>
