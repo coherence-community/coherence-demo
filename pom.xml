@@ -47,7 +47,7 @@
     <jakarta.version>3.0.1</jakarta.version>
     <jib.version>3.4.3</jib.version>
     <jib.goal>dockerBuild</jib.goal>
-    <kotlin.version>2.0.10</kotlin.version>
+    <kotlin.version>2.0.20</kotlin.version>
     <netty.version>4.1.110.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
