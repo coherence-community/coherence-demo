@@ -22,13 +22,14 @@ The application showcases Coherence general features, scalability capabilities i
 * Lambda Support
 * OpenTracing Support
 * Polyglot client access from JavaScript, Python and Golang
+* Listening for events using Server Sent Events (SSE)
 
 You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table
 of contents below for instructions.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
-> Note: By default, this demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) version 23.09 and
+> Note: By default, this demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) version 24.09 and
 > as a consequence the commercial-only feature "Federation" is not available by default.
 >
 > Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
@@ -202,12 +203,12 @@ The steps to run the application on Kubernetes comprises:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo:8.0.0-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:8.1.0-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker
    > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
-   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:8.0.0-SNAPSHOT` and
-   > them push using `docker push youname/coherence-demo:8.0.0-SNAPSHOT`.
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:8.1.0-SNAPSHOT` and
+   > them push using `docker push youname/coherence-demo:8.1.0-SNAPSHOT`.
 
 3. **Install the Oracle Coherence Operator**
 
