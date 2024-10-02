@@ -19,15 +19,17 @@ jobs:
       matrix:
         coherenceVersion:
           - 24.09
+        javaVersion:
+          - 21
+          - 22
 
     steps:
     - uses: actions/checkout@v4
 
-
-    - name: Set up JDK 21
+    - name: Set up JDK ${{ matrix.javaVersion }}
       uses: actions/setup-java@v4
       with:
-        java-version: '21'
+        java-version: '${{ matrix.javaVersion }}'
         distribution: 'zulu'
 
     - name: Print Versions
