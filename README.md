@@ -24,18 +24,12 @@ The application showcases Coherence general features, scalability capabilities i
 * Polyglot client access from JavaScript, Python and Golang
 * Listening for events using Server Sent Events (SSE)
 
-You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table
+> Note: This branch is specifically designed to run against Coherence Grid Edition 14.1.2.0.0. Switch to main branch if you wish to run against Coherence CE versions.
+
+You can run the application locally using or run on Kubernetes using the Coherence Operator. See the table
 of contents below for instructions.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
-
-> Note: By default, this demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) version 24.09 and
-> as a consequence the commercial-only feature "Federation" is not available by default.
->
-> Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
->
-> This version has been updated to move from `javax` -> `jakarta` packages and as such
-> if you wish to run this demo against a previous CE or Grid Edition version, you must use `git checkout v5.0.1` to checkout a release of the demo that works with this version.
 
 ## Table of Contents
 
@@ -50,7 +44,6 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
   - [Run the Polyglot clients](clients/README.md)
   * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
   * [Enable Federation on Kubernetes (Grid Edition Only)](#enable-federation-on-kubernetes-grid-edition-only)
-  * [Run the Demonstration using Coherence Grid Edition](#run-the-demonstration-using-coherence-grid-edition)
   * [View Cluster Metrics via Grafana](#view-cluster-metrics-via-grafana)
   * [References](#references)
 
@@ -100,28 +93,78 @@ location.
 ![Coherence Demo](assets/jaeger-ui.png "Jaegar UI showing tracing")
 
 ## Run the Application Locally
+ 
+> Note: This branch is specifically designed to run against Coherence Grid Edition 14.1.2.0.0. Switch to main branch if you wish to run against Coherence CE versions.
 
+### Download Oracle Coherence Grid Edition 14.1.2.0.0 or later.
+
+You can download Coherence from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html. Select the `Coherence Standalone Install`.
+
+You must accept the [Oracle License Agreement](https://www.oracle.com/downloads/licenses/wls-dev-license.html#licenseContent) to download this software.
+
+### Set the Environment Variables
+
+Ensure that the following environment variables are set in your configuration:
+
+* `JAVA_HOME` -- This variable must point to the location of the JDK version supported by the Oracle Coherence version that you use. Ensure that the path is set accordingly:</br>
+For Linux/UNIX OS:
+```bash
+export PATH=$JAVA_HOME/bin:$PATH
+```
+For Windows OS:
+```bash
+set PATH=%JAVA_HOME%\bin;%PATH%
+```
+
+* `COHERENCE_HOME` -- This variable must point to the `\coherence` directory of your Coherence installation. This is required for the Maven `install-file` commands.
+
+* `MAVEN_HOME` -- If `mvn` command is not set in your PATH variable, then set `MAVEN_HOME` directed to the `bin` folder of Maven installation and then add `MAVEN_HOME\bin` to your PATH variable list.
+
+### Install Coherence JARs into your Maven repository
+
+Install Coherence and Coherence HTTP Netty installed into your local maven repository.
+
+For Linux/UNIX/Mac OS:
+
+```bash
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/14.1.2/coherence.14.1.2.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.2/coherence-http-netty.14.1.2.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-json/14.1.2/coherence-json.14.1.2.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.2/coherence-management.14.1.2.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-grpc-proxy.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-grpc-proxy/14.1.2/coherence-grpc-proxy.14.1.2.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/pof-maven-plugin/14.1.2/pof-maven-plugin.14.1.2.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/pof-maven-plugin/14.1.2/pof-maven-plugin.14.1.2.pom<
+```
+
+For Windows OS:
+
+```bash
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\14.1.2\coherence.14.1.2.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.2.2\coherence-http-netty.14.2.2.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-json\14.2.2\coherence-json.14.2.2.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.2.2\coherence-management.14.2.2.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-grpc-proxy.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-grpc-proxy\14.1.2\coherence-grpc-proxy.14.1.2.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\pof-maven-plugin\14.1.2\pof-maven-plugin.14.1.2.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\pof-maven-plugin\14.1.2\pof-maven-plugin.14.1.2.pom
+```
+
+### Build using the `grid-edition` profile
+
+When you issue any maven commands, ensure you include the `grid-edition` profile as below:
+      
 Build the application using Maven:
 
 ```bash
-mvn clean install
+mvn clean install -P grid-edition -Dcoherence.version=14.1.2-0-0
 ```
 
-The `target` directory contains a list of files:
+Run the application using:
+```bash
+mvn exec:exec -Pgrid-edition -Dcoherence.version=14.1.2-0-0
+```
 
 ```bash
 coherence-demo-{version}-SNAPSHOT-javadoc.jar - javadoc
 coherence-demo-{version}-SNAPSHOT-sources.jar - sources
 ```
-
-Run demo application
-
-```bash
-mvn exec:exec
-```
-
-> Note: If you wish to run against an older Coherence CE version than 22.09 or older than Coherence GE 14.1.1.2206.1, then *must* first use `git checkout v5.0.1` to use the
-> current 5.0.1 release that supports these older versions.
 
 The following screenshot shows the application running with 5 cache servers started.
 
@@ -138,6 +181,7 @@ The following features are available to demonstrate in the application:
 * Add additional data, clear the cache or populate the cache from the **Tools** menu.
 * Show OpenTracing Support
 * Open raw metrics endpoint
+* Run stock splits and add data for specific symbols
 
 Federation Features - Grid Edition Only
 * Start a secondary cluster from the **Federation** menu.
@@ -153,14 +197,6 @@ Federation Features - Grid Edition Only
 To shut down the application, select **Shutdown** option from the **Tools** menu. This shuts down all the processes including the secondary cluster if started.
 
 > **Note:** Secondary cluster will not form if you are running on a virtual private network due to security restrictions.
-
-You can use the following to run the application with the `Metrics` endpoint enabled:
-
-```bash
-mvn -Dmetrics.enabled=true exec:exec
-```
-
-From the `Tools` menu choose `Show Raw Metrics` to view the raw metrics.
 
 ### Modify the Defaults
 
@@ -207,8 +243,8 @@ The steps to run the application on Kubernetes comprises:
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker
    > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
-   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:8.1.0-SNAPSHOT` and
-   > them push using `docker push youname/coherence-demo:8.1.0-SNAPSHOT`.
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:5.1.0-SNAPSHOT` and
+   > them push using `docker push youname/coherence-demo:5.1.0-SNAPSHOT`.
 
 3. **Install the Oracle Coherence Operator**
 
@@ -445,72 +481,6 @@ For `helm` version 2.X:
 helm delete coherence-operator --purge
 ```
 
-## Run the Demonstration using Coherence Grid Edition
-
-If you wish to demonstrate the Federation feature, which is only available in Coherence Grid Edition,
-you must carry out the following steps.
-
-
-### Download Oracle Coherence 14.1.1.0.0 or later.
-
-   You can download Coherence from http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html.
-
-   If you want to demonstrate the Coherence VisualVM plug-in, follow the instructions to install:
-   https://docs.oracle.com/en/middleware/standalone/coherence/14.1.1.0/manage/using-jmx-manage-oracle-coherence.html
-
-
-### Set the Environment Variables
-
-Ensure that the following environment variables are set in your configuration:
-
-* `JAVA_HOME` -- This variable must point to the location of the JDK version supported by the Oracle Coherence version that you use. Ensure that the path is set accordingly:</br>
-For Linux/UNIX OS:
-```bash
-export PATH=$JAVA_HOME/bin:$PATH
-```
-For Windows OS:
-```bash
-set PATH=%JAVA_HOME%\bin;%PATH%
-```
-
-* `COHERENCE_HOME` -- This variable must point to the `\coherence` directory of your Coherence installation. This is required for the Maven `install-file` commands.
-
-* `MAVEN_HOME` -- If `mvn` command is not set in your PATH variable, then set `MAVEN_HOME` directed to the `bin` folder of Maven installation and then add `MAVEN_HOME\bin` to your PATH variable list.
-
-### Install Coherence JARs into your Maven repository
-
-Install Coherence and Coherence HTTP Netty installed into your local maven repository.
-
-For Linux/UNIX/Mac OS:
-
-```bash
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/14.1.1/coherence.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.1/coherence-http-netty.14.1.1.pom
-```
-
-For Windows OS:
-
-```bash
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\14.1.1\coherence.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.1.1\coherence-http-netty.14.1.1.pom
-```
-
-### Build using the `grid-edition` profile
-
-When you issue any maven commands, ensure you include the `grid-edition` profile as below:
-
-```bash
-git checkout v5.0.1 # required for pre CE 22.09 versions
-mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
-```
-
-> **Note:** The `coherence.version` property must be set to your installed Coherence Grid Edition version.
-
-Run the application using:
-```bash
-mvn exec:exec -Pgrid-edition -Dcoherence.version=14.1.1-0-0
-```
-
 ## View Cluster Metrics via Grafana
 
 If you wish to view metrics via Grafana, please carry out the steps
@@ -529,7 +499,7 @@ The following screenshot shows the application running within Oracle's Cloud Inf
 For more information about Oracle Coherence, see the following links:
 
 * Download Coherence - [http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html](http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html)
-* Coherence Documentation - [https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.1.0/index.html](https://docs.oracle.com/en/middleware/fusion-middleware/coherence/14.1.1.0/index.html)
+* Coherence Documentation - [https://docs.oracle.com/en/middleware/standalone/coherence/index.html](https://docs.oracle.com/en/middleware/standalone/coherence/index.html)
 * Coherence Community - [https://coherence.community/](https://coherence.community/)
 * Coherence CE - [https://github.com/oracle/coherence](https://github.com/oracle/coherence)
 
