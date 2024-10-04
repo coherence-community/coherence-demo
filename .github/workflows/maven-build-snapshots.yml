@@ -21,7 +21,6 @@ jobs:
           - 24.09
         javaVersion:
           - 21
-          - 22
 
     steps:
     - uses: actions/checkout@v4
