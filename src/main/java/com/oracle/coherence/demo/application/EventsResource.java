@@ -75,6 +75,11 @@ public class EventsResource {
                   .build();
     }
 
+    /**
+     * Registers an event listener for the specified {@link SseEventSink}.
+     *
+     * @param eventSink  provided {@link SseEventSink}
+     */
     @GET
     @Path("subscribe")
     @Produces(MediaType.SERVER_SENT_EVENTS)

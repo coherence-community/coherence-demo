@@ -38,6 +38,12 @@ import java.util.Random;
 public class BootstrapInterceptor
         implements EventInterceptor<LifecycleEvent> {
 
+    /**
+     * Constructs a {@link BootstrapInterceptor}.
+     */
+    public BootstrapInterceptor() {
+    }
+
     @Override
     public void onEvent(LifecycleEvent event) {
         if (event.getType() == LifecycleEvent.Type.ACTIVATED) {

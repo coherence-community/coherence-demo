@@ -60,6 +60,12 @@ public class DeveloperResource {
     private static final String SECONDARY_CLUSTER = System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY);
 
     /**
+     * Constructs a {@link DeveloperResource}.
+     */
+    public DeveloperResource() {
+    }
+
+    /**
      * Return the environment information for this Coherence cluster.
      *
      * @return the result as JSON
@@ -108,8 +114,9 @@ public class DeveloperResource {
     }
 
     /**
-     * Insert a number of positions based on the input argument.
+     * Insert a number of positions for the symbol based on the input argument.
      *
+     * @param symbol the symbol to insert
      * @param count  the number of positions to create
      *
      * @return {@link Response#ok}

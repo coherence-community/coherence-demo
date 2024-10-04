@@ -63,7 +63,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
  * <li>Query via - /jmx/query/Coherence:type=Service,* &#47;*</li>
  * <li>Run a report - /jmx/run-report/report-name</li>
  * </ul>
- * When you run a report using http://127.0.0.1:8080/service/jmx/run-report/report-cache-size
+ * When you run a report using <code>http://127.0.0.1:8080/service/jmx/run-report/report-cache-size</code>
  * The report name gets a prefix of reports/ and also xml added, so effectively you run
  * "reports/report-cache-size.xml"
  * <p>

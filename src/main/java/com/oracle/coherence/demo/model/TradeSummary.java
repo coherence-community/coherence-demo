@@ -30,7 +30,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @PortableType(id = 1005)
 public class TradeSummary {
 
-
     /**
      * The total number of shares acquired for the {@link Trade}.
      */
@@ -46,6 +45,10 @@ public class TradeSummary {
      */
     private double purchaseValue;
 
+
+    /**
+     * Constructs a {@link TradeSummary}.
+     */
     public TradeSummary() {
     }
 
