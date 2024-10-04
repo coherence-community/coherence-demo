@@ -129,8 +129,8 @@ For Linux/UNIX/Mac OS:
 ```bash
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/14.1.2/coherence.14.1.2.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.2/coherence-http-netty.14.1.2.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-json/14.1.2/coherence-json.14.1.2.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.2/coherence-management.14.1.2.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-json.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-json/14.1.2/coherence-json.14.1.2.pom
+mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-management.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.2/coherence-management.14.1.2.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-grpc-proxy.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-grpc-proxy/14.1.2/coherence-grpc-proxy.14.1.2.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/pof-maven-plugin/14.1.2/pof-maven-plugin.14.1.2.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/pof-maven-plugin/14.1.2/pof-maven-plugin.14.1.2.pom<
 ```
@@ -140,8 +140,8 @@ For Windows OS:
 ```bash
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\14.1.2\coherence.14.1.2.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.2.2\coherence-http-netty.14.2.2.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-json\14.2.2\coherence-json.14.2.2.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.2.2\coherence-management.14.2.2.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-json.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-json\14.2.2\coherence-json.14.2.2.pom
+mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-management.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.2.2\coherence-management.14.2.2.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-grpc-proxy.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-grpc-proxy\14.1.2\coherence-grpc-proxy.14.1.2.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\pof-maven-plugin\14.1.2\pof-maven-plugin.14.1.2.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\pof-maven-plugin\14.1.2\pof-maven-plugin.14.1.2.pom
 ```
