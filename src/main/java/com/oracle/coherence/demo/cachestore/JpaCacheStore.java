@@ -1,7 +1,7 @@
 /*
  * File: JpaCacheStore.java
  *
- * Copyright (c) 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2020, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -155,6 +155,10 @@ public class JpaCacheStore
         }
     }
 
+    /**
+     * Rollback the transaction.
+     * @param tx the transaction
+     */
     protected void rollback(EntityTransaction tx) {
         try {
             if (tx != null && tx.isActive()) {

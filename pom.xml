@@ -74,6 +74,7 @@
     <metrics.enabled>false</metrics.enabled>
     <http.hostname>127.0.0.1</http.hostname>
     <http.port>8080</http.port>
+    <anagement.http>none</anagement.http>
   </properties>
 
   <dependencies>
@@ -377,8 +378,9 @@
             <classpath/>
             <argument>-Xmx512m</argument>
             <argument>-Xms512m</argument>
-            <argument>-Dcoherence.log.level=9</argument>
+            <argument>-Dcoherence.log.level=5</argument>
             <argument>-Dcoherence.management=all</argument>
+            <argument>-Dcoherence.management.http=${management.http}</argument>
             <argument>-Dcoherence.ttl=0</argument>
             <argument>-Djava.net.preferIPv4Stack=true</argument>
             <argument>-Dcoherence.wka=127.0.0.1</argument>
@@ -402,6 +404,21 @@
             <id>instrument</id>
             <goals>
               <goal>instrument</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- attach javadoc -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven.javadoc.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
             </goals>
           </execution>
         </executions>
@@ -458,77 +475,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-
-    <!-- JDk11 specifics -->
-    <profile>
-      <id>javadoc-jdk11</id>
-      <activation>
-        <jdk>11</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${maven.compiler.plugin.version}</version>
-            <configuration>
-              <release>8</release>
-            </configuration>
-          </plugin>
-
-          <!-- attach javadoc -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven.javadoc.plugin.version}</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs-jdk11</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <additionalDependencies>
-                <additionalDependency>
-                  <groupId>jakarta.xml.bind</groupId>
-                  <artifactId>jakarta.xml.bind-api</artifactId>
-                  <version>${jakarta.xml.bind.version}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>jakarta.xml.bind</groupId>
-                  <artifactId>jaxb-impl</artifactId>
-                  <version>${jakarta.xml.bind.version}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>jakarta.xml.bind</groupId>
-                  <artifactId>jaxb-api</artifactId>
-                  <version>${jakarta.xml.bind.version}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>jakarta.activation</groupId>
-                  <artifactId>jakarta.activation-api</artifactId>
-                  <version>${jakarta.activation.version}</version>
-                </additionalDependency>
-              </additionalDependencies>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <dependencies>
-        <dependency>
-          <groupId>jakarta.xml.bind</groupId>
-          <artifactId>jakarta.xml.bind-api</artifactId>
-          <version>${jakarta.xml.bind.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>jakarta.activation</groupId>
-          <artifactId>jakarta.activation-api</artifactId>
-          <version>${jakarta.activation.version}</version>
-        </dependency>
-      </dependencies>
     </profile>
 
     <!-- docker profile for building image for Coherence Operator -->
