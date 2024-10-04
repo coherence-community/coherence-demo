@@ -1,7 +1,7 @@
 /*
  * File: FederationResource.java
  *
- * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -55,8 +55,8 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
  * @author Tim Middleton
  */
 @Path("/federation")
-public class FederationResource
-{
+public class FederationResource {
+
     /**
      * Argument types for invocations against an MBean server.
      */
@@ -71,7 +71,6 @@ public class FederationResource
      * Name of secondary cluster.
      */
     private static final String SECONDARY_CLUSTER = System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY);
-
 
     /**
      * Invoke the specified federated resource command.
@@ -105,51 +104,47 @@ public class FederationResource
      */
     @GET
     @Path("{command}")
-    @Produces({TEXT_PLAIN})
-    public Response federationCommand(@PathParam("command") String command)
-    {
+    @Produces( {TEXT_PLAIN})
+    public Response federationCommand(@PathParam("command") String command) {
         Cluster                   cluster  = CacheFactory.getCluster();
         Registry                  registry = cluster.getManagement();
         NamedCache<String, Trade> trades   = Utilities.getTradesCache();
 
-        if (registry != null)
-        {
+        if (registry != null) {
             MBeanServerProxy proxy  = registry.getMBeanServerProxy();
             String           sMBean = getFederationMBean(trades.getCacheService().getInfo().getServiceName());
 
-            if (registry.isRegistered(sMBean))
-            {
+            if (registry.isRegistered(sMBean)) {
                 Object response = "OK";
-                String target   = cluster.getClusterName().equals(PRIMARY_CLUSTER) ? SECONDARY_CLUSTER
-                                                                                   : PRIMARY_CLUSTER;
+                String target = cluster.getClusterName().equals(PRIMARY_CLUSTER) ? SECONDARY_CLUSTER
+                                                                                 : PRIMARY_CLUSTER;
 
-                switch (command)
-                {
-                case "start" :
-                case "stop" :
-                case "replicateAll" :
-                case "pause" :
-                    proxy.invoke(sMBean, command, new String[] {target}, STRING_ARG);
-                    break;
+                switch (command) {
+                    case "start":
+                    case "stop":
+                    case "replicateAll":
+                    case "pause":
+                        proxy.invoke(sMBean, command, new String[] {target}, STRING_ARG);
+                        break;
 
-                case "reportState" :
-                    Map<?, ?>     statusMap = (Map<?, ?>) proxy.invoke(sMBean,
-                                                                       command,
-                                                                       new String[] {target},
-                                                                       STRING_ARG);
-                    StringBuilder sb        = new StringBuilder();
+                    case "reportState":
+                        Map<?, ?> statusMap = (Map<?, ?>) proxy.invoke(sMBean,
+                                command,
+                                new String[] {target},
+                                STRING_ARG);
+                        StringBuilder sb = new StringBuilder();
 
-                    // key = state and value = percent of members in that state
-                    statusMap.forEach((key, value) -> sb.append(key).append(' '));
+                        // key = state and value = percent of members in that state
+                        statusMap.forEach((key, value)->sb.append(key).append(' '));
 
-                    // just take the first status if we have multiple values as it is just transitive anyway
-                    String status = sb.toString();
+                        // just take the first status if we have multiple values as it is just transitive anyway
+                        String status = sb.toString();
 
-                    response = status.substring(0, status.indexOf(' '));
-                    break;
+                        response = status.substring(0, status.indexOf(' '));
+                        break;
 
-                default :
-                    return Response.status(Response.Status.NOT_FOUND).build();
+                    default:
+                        return Response.status(Response.Status.NOT_FOUND).build();
                 }
 
                 return Response.ok(response).build();
@@ -159,7 +154,6 @@ public class FederationResource
         return Response.serverError().build();
     }
 
-
     /**
      * Obtain the name of the FederationMBean for a given service.
      *
@@ -167,8 +161,7 @@ public class FederationResource
      *
      * @return the name
      */
-    private String getFederationMBean(String sServiceName)
-    {
+    private String getFederationMBean(String sServiceName) {
         return Registry.FEDERATION_TYPE + ",service=" + sServiceName + "," + Registry.KEY_RESPONSIBILITY
                + "Coordinator";
     }

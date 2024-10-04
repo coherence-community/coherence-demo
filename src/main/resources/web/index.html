@@ -2,7 +2,7 @@
  *
  * File: index.html
  *
- * Copyright (c) 2019,2020 Oracle and/or its affiliates.
+ * Copyright (c) 2019, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -136,6 +136,7 @@
                         <li><a href="#" ng-click="startDeveloper('clear')"><i class="fa fa-remove fa-fw"></i> Clear Cache</a></li>
                         <li><a href="#" ng-click="startDeveloper('populate')"><i class="fa fa-repeat fa-fw"></i> Populate Cache</a></li>
                         <li><a href="#" ng-click="addTrades()"><i class="fa fa-plus fa-fw"></i> Add Trades</a></li>
+                        <li><a href="#" ng-click="priceUpdates()"><i class="fa fa-dollar fa-fw"></i> Monitor Prices</a></li>
                         <li><a href="#" ng-click="openMetrics()" ng-show="isMetricsEnabled && !isRunningInKubernetes"><i class="fa fa-medkit fa-fw"></i> Show Raw Metrics</a></li>
                         <li class="divider"></li>
                         <li>
@@ -290,6 +291,7 @@
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
+                                            <td>Actions</td>
                                             <td>Symbol</td>
                                             <td align="right">Price</td>
                                             <td align="right">Positions</td>
@@ -301,6 +303,17 @@
                                     <tbody>
                                         <tr ng-repeat="symbol in symbolNames track by symbol"
                                             ng-style="{background: priceChange[symbol] > 0 ? '#B2D9B2' : priceChange[symbol] < 0 ? '#FFCCCC' : ''}">
+                                            <td style="width: 50px;">
+                                              <div class="btn-group">
+                                                  <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i></button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href ng-click="addSymbolTrades(symbol)">
+                                                            Add {{ symbol }} Trades
+                                                        </a></li>
+                                                        <li><a href ng-click="stockSplit(symbol)">Stock Split {{ symbol }}</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
                                             <td style="width: 90px;">
                                              {{ symbol }}
                                                 <i class="icon-circle-arrow-up status-success" ng-show="priceChange[symbol] >  0"></i>
@@ -308,14 +321,15 @@
                                             </td>
                                             <td style="text-align: right;">{{ currentPrice[symbol] | currency:"$":2 }}</td>
                                             <td style="text-align: right;">{{ symbolCount[symbol] | number }}</td>
-                                            <td style="text-align: right;">{{ symbolFrequency[symbol] | number }}</td>
-                                            <td style="text-align: right;">{{ symbolFrequency[symbol] * currentPrice[symbol] | currency:"$":0 }}</td>
+                                            <td style="text-align: right;">{{ symbolQuantity[symbol] | number }}</td>
+                                            <td style="text-align: right;">{{ symbolQuantity[symbol] * currentPrice[symbol] | currency:"$":0 }}</td>
                                         </tr>
                                         <tr>
                                             <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
                                             <td style="text-align: right;"><strong>Totals:</strong></td>
                                             <td style="text-align: right;"><strong>{{ positions | number }}</strong></td>
-                                            <td style="text-align: right;"><strong>{{ totalFrequency | number }}</strong></td>
+                                            <td style="text-align: right;"><strong>{{ totalQuantity | number }}</strong></td>
                                             <td style="text-align: right;"><strong>{{ valuation | currency:"$":0 }}</strong></td>
                                         </tr>
                                     </tbody>
@@ -447,7 +461,7 @@
 
         <hr>
         <div class="col-lg-12">
-            <p>© 2020 Oracle Corporation. All Rights Reserved.
+            <p>© 2024 Oracle Corporation. All Rights Reserved.
             <img class="pull-right" src="images/oracle.png">
         </div>
 

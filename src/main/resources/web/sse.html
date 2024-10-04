@@ -1,0 +1,102 @@
+<!--
+ *
+ * File: sse.html
+ *
+ * Copyright (c) 2024 Oracle and/or its affiliates.
+ *
+ * You may not use this file except in compliance with the Universal Permissive
+ * License (UPL), Version 1.0 (the "License.")
+ *
+ * You may obtain a copy of the License at https://opensource.org/licenses/UPL.
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
+ *
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Oracle Coherence Demonstration</title>
+
+    <!-- hide angular templates until fully loaded -->
+    <style>
+        .ng-cloak {
+            display: none !important;
+        }
+    </style>
+
+        <!-- Bootstrap Core CSS -->
+    <link href="javascripts/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="javascripts/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="javascripts/vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+        const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        })
+        function startSSE() {
+            const eventSource = new EventSource('/service/events/subscribe');
+
+            // Log errors to the console
+            eventSource.onerror = function (error) {
+                console.error("EventSource failed:", error);
+                document.getElementById('sseStatus').innerText = 'Error: Could not connect to SSE!';
+            };
+
+            // Optional: handle custom event types if your server sends them
+            eventSource.addEventListener('priceUpdate', function (event) {
+                const messageContainer = document.getElementById('messages');
+                let price = JSON.parse(event.data)
+                let output = new Date().toISOString()  + ": Symbol=" + price.symbol + ", Price=" + formatter.format(price.price)
+
+                const message = document.createElement('p');
+                message.textContent = output
+                messageContainer.prepend(message);
+            });
+
+            // Update connection status
+            document.getElementById('sseStatus').innerText = 'Connected to SSE!';
+        }
+    </script>
+</head>
+<body onload="startSSE()">
+<div id="wrapper">
+    <div id="page-wrapper" style="margin: 10px 0 0 0;">
+        <img src="images/coherence.png" class="pull-left"
+             style="vertical-align:middle" alt="Oracle Coherence">
+        <h3>&nbsp;Monitor Price Changes</h3>
+
+        <p id="sseStatus">Connecting to SSE...</p>
+        <div id="messages"></div>
+    </div>
+</div>
+</body>
+</html>

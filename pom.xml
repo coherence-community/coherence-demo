@@ -2,7 +2,7 @@
 <!--
  * File: pom.xml
  *
- * Copyright (c) 2015, 2020, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -24,44 +24,44 @@
 
   <groupId>com.oracle.coherence</groupId>
   <artifactId>coherence-demo</artifactId>
-  <version>5.0.1-SNAPSHOT</version>
+  <version>5.1.0-SNAPSHOT</version>
 
   <properties>
     <!-- The groupId of the Coherence product -->
-    <coherence.group.id>com.oracle.coherence.ce</coherence.group.id>
+    <coherence.group.id>com.oracle.coherence</coherence.group.id>
     
     <!-- dependency versions -->
-    <bedrock.version>5.0.11</bedrock.version>
-    <coherence.version>22.06</coherence.version>
+    <bedrock.version>7.0.5</bedrock.version>
+    <coherence.version>14.1.2-0-0-SNAPSHOT</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
-    <derby.version>10.15.2.0</derby.version>
+    <derby.version>10.17.1.0</derby.version>
     <docker.version>${project.version}</docker.version>
-    <eclipselink.version>2.7.5</eclipselink.version>
-    <jackson.version>2.12.1</jackson.version>
-    <jaeger.version>1.1.0</jaeger.version>
+    <eclipselink.version>2.7.15</eclipselink.version>
+    <jackson.version>2.14.1</jackson.version>
+    <jaeger.version>1.8.1</jaeger.version>
     <jaxrs.version>2.1.6</jaxrs.version>
     <jersey.version>2.35</jersey.version>
     <javax.activation.version>1.2.0</javax.activation.version>
-    <jib.version>2.3.0</jib.version>
+    <jib.version>3.4.3</jib.version>
     <jib.goal>dockerBuild</jib.goal>
-    <netty.version>4.1.73.Final</netty.version>
-    <opentracing.jdbc.version>0.2.10</opentracing.jdbc.version>
+    <netty.version>4.1.108.Final</netty.version>
+    <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
     <!-- maven configuration -->
-    <java.version>1.8</java.version>
+    <java.version>21</java.version>
     <maven.assembly.plugin.version>3.0.0</maven.assembly.plugin.version>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.release>11</maven.compiler.release>
-    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
     <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
-    <maven.enforcer.plugin.version>1.3.1</maven.enforcer.plugin.version>
-    <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
+    <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
+    <maven.exec.plugin.version>3.4.1</maven.exec.plugin.version>
     <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
-    <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+    <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
     <maven.version>3.6.0</maven.version>
 
     <!-- startup options -->
@@ -80,26 +80,20 @@
 
     <dependency>
       <groupId>${coherence.group.id}</groupId>
-      <artifactId>coherence-management</artifactId>
-      <version>${coherence.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>${coherence.group.id}</groupId>
-      <artifactId>coherence-metrics</artifactId>
+      <artifactId>coherence-grpc-proxy</artifactId>
       <version>${coherence.version}</version>
     </dependency>
 
     <dependency>
       <groupId>${coherence.group.id}</groupId>
-      <artifactId>coherence-rest</artifactId>
+      <artifactId>coherence-json</artifactId>
       <version>${coherence.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>${coherence.group.id}</groupId>
-          <artifactId>coherence</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>${coherence.group.id}</groupId>
+      <artifactId>coherence-management</artifactId>
+      <version>${coherence.version}</version>
     </dependency>
 
     <dependency>
@@ -179,6 +173,29 @@
       <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-client</artifactId>
       <version>${jaeger.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jetbrains.kotlin</groupId>
+          <artifactId>kotlin-stdlib-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jetbrains.kotlin</groupId>
+          <artifactId>kotlin-stdlib</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Include most recent versions of the following to avoid CVE's -->
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-common</artifactId>
+      <version>1.9.22</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>1.8.20</version>
     </dependency>
 
     <!-- jax-ws -->
@@ -229,6 +246,12 @@
       <groupId>org.glassfish.jersey.containers</groupId>
       <artifactId>jersey-container-servlet</artifactId>
       <version>${jersey.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <version>2.0</version>
     </dependency>
 
     <!-- opentracing jdbc -->
@@ -336,18 +359,71 @@
             <classpath/>
             <argument>-Xmx512m</argument>
             <argument>-Xms512m</argument>
-            <argument>-Dcoherence.log.level=3</argument>
+            <argument>-Dcoherence.log.level=7</argument>
             <argument>-Dcoherence.management=all</argument>
-            <argument>-Dcoherence.management.http=all</argument>
             <argument>-Dcoherence.ttl=0</argument>
             <argument>-Djava.net.preferIPv4Stack=true</argument>
             <argument>-Dcoherence.wka=127.0.0.1</argument>
             <argument>-Dcom.oracle.coherence.common.util.Threads.dumpLocks=FULL</argument>
             <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}</argument>
+            <argument>-Dcoherence.grpc.server.port=1408</argument>
             <argument>-Dhttp.hostname=${http.hostname}</argument>
             <argument>-Dhttp.port=${http.port}</argument>
+<!--                        <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=12345</argument>-->
             <argument>com.oracle.coherence.demo.application.Launcher</argument>
           </arguments>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>${coherence.group.id}</groupId>
+        <artifactId>pof-maven-plugin</artifactId>
+        <version>${coherence.version}</version>
+        <executions>
+          <execution>
+            <id>instrument</id>
+            <goals>
+              <goal>instrument</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- attach javadoc -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven.javadoc.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <additionalDependencies>
+            <additionalDependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-core</artifactId>
+              <version>${com.sun.xml.bind.version}</version>
+            </additionalDependency>
+            <additionalDependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-impl</artifactId>
+              <version>${com.sun.xml.bind.version}</version>
+            </additionalDependency>
+            <additionalDependency>
+              <groupId>javax.xml.bind</groupId>
+              <artifactId>jaxb-api</artifactId>
+              <version>${com.sun.xml.bind.version}</version>
+            </additionalDependency>
+            <additionalDependency>
+              <groupId>javax.activation</groupId>
+              <artifactId>javax.activation-api</artifactId>
+              <version>${javax.activation.version}</version>
+            </additionalDependency>
+          </additionalDependencies>
         </configuration>
       </plugin>
     </plugins>
@@ -403,87 +479,6 @@
         </plugins>
       </build>
     </profile>
-    
-    <!-- JDk11 specifics -->
-    <profile>
-      <id>javadoc-jdk11</id>
-      <activation>
-        <jdk>11</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${maven.compiler.plugin.version}</version>
-            <configuration>
-              <release>8</release>
-            </configuration>
-          </plugin>
-
-          <!-- attach javadoc -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven.javadoc.plugin.version}</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs-jdk11</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <additionalDependencies>
-                <additionalDependency>
-                  <groupId>com.sun.xml.bind</groupId>
-                  <artifactId>jaxb-core</artifactId>
-                  <version>${com.sun.xml.bind.version}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>com.sun.xml.bind</groupId>
-                  <artifactId>jaxb-impl</artifactId>
-                  <version>${com.sun.xml.bind.version}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>javax.xml.bind</groupId>
-                  <artifactId>jaxb-api</artifactId>
-                  <version>${com.sun.xml.bind.version}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>javax.activation</groupId>
-                  <artifactId>javax.activation-api</artifactId>
-                  <version>${javax.activation.version}</version>
-                </additionalDependency>
-              </additionalDependencies>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <dependencies>
-        <dependency>
-          <groupId>com.sun.xml.bind</groupId>
-          <artifactId>jaxb-core</artifactId>
-          <version>${com.sun.xml.bind.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>com.sun.xml.bind</groupId>
-          <artifactId>jaxb-impl</artifactId>
-          <version>${com.sun.xml.bind.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-          <version>${com.sun.xml.bind.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>javax.activation</groupId>
-          <artifactId>javax.activation-api</artifactId>
-          <version>${javax.activation.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
 
     <!-- docker profile for building image for Coherence Operator -->
     <profile>
@@ -503,7 +498,7 @@
             <version>${jib.version}</version>
             <configuration>
               <from>
-                <image>gcr.io/distroless/java:11</image>
+                 <image>openjdk:21-jdk</image>
               </from>
               <to>
                 <image>${project.artifactId}</image>

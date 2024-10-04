@@ -1,7 +1,7 @@
 /*
  * File: ApplicationResourceConfig.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -28,13 +28,13 @@ import javax.ws.rs.ApplicationPath;
  * @author Brian Oliver
  */
 @ApplicationPath("application")
-public class ApplicationResourceConfig extends ResourceConfig
-{
+public class ApplicationResourceConfig
+        extends ResourceConfig {
+
     /**
      * Constructs the {@link ApplicationResourceConfig}.
      */
-    public ApplicationResourceConfig()
-    {
+    public ApplicationResourceConfig() {
         register(StaticResource.class);
     }
 }

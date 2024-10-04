@@ -3,7 +3,7 @@
 <!--
  * File: cache-config.xml
  *
- * Copyright (c) 2020, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2020, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -66,7 +66,9 @@
             <backing-map-scheme>
                 <read-write-backing-map-scheme>
                     <internal-cache-scheme>
-                        <local-scheme/>
+                        <local-scheme>
+                            <unit-calculator>BINARY</unit-calculator>
+                        </local-scheme>
                     </internal-cache-scheme>
                     <write-max-batch-size>5000</write-max-batch-size>
                     <!-- Define the cache scheme. -->
@@ -117,14 +119,6 @@
                         <address system-property="http.hostname">127.0.0.1</address>
                         <port system-property="http.port">8080</port>
                     </local-address>
-
-                    <!-- the coherence cache resources -->
-                    <resource-config>
-                        <context-path>/cache</context-path>
-                        <instance>
-                            <class-name>com.tangosol.coherence.rest.server.DefaultResourceConfig</class-name>
-                        </instance>
-                    </resource-config>
 
                     <!-- the application service resources -->
                     <resource-config>

@@ -1,7 +1,7 @@
 /*
  * File: Price.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -24,6 +24,7 @@ import com.tangosol.io.pof.PortableObject;
 
 import java.io.IOException;
 
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import javax.persistence.Entity;
 
 import javax.persistence.Id;
@@ -41,21 +42,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement(name = "price")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class Price implements PortableObject
+@PortableType(id = 1003)
+public class Price
 {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2557678549268609664L;
-
-    /**
-     * POF index for symbol attribute.
-     */
-    private static final int SYMBOL = 0;
-
-    /**
-     * POF index for price attribute.
-     */
-    private static final int PRICE = 1;
-
+    
     /**
      * The symbol (ticker code) of the equity for the {@link Price}.
      */
@@ -123,19 +115,4 @@ public class Price implements PortableObject
         this.price = price;
     }
 
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        symbol = reader.readString(SYMBOL);
-        price  = reader.readDouble(PRICE);
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeString(SYMBOL, symbol);
-        writer.writeDouble(PRICE, price);
-    }
 }

@@ -21,16 +21,21 @@ The application showcases Coherence general features, scalability capabilities i
 * Federation (Grid Edition feature only)
 * Lambda Support
 * OpenTracing Support
+* Polyglot client access from JavaScript, Python and Golang
+* Listening for events using Server Sent Events (SSE)
 
 You can run the application locally using `mvn exec:exec` or run on Kubernetes using the Coherence Operator. See the table
 of contents below for instructions.
 
 The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other frameworks. The UI interacts with Coherence using the REST API.
 
-> Note: This demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) and
+> Note: By default, this demonstration uses the [Coherence Community Edition](https://github.com/oracle/coherence) version 24.09 and
 > as a consequence the commercial-only feature "Federation" is not available by default.
 >
 > Please see  [here](#run-the-demonstration-using-coherence-grid-edition) if you wish to enable Federation by running using Coherence Grid Edition.
+>
+> This version has been updated to move from `javax` -> `jakarta` packages and as such
+> if you wish to run this demo against a previous CE or Grid Edition version, you must use `git checkout v5.0.1` to checkout a release of the demo that works with this version.
 
 ## Table of Contents
 
@@ -42,6 +47,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
     + [OpenTracing Prerequisites](#openTracing-prerequisites)
   * [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
+  - [Run the Polyglot clients](clients/README.md)
   * [Run the Application on Kubernetes](#run-the-application-on-kubernetes)
   * [Enable Federation on Kubernetes (Grid Edition Only)](#enable-federation-on-kubernetes-grid-edition-only)
   * [Run the Demonstration using Coherence Grid Edition](#run-the-demonstration-using-coherence-grid-edition)
@@ -54,18 +60,16 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
 
 To run the demonstration application, you must have the following software installed:
 
-1. Java 11 SE Development Kit or Runtime environment.
+1. Java 21 SE Development Kit or Runtime environment.
 
-   You can download JDK 11 from [Java SE Development Kit 11 Downloads](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+   You can download JDK 21 from [Java SE Development Kit Downloads](https://www.oracle.com/java/technologies/downloads/)
 
-1. Maven 3.6.0 or later version installed and configured.
+2. Maven 3.6.0 or later version installed and configured.
 
-1. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
+3. Use a web browser that supports AngularJS to run the application. The following browsers are supported:
    * Safari, Chrome, Firefox, Opera 15, IE9 and mobile browsers (Android, Chrome Mobile, iOS Safari).
 
    For more information about browser compatibility, see https://code.angularjs.org/1.7.5/docs/misc/faq.
-
-> **Note**: All code compiles to JDK 8 bytecode for compatibility with Coherence releases.
 
 ### OpenTracing Prerequisites
 
@@ -81,7 +85,7 @@ docker run --rm -d --name jaeger \
         -p 16686:16686 \
         -p 14268:14268 \
         -p 9411:9411 \
-        jaegertracing/all-in-one:1.13
+        jaegertracing/all-in-one:1.20
 ```
 
 Navigate to [http://localhost:16686](http://localhost:16686) in order to access the Jaeger UI.
@@ -106,9 +110,9 @@ mvn clean install
 The `target` directory contains a list of files:
 
 ```bash
- coherence-demo-{version}-SNAPSHOT-javadoc.jar  - javadoc
- coherence-demo-{version}-SNAPSHOT-sources.jar  - sources
- ```
+coherence-demo-{version}-SNAPSHOT-javadoc.jar - javadoc
+coherence-demo-{version}-SNAPSHOT-sources.jar - sources
+```
 
 Run demo application
 
@@ -116,11 +120,14 @@ Run demo application
 mvn exec:exec
 ```
 
+> Note: If you wish to run against an older Coherence CE version than 22.09 or older than Coherence GE 14.1.1.2206.1, then *must* first use `git checkout v5.0.1` to use the
+> current 5.0.1 release that supports these older versions.
+
 The following screenshot shows the application running with 5 cache servers started.
 
 ![Coherence Demo](assets/coherence-demo.png "Coherence Demo")
 
-A Coherence Cache server and HTTP server are started on port 8080 for serving REST and application data. When the Cache server starts, the application loads on the default web browser at http://127.0.0.1:8080/application/index.html.
+A Coherence Cache server and HTTP server are started on port 8080 for serving application data. When the Cache server starts, the application loads on the default web browser at http://127.0.0.1:8080/application/index.html.
 
 The following features are available to demonstrate in the application:
 
@@ -169,28 +176,14 @@ your local machine.
 
 ## Run the Application on Kubernetes
 
-The steps to run the application on Kubernetes comprises the following:
-* Oracle Coherence Operator Helm Chart
-* Use `kubectl` to install the Coherence cluster which comprises of 2 roles:
+The steps to run the application on Kubernetes comprises:
+
+* Use `kubectl` to install the Oracle Coherence Operator
+* Use `kubectl` to install the Coherence cluster which comprises 2 roles:
   * storage-enabled Coherence servers
   * storage-disabled application with Grizzly HTTP Server
 
 > **Note:** If you want to enable Federation when running on Kubernetes, see [Enable Federation on Kubernetes](#enable-federation-on-kubernetes).
-
-1. **Add Helm Repositories**
-
-    You must have at least version v2.14.3 of `helm`, but these instructions are written for V3.3.+.
-    See [here](https://helm.sh/docs/intro/install/) for information on installing helm for your platform.
-
-    Run the following to add the required helm repositories:
-
-    ```bash
-    $ helm repo add stable https://charts.helm.sh/stable
-    $ helm repo add coherence https://oracle.github.io/coherence-operator/charts
-    $ helm repo update
-    ```
-
-    > Note: The `helm` commands below are for helm 3.3.  Version 2 equivalent commands have also been included.
 
 1. **Create Namespace**
 
@@ -201,7 +194,7 @@ The steps to run the application on Kubernetes comprises the following:
    namespace/coherence-example created
    ```   
 
-1. **Build and Push Docker Image**
+2. **Build and Push Docker Image**
 
    Ensure that you have Docker running locally and execute the following command which will
    used the `jib-maven-plugin` to build a Docker image.
@@ -210,46 +203,37 @@ The steps to run the application on Kubernetes comprises the following:
    mvn clean install -P docker
    ```
 
-   This creates an image named `coherence-demo:5.0.1-SNAPSHOT` which contains everything needed to run the demo.
+   This creates an image named `coherence-demo:8.1.0-SNAPSHOT` which contains everything needed to run the demo.
 
    > Note: If you are running against a remote Kubernetes cluster, you need to push the Docker
    > image to your repository accessible to that cluster. You also need to prefix the image name in the `yaml` files used in the `helm` commands below.
-   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:5.0.1-SNAPSHOT` and
-   > them push using `docker push youname/coherence-demo:5.0.1-SNAPSHOT`.
+   > Find your Docker image id with `docker images` and tag it with your prefix: `docker tag image youname/coherence-demo:8.1.0-SNAPSHOT` and
+   > them push using `docker push youname/coherence-demo:8.1.0-SNAPSHOT`.
 
-1. **Install the Oracle Coherence Operator**
+3. **Install the Oracle Coherence Operator**
 
-   Install the operator using `helm`:
+   You must have a supported version of Kubernetes. Please see https://github.com/oracle/coherence-operator for more details. 
 
-   ```bash
-   helm install --namespace coherence-example coherence-operator coherence/coherence-operator
-   ```
-
-   Confirm the creation of the chart:
+   Install the operator using `kubectl`. (It will be installed into a new namespace called `coherence`)
 
    ```bash
-   helm ls --namespace coherence-example
-
-   NAME              	NAMESPACE        	REVISION	UPDATED                                 	STATUS  	CHART                   	APP VERSION
-   coherence-operator	coherence-example	1       	2021-01-12 15:25:04.409346768 +0800 AWST	deployed	coherence-operator-3.1.3	3.1.3
-
-   kubectl get pods --namespace coherence-example
-
-   NAME                                 READY   STATUS    RESTARTS   AGE
-   coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          2m12s
+   kubectl apply -f https://github.com/oracle/coherence-operator/releases/download/v3.3.3/coherence-operator.yaml
    ```
 
-   For `helm` version 2.X:
+   Confirm the creation of the operator:
 
    ```bash
-   helm install --namespace coherence-example --name coherence-operator coherence/coherence-operator
-
-   helm ls
+    kubectl get pods -n coherence
+    NAME                                                     READY   STATUS    RESTARTS      AGE
+    coherence-operator-controller-manager-55fd645db8-9tnvq   1/1     Running   1 (11m ago)   12m
+    coherence-operator-controller-manager-55fd645db8-bk46q   1/1     Running   1 (11m ago)   12m
+    coherence-operator-controller-manager-55fd645db8-rlfv8   1/1     Running   0             12m
    ```
 
-1. **Install the Coherence Cluster**
 
-   The Coherence cluster comprises of 2 roles:
+4. **Install the Coherence Cluster**
+
+   The Coherence cluster comprises 2 roles:
 
    * storage - contains the storage-enabled tier which stores application data
    * http - contains a storage-disabled http server which serves the application
@@ -267,10 +251,11 @@ The steps to run the application on Kubernetes comprises the following:
    The pod primary-cluster-storage-0 must be running and ready as shown:
 
    ```bash
-   NAME                                 READY   STATUS    RESTARTS   AGE
-   coherence-operator-cd9b646d5-p5xk8   1/1     Running   0          33m
-   primary-cluster-http-0               1/1     Running   0          3m2s
-   primary-cluster-storage-0            1/1     Running   0          3m4s
+    kubectl get pods -n coherence-example
+    NAME                        READY   STATUS    RESTARTS   AGE
+    primary-cluster-http-0      1/1     Running   0          5s
+    primary-cluster-storage-0   1/1     Running   0          5s
+    primary-cluster-storage-1   1/1     Running   0          5s
    ```
 
    If the pod does not show as `Running`, you can use the following command to diagnose and troubleshoot the pod:
@@ -279,19 +264,19 @@ The steps to run the application on Kubernetes comprises the following:
    kubectl describe pod primary-cluster-storage-0 --namespace coherence-example
    ```
 
-1. **Port Forward the HTTP Port**
+5. **Port Forward the HTTP Port**
 
    ```bash
    kubectl port-forward --namespace coherence-example primary-cluster-http-0 8080:8080
    ```  
 
-1. **Access the Application**</br>
+6. **Access the Application**</br>
 
    Use the following URL to access the application home page:
 
    [http://127.0.0.1:8080/application/index.html](http://127.0.0.1:8080/application/index.html)  
 
-1. **Scale the Application**
+7. **Scale the Application**
 
    When running the application in Kubernetes, the **Add Server** and **Remove Server** options are not available. You need to use `kubectl` to scale the application.
 
@@ -310,7 +295,7 @@ The steps to run the application on Kubernetes comprises the following:
 
    Use `kubectl  --namespace coherence-example rollout status sts/primary-cluster-storage` to view the progress.
 
-1. **Scale the Application down**
+8. **Scale the Application down**
 
    Scale the application to one node by editing `demo-cluster.yaml` and changing
    the `replicas` value for the `storage` role to 1. Then apply using
@@ -325,7 +310,7 @@ The steps to run the application on Kubernetes comprises the following:
    > carried out in a safe manner (checking service statusHA values) to ensure no data is lost.
    > You can confirm this by checking the number of positions are the same as before the scale-down was initiated.                                                                                                                                                                                                                                                                                                                                                                                   
 
-1. Uninstall the Coherence Cluster
+9. Uninstall the Coherence Cluster
 
     Use the following to uninstall the Coherence cluster.
 
@@ -358,6 +343,7 @@ The setup for this example uses two Coherence clusters in the same Kubernetes cl
 1. Build the Docker image:
 
    ```bash
+   git checkout v5.0.1 # required for pre CE 22.09 versions
    mvn clean install -P docker,grid-edition -Dcoherence.version={coherence.version}
    ```
 
@@ -493,15 +479,12 @@ set PATH=%JAVA_HOME%\bin;%PATH%
 
 ### Install Coherence JARs into your Maven repository
 
-Install Coherence, Coherence-REST, Coherence Management and Coherence HTTP Netty installed into your local maven repository.
+Install Coherence and Coherence HTTP Netty installed into your local maven repository.
 
 For Linux/UNIX/Mac OS:
 
 ```bash
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/14.1.1/coherence.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-management.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-management/14.1.1/coherence-management.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-metrics.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-metrics/14.1.1/coherence-metrics.14.1.1.pom
-mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-rest.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-rest/14.1.1/coherence-rest.14.1.1.pom
 mvn install:install-file -Dfile=$COHERENCE_HOME/lib/coherence-http-netty.jar -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence-http-netty/14.1.1/coherence-http-netty.14.1.1.pom
 ```
 
@@ -509,9 +492,6 @@ For Windows OS:
 
 ```bash
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\14.1.1\coherence.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-management.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-management\14.1.1\coherence-management.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-metrics.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-metrics\14.1.1\coherence-metrics.14.1.1.pom
-mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-rest.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-rest\14.1.1\coherence-rest.14.1.1.pom
 mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence-http-netty\14.1.1\coherence-http-netty.14.1.1.pom
 ```
 
@@ -520,6 +500,7 @@ mvn install:install-file -Dfile=%COHERENCE_HOME%\lib\coherence-http-netty.jar -D
 When you issue any maven commands, ensure you include the `grid-edition` profile as below:
 
 ```bash
+git checkout v5.0.1 # required for pre CE 22.09 versions
 mvn clean install -P grid-edition -Dcoherence.version=14.1.1-0-0
 ```
 
@@ -533,7 +514,7 @@ mvn exec:exec -Pgrid-edition -Dcoherence.version=14.1.1-0-0
 ## View Cluster Metrics via Grafana
 
 If you wish to view metrics via Grafana, please carry out the steps
-[here](https://github.com/oracle/coherence-operator/tree/master/examples/deployment#view-cluster-metrics-via-grafana)
+[here](https://oracle.github.io/coherence-operator/docs/latest/#/examples/021_deployment/README)
 before you install any of the examples above.
 
 > Note: Before you run the above, you must change the namespace in `src/main/yaml/prometheus-rbac.yaml` in the coherence-operator cloned repository

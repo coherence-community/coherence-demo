@@ -17,6 +17,7 @@ hs_err_pid*
 
 # Build artifacts
 dependency-reduced-pom.xml
+node_modules
 target
 
 # Runtime artifacts

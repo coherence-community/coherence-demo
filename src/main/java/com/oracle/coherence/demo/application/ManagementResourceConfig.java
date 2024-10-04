@@ -1,7 +1,7 @@
 /*
- * File: ApplicationResourceConfig.java
+ * File: ManagementResourceConfig.java
  *
- * Copyright (c) 2022 Oracle and/or its affiliates.
+ * Copyright (c) 2022, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -19,7 +19,6 @@
 package com.oracle.coherence.demo.application;
 
 import com.tangosol.coherence.management.RestManagement;
-
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -28,10 +27,12 @@ import org.glassfish.jersey.server.ResourceConfig;
  * @author Tim Middleton
  */
 public class ManagementResourceConfig
-        extends ResourceConfig
-{
-    public ManagementResourceConfig()
-    {
+        extends ResourceConfig {
+
+    /**
+     * Constructs a {@link ManagementResourceConfig}.
+     */
+    public ManagementResourceConfig() {
         RestManagement.configure(this);
     }
 }

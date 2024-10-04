@@ -8,12 +8,12 @@ To scale the number of replicas to 2, update the primary-cluster.yaml used to cr
 </pre>
 Then apply this change using
 <pre>
-$ kubectl apply --namespace coherence-example -f yaml/demo-cluster.yaml
+kubectl apply --namespace coherence-example -f yaml/demo-cluster.yaml
 </pre>
 <p>
 You can also scale the cluster using
 <pre>
-$ kubectl scale --namespace coherence-example coherence/primary-cluster-storage --replicas=6
+kubectl scale --namespace coherence-example coherence/primary-cluster-storage --replicas=6
 </pre>
 <p>
 You can use <strong>kubectl get pods</strong> to view the status of the apply command and the number of replicas.

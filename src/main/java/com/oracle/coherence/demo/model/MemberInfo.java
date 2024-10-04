@@ -1,7 +1,7 @@
 /*
  * File: MemberInfo.java
  *
- * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -24,6 +24,7 @@ import com.tangosol.io.pof.PofReader;
 import com.tangosol.io.pof.PofWriter;
 import com.tangosol.io.pof.PortableObject;
 
+import com.tangosol.io.pof.schema.annotation.PortableType;
 import com.tangosol.net.Member;
 
 import java.io.IOException;
@@ -39,46 +40,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "member-info")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class MemberInfo implements PortableObject
+@PortableType(id = 1002)
+public class MemberInfo
 {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -2555078539266609164L;
-
-    /**
-     * POF index for id attribute.
-     */
-    private static final int ID = 0;
-
-    /**
-     * POF index for maxMemory attribute.
-     */
-    private static final int MAX_MEMORY = 1;
-
-    /**
-     * POF index for freeMemory attribute.
-     */
-    private static final int FREE_MEMORY = 2;
-
-    /**
-     * POF index for totalMemory attribute.
-     */
-    private static final int TOTAL_MEMORY = 3;
-
-    /**
-     * POF index for entryCount attribute.
-     */
-    private static final int ENTRY_COUNT = 4;
-
-    /**
-     * POF index of {@link #tracingEnabled} attribute.
-     */
-    private static final int TRACING_ENABLED = 5;
-
-    /**
-     * POF index for the {@link #roleName} attribute.
-     */
-    private static final int ROLE_NAME = 6;
-
+    
     /**
      * The unique identifier for the {@link MemberInfo}.
      */
@@ -226,29 +193,4 @@ public class MemberInfo implements PortableObject
          {
          return roleName;
          }
-
-    @Override
-    public void readExternal(PofReader reader) throws IOException
-    {
-        id             = reader.readInt(ID);
-        maxMemory      = reader.readLong(MAX_MEMORY);
-        freeMemory     = reader.readLong(FREE_MEMORY);
-        totalMemory    = reader.readLong(TOTAL_MEMORY);
-        entryCount     = reader.readInt(ENTRY_COUNT);
-        tracingEnabled = reader.readBoolean(TRACING_ENABLED);
-        roleName       = reader.readString(ROLE_NAME);
-    }
-
-
-    @Override
-    public void writeExternal(PofWriter writer) throws IOException
-    {
-        writer.writeInt(ID, id);
-        writer.writeLong(MAX_MEMORY, maxMemory);
-        writer.writeLong(FREE_MEMORY, freeMemory);
-        writer.writeLong(TOTAL_MEMORY, totalMemory);
-        writer.writeInt(ENTRY_COUNT, entryCount);
-        writer.writeBoolean(TRACING_ENABLED, tracingEnabled);
-        writer.writeString(ROLE_NAME, roleName);
-    }
 }

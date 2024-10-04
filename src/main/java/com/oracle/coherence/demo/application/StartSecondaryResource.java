@@ -62,14 +62,13 @@ import static com.oracle.bedrock.predicate.Predicates.greaterThan;
  */
 
 @Path("/start-secondary")
-public class StartSecondaryResource
-{
+public class StartSecondaryResource {
+
     /**
      * JAX-RS injection of UriInfo.
      */
     @Context
     private UriInfo uriInfo;
-
 
     /**
      * Starts the secondary cluster for demonstrating cluster replication.
@@ -77,8 +76,7 @@ public class StartSecondaryResource
      * @return {@link Response#ok}
      */
     @GET
-    public Response startCluster()
-    {
+    public Response startCluster() {
         CacheFactory.getCluster();
 
         String secondaryName = System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY);
@@ -91,42 +89,40 @@ public class StartSecondaryResource
         ApplicationConsole console = System.getProperty("secondary.verbose") == null
                                      ? new NullApplicationConsole() : new SystemApplicationConsole();
 
-        try
-        {
+        try {
             // start the new cache server
             CoherenceCacheServer server =
                     platform.launch(CoherenceCacheServer.class,
-                                    DisplayName.of("Coherence Demo Server"),
-                                    Console.of(console),
-                                    CacheConfig.of("cache-config.xml"),
-                                    SystemProperty.of("coherence.wka", "127.0.0.1"),
-                                    SystemProperty.of("coherence.ttl", "0"),
-                                    SystemProperty.of("coherence.management.http", "all"),
-                                    SystemProperty.of("coherence.management.http.port", "0"),
-                                    SystemProperty.of("with.http", true),
-                                    SystemProperty.of("http.port", uriInfo.getBaseUri().getPort() + 1),
-                                    SystemProperty.of("http.hostname", System.getProperty("http.hostname",
-                                                                                          "127.0.0.1")),
-                                    SystemProperty.of("lbr.hostname", System.getProperty("lbr.hostname")),
-                                    SystemProperty.of("max.servers", System.getProperty("max.servers")),
-                                    SystemProperty.of("max.cache.entries", System.getProperty("max.cache.entries")),
-                                    SystemProperty.of("coherence.distribution.2server", "false"),
-                                    SystemProperty.of("coherence.tracing.ratio", 1.0),
-                                    SystemProperty.of("coherence.management.http.port", "0"),
-                                    SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
-                                                      "Coherence Demo (" + secondaryName + ')'),
-                                    SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,
-                                                      System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
-                                                                         Launcher.DEFAULT_JAEGER_ENDPOINT)),
-                                    Logging.at(0),
-                                    RoleName.of("CoherenceDemoServer-" + secondaryName),
-                                    ClusterPort.of(Launcher.SECONDARY_PORT),
-                                    ClusterName.of(secondaryName),
-                                    SystemProperty.of("with.data", "false"),
-                                    SystemProperty.of(Launcher.PRIMARY_CLUSTER_PROPERTY,
-                                                      System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY)),
-                                    SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
-                                                      System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)));
+                            DisplayName.of("Coherence Demo Server"),
+                            Console.of(console),
+                            CacheConfig.of("cache-config.xml"),
+                            SystemProperty.of("coherence.wka", "127.0.0.1"),
+                            SystemProperty.of("coherence.ttl", "0"),
+                            SystemProperty.of("coherence.management.http", "all"),
+                            SystemProperty.of("coherence.management.http.port", "0"),
+                            SystemProperty.of("with.http", true),
+                            SystemProperty.of("http.port", uriInfo.getBaseUri().getPort() + 1),
+                            SystemProperty.of("http.hostname", System.getProperty("http.hostname", "127.0.0.1")),
+                            SystemProperty.of("lbr.hostname", System.getProperty("lbr.hostname")),
+                            SystemProperty.of("max.servers", System.getProperty("max.servers")),
+                            SystemProperty.of("max.cache.entries", System.getProperty("max.cache.entries")),
+                            SystemProperty.of("coherence.distribution.2server", "false"),
+                            SystemProperty.of("coherence.tracing.ratio", 1.0),
+                            SystemProperty.of("coherence.management.http.port", "0"),
+                            SystemProperty.of(Launcher.JAEGER_SERVICE_NAME_PROPERTY,
+                                    "Coherence Demo (" + secondaryName + ')'),
+                            SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,
+                                    System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
+                                            Launcher.DEFAULT_JAEGER_ENDPOINT)),
+                            Logging.at(0),
+                            RoleName.of("CoherenceDemoServer-" + secondaryName),
+                            ClusterPort.of(Launcher.SECONDARY_PORT),
+                            ClusterName.of(secondaryName),
+                            SystemProperty.of("with.data", "false"),
+                            SystemProperty.of(Launcher.PRIMARY_CLUSTER_PROPERTY,
+                                    System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY)),
+                            SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
+                                    System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)));
 
             // wait for the new secondary cluster to start
             DeferredHelper.ensure(eventually(invoking(server).getClusterSize()), greaterThan(0));
@@ -139,8 +135,7 @@ public class StartSecondaryResource
             // return the member-id
             return Response.ok("secondary").build();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             return Response.noContent().build();
         }
     }

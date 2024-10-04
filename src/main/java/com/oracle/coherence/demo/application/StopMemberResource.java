@@ -38,8 +38,9 @@ import javax.ws.rs.core.Response;
  */
 @Path("/stop-member")
 public class StopMemberResource
-        extends AbstractClusterMemberResource
-{
+        extends AbstractClusterMemberResource {
+
+
     /**
      * Stops the specified cluster member.
      *
@@ -49,17 +50,15 @@ public class StopMemberResource
      */
     @GET
     @Path("{memberId}")
-    public Response stopMember(@PathParam("memberId") String memberId)
-    {
+    public Response stopMember(@PathParam("memberId") String memberId) {
         // use the resource registry to locate the CoherenceCacheServer to stop
-        ResourceRegistry     registry = CacheFactory.getConfigurableCacheFactory().getResourceRegistry();
+        ResourceRegistry registry = CacheFactory.getConfigurableCacheFactory().getResourceRegistry();
 
-        CoherenceCacheServer server   = registry.getResource(CoherenceCacheServer.class, memberId);
+        CoherenceCacheServer server = registry.getResource(CoherenceCacheServer.class, memberId);
 
         releaseMemberToStableIdAssociation(memberId);
 
-        if (server != null)
-        {
+        if (server != null) {
             registry.unregisterResource(CoherenceCacheServer.class, memberId);
 
             server.close();

@@ -50,13 +50,11 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
  * @author Tim Middleton
  */
 @Path("/persistence")
-public class PersistenceResource
-{
+public class PersistenceResource {
     /**
      * Name of the federated service we are using.
      */
     private static final String SERVICE_NAME = CacheFactory.getEdition().equals("CE") ? "DistributedCache" : "FederatedCache";
-
 
     /**
      * Name of the snapshot to create.
@@ -85,41 +83,36 @@ public class PersistenceResource
      */
     @GET
     @Path("{command}")
-    @Produces({TEXT_PLAIN})
-    public Response getResource(@PathParam("command") String command)
-    {
+    @Produces( {TEXT_PLAIN})
+    public Response getResource(@PathParam("command") String command) {
         Cluster  cluster  = CacheFactory.getCluster();
         Registry registry = cluster.getManagement();
 
-        if (registry != null)
-        {
+        if (registry != null) {
             PersistenceHelper helper   = new PersistenceHelper();
             Object            response = "OK";
 
-            switch (command)
-            {
-            case "createSnapshot" :
-                removeSnapshot(helper);
-                helper.invokeOperationWithWait(PersistenceHelper.CREATE_SNAPSHOT, SNAPSHOT_NAME, SERVICE_NAME);
-                break;
+            switch (command) {
+                case "createSnapshot":
+                    removeSnapshot(helper);
+                    helper.invokeOperationWithWait(PersistenceHelper.CREATE_SNAPSHOT, SNAPSHOT_NAME, SERVICE_NAME);
+                    break;
 
-            case "removeSnapshot" :
-                removeSnapshot(helper);
-                break;
+                case "removeSnapshot":
+                    removeSnapshot(helper);
+                    break;
 
-            case "recoverSnapshot" :
-                if (helper.snapshotExists(SERVICE_NAME, SNAPSHOT_NAME))
-                {
-                    helper.invokeOperationWithWait(PersistenceHelper.RECOVER_SNAPSHOT, SNAPSHOT_NAME, SERVICE_NAME);
-                }
-                else
-                {
-                    response = "Snapshot does not exist";
-                }
-                break;
+                case "recoverSnapshot":
+                    if (helper.snapshotExists(SERVICE_NAME, SNAPSHOT_NAME)) {
+                        helper.invokeOperationWithWait(PersistenceHelper.RECOVER_SNAPSHOT, SNAPSHOT_NAME, SERVICE_NAME);
+                    }
+                    else {
+                        response = "Snapshot does not exist";
+                    }
+                    break;
 
-            default :
-                return Response.status(Response.Status.NOT_FOUND).build();
+                default:
+                    return Response.status(Response.Status.NOT_FOUND).build();
             }
 
             return Response.ok(response).build();
@@ -128,16 +121,13 @@ public class PersistenceResource
         return Response.serverError().build();
     }
 
-
     /**
      * Remove the snapshot.
      *
      * @param helper  PersistenceToolsHelper used to remove the snapshot
      */
-    private void removeSnapshot(PersistenceHelper helper)
-    {
-        if (helper.snapshotExists(SERVICE_NAME, SNAPSHOT_NAME))
-        {
+    private void removeSnapshot(PersistenceHelper helper) {
+        if (helper.snapshotExists(SERVICE_NAME, SNAPSHOT_NAME)) {
             helper.invokeOperationWithWait(PersistenceHelper.REMOVE_SNAPSHOT, SNAPSHOT_NAME, SERVICE_NAME);
         }
     }

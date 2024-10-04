@@ -15,7 +15,6 @@
       <property name="eclipselink.weaving" value="false"/>
       <property name="eclipselink.jdbc.batch-writing" value="JDBC"/>
       <property name="eclipselink.jdbc.batch-writing.size" value="10000"/>
-<!--      <property name="eclipselink.logging.level.sql" value="FINE"/>-->
     </properties>
   </persistence-unit>
 </persistence>

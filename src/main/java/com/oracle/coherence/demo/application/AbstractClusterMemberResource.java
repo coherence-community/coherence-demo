@@ -1,7 +1,7 @@
 /*
  * File: AbstractClusterMemberResource.java
  *
- * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -24,8 +24,8 @@ import java.util.Map;
 /**
  * Common functionality for resources that start/stop multiple Coherence members.
  */
-public class AbstractClusterMemberResource
-{
+public class AbstractClusterMemberResource {
+    
     /**
      * Stable internal ID set for odd/even tracking.
      */
@@ -41,16 +41,13 @@ public class AbstractClusterMemberResource
      *
      * @return the next available ID
      */
-    protected synchronized static int getStableId()
-    {
-        for (int i = 0, len = Byte.SIZE; i < len; i++)
-            {
-            if ((s_UsedIds >> i & 1) == 0)
-                {
+    protected synchronized static int getStableId() {
+        for (int i = 0, len = Byte.SIZE; i < len; i++) {
+            if ((s_UsedIds >> i & 1) == 0) {
                 s_UsedIds |= 1 << i;
                 return i;
-                }
             }
+        }
         return -1;
     }
 
@@ -60,8 +57,7 @@ public class AbstractClusterMemberResource
      * @param sMemberId  the member ID
      * @param nStableId  the stable ID
      */
-    protected synchronized static void associateMemberToStableId(String sMemberId, Integer nStableId)
-    {
+    protected synchronized static void associateMemberToStableId(String sMemberId, Integer nStableId) {
         MEMBER_TO_STABLE_ID.put(sMemberId, nStableId);
     }
 
@@ -70,12 +66,10 @@ public class AbstractClusterMemberResource
      *
      * @param sMemberId  the member ID
      */
-    protected synchronized static void releaseMemberToStableIdAssociation(String sMemberId)
-    {
+    protected synchronized static void releaseMemberToStableIdAssociation(String sMemberId) {
         int nId = MEMBER_TO_STABLE_ID.remove(sMemberId);
         releaseId(nId);
     }
-
 
     /**
      * Augment the provided role name by appending {@code Even} or {@code Odd} depending
@@ -85,16 +79,14 @@ public class AbstractClusterMemberResource
      *
      * @return the augmented role name
      */
-    protected String createRoleName(int nStableId)
-    {
+    protected String createRoleName(int nStableId) {
         return "CoherenceDemoServer" + ((nStableId & 1) == 1 ? "Odd" : "Even");
     }
 
     /**
      * Release a stable ID for re-use.
      */
-    private static void releaseId(int nId)
-    {
+    private static void releaseId(int nId) {
         s_UsedIds &= ~(1 << nId);
     }
 }

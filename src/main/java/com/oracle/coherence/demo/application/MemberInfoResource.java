@@ -1,7 +1,7 @@
 /*
  * File: MemberInfoResource.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -44,29 +44,28 @@ import java.util.Set;
  * @author Brian Oliver
  */
 @Path("/member-info")
-public class MemberInfoResource
-{
+public class MemberInfoResource {
+
     /**
      * Return {@link MemberInfo} on each {@link Member} of the cluster.
      *
      * @return {@link MemberInfo} on each {@link Member} of the cluster
      */
     @GET
-    public Response getResource()
-    {
-        NamedCache<String, Trade> trades            = Utilities.getTradesCache();
-        InvocationService         invocationService = (InvocationService)
+    public Response getResource() {
+        NamedCache<String, Trade> trades = Utilities.getTradesCache();
+        InvocationService invocationService = (InvocationService)
                 CacheFactory.getService("InvocationService");
 
         // determine the storage enabled members for the membership query
         Set<Member> storageEnabledMembers =
-            ((DistributedCacheService) trades.getCacheService()).getOwnershipEnabledMembers();
+                ((DistributedCacheService) trades.getCacheService()).getOwnershipEnabledMembers();
 
         // determine the member information
         //noinspection unchecked
         Map<Member, MemberInfo> results =
-            (Map<Member, MemberInfo>) invocationService.query(new GetMemberInfo(trades.getCacheName()),
-                                                              storageEnabledMembers);
+                (Map<Member, MemberInfo>) invocationService.query(new GetMemberInfo(trades.getCacheName()),
+                        storageEnabledMembers);
 
         return Response.ok(results.values()).build();
     }

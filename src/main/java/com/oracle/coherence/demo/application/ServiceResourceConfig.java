@@ -18,9 +18,9 @@
 
 package com.oracle.coherence.demo.application;
 
-import com.tangosol.coherence.rest.server.DefaultResourceConfig;
-
 import javax.ws.rs.ApplicationPath;
+
+import org.glassfish.jersey.server.ResourceConfig;
 
 /**
  * Defined the configured REST services for the Coherence Demo application.
@@ -28,29 +28,23 @@ import javax.ws.rs.ApplicationPath;
  * @author Brian Oliver
  */
 @ApplicationPath("service")
-public class ServiceResourceConfig extends DefaultResourceConfig
-{
+public class ServiceResourceConfig
+        extends ResourceConfig {
+
     /**
      * Constructs a {@link ServiceResourceConfig}.
      */
-    public ServiceResourceConfig()
-    {
+    public ServiceResourceConfig() {
         register(MemberInfoResource.class);
         register(StartMemberResource.class);
         register(StopMemberResource.class);
         register(ChartDataResource.class);
         register(FederationResource.class);
+        register(EventsResource.class);
         register(StartSecondaryResource.class);
         register(DeveloperResource.class);
         register(PersistenceResource.class);
         register(ManagementResource.class);
         register(TracingFilter.class);
-    }
-
-
-    @Override
-    protected void registerRootResource()
-    {
-        // we don't want a root resource
     }
 }

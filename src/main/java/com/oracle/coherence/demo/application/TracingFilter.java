@@ -44,8 +44,8 @@ import javax.ws.rs.ext.Provider;
  */
 @Provider
 public class TracingFilter
-        implements ContainerRequestFilter, ContainerResponseFilter
-{
+        implements ContainerRequestFilter, ContainerResponseFilter {
+
     /**
      * Value for OpenTracing {@link Tags#COMPONENT} key.
      */
@@ -67,38 +67,30 @@ public class TracingFilter
     @Context
     private ResourceInfo resInfo;
 
-    // ----- ContainerRequestFilter interface -------------------------------
-
     @Override
-    public void filter(ContainerRequestContext context)
-    {
+    public void filter(ContainerRequestContext context) {
         Tracer tracer = GlobalTracer.get();
-        Span   span   = tracer.buildSpan(getOperationName())
-                .withTag(Tags.COMPONENT,   JAXRS)
-                .withTag(Tags.SPAN_KIND,   Tags.SPAN_KIND_SERVER)
-                .withTag(Tags.HTTP_METHOD, context.getMethod())
-                .withTag(Tags.HTTP_URL,    getURL(context)).start();
+        Span span = tracer.buildSpan(getOperationName())
+                          .withTag(Tags.COMPONENT, JAXRS)
+                          .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
+                          .withTag(Tags.HTTP_METHOD, context.getMethod())
+                          .withTag(Tags.HTTP_URL, getURL(context)).start();
 
-        store(context, SPAN_KEY,  span);
+        store(context, SPAN_KEY, span);
         store(context, SCOPE_KEY, tracer.activateSpan(span));
     }
 
-    // ----- ContainerResponseFilter interface ------------------------------
-
     @Override
     public void filter(ContainerRequestContext requestContext,
-                       ContainerResponseContext responseContext)
-    {
+                       ContainerResponseContext responseContext) {
         Span  span  = load(requestContext, SPAN_KEY);
         Scope scope = load(requestContext, SCOPE_KEY);
 
         if (responseContext.getStatusInfo().getFamily()
-            == Response.Status.Family.SERVER_ERROR)
-        {
-        Tags.ERROR.set(span, true);
-        span.log(new HashMap<String, String>()
-            {{
-            put("event", "error");
+            == Response.Status.Family.SERVER_ERROR) {
+            Tags.ERROR.set(span, true);
+            span.log(new HashMap<String, String>() {{
+                put("event", "error");
             }});
         }
 
@@ -107,8 +99,6 @@ public class TracingFilter
         span.finish();
         scope.close();
     }
-
-    // ----- helper methods -------------------------------------------------
 
     /**
      * Return the string form of the URL based on the HTTP host header, otherwise, fallback to returning
@@ -119,13 +109,11 @@ public class TracingFilter
      * @return the string form of the URL based on the HTTP host header, otherwise, fallback to returning
      *         the {@link URI#toString()}.
      */
-    private static String getURL(ContainerRequestContext requestContext)
-    {
+    private static String getURL(ContainerRequestContext requestContext) {
         String hostHeader = requestContext.getHeaderString("host");
-        URI requestUri    = requestContext.getUriInfo().getRequestUri();
+        URI    requestUri = requestContext.getUriInfo().getRequestUri();
 
-        if (hostHeader != null)
-        {
+        if (hostHeader != null) {
             // let us use host header instead of local interface
             return requestUri.getScheme() + "://" + hostHeader + requestUri.getPath();
         }
@@ -138,8 +126,7 @@ public class TracingFilter
      *
      * @return a {@link Span} operation name based on the injected {@link ResourceInfo}
      */
-    private String getOperationName()
-    {
+    private String getOperationName() {
         return resInfo.getResourceClass().getSimpleName() + '.' + resInfo.getResourceMethod().getName();
     }
 
@@ -150,8 +137,7 @@ public class TracingFilter
      * @param key      the key
      * @param value    the value
      */
-    private static void store(ContainerRequestContext context, String key, Object value)
-    {
+    private static void store(ContainerRequestContext context, String key, Object value) {
         context.setProperty(key, value);
     }
 
@@ -165,8 +151,7 @@ public class TracingFilter
      * @return the value, if any, associated with the specified {@code key}
      */
     @SuppressWarnings("unchecked")
-    private static <T> T load(ContainerRequestContext context, String key)
-    {
+    private static <T> T load(ContainerRequestContext context, String key) {
         return (T) context.getProperty(key);
     }
 }
