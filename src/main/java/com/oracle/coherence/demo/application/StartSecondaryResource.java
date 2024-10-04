@@ -34,6 +34,8 @@ import com.oracle.bedrock.runtime.coherence.options.RoleName;
 import com.oracle.bedrock.runtime.console.NullApplicationConsole;
 import com.oracle.bedrock.runtime.console.SystemApplicationConsole;
 
+import com.oracle.bedrock.runtime.java.options.ClassName;
+import com.oracle.bedrock.runtime.java.options.JvmOptions;
 import com.oracle.bedrock.runtime.java.options.SystemProperty;
 
 import com.oracle.bedrock.runtime.options.Console;
@@ -41,6 +43,7 @@ import com.oracle.bedrock.runtime.options.DisplayName;
 
 import com.tangosol.net.CacheFactory;
 
+import com.tangosol.net.Coherence;
 import com.tangosol.util.ResourceRegistry;
 
 import javax.ws.rs.GET;
@@ -49,6 +52,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import java.lang.management.ManagementFactory;
+import java.util.List;
 
 import static com.oracle.bedrock.deferred.DeferredHelper.eventually;
 import static com.oracle.bedrock.deferred.DeferredHelper.invoking;
@@ -89,10 +95,14 @@ public class StartSecondaryResource {
         ApplicationConsole console = System.getProperty("secondary.verbose") == null
                                      ? new NullApplicationConsole() : new SystemApplicationConsole();
 
+        List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+        List<String> newArguments = inputArguments.stream().filter(s->s.contains("-Xm")).toList();
+
         try {
             // start the new cache server
             CoherenceCacheServer server =
                     platform.launch(CoherenceCacheServer.class,
+                            ClassName.of(Coherence.class),
                             DisplayName.of("Coherence Demo Server"),
                             Console.of(console),
                             CacheConfig.of("cache-config.xml"),
@@ -119,6 +129,7 @@ public class StartSecondaryResource {
                             ClusterPort.of(Launcher.SECONDARY_PORT),
                             ClusterName.of(secondaryName),
                             SystemProperty.of("with.data", "false"),
+                            JvmOptions.include(newArguments.toArray(new String[0])),
                             SystemProperty.of(Launcher.PRIMARY_CLUSTER_PROPERTY,
                                     System.getProperty(Launcher.PRIMARY_CLUSTER_PROPERTY)),
                             SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
