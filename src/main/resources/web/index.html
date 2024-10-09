@@ -254,10 +254,10 @@
                             <table border="0" cellpadding="0">
                                 <tr>
                                     <td>
-                                        <span class="blue">Data sent to {{secondaryClusterName | clusterName}}: &nbsp;{{currentBytesSent | memory}}&nbsp;</span>
+                                        <span class="blue">Data sent to remote cluster {{secondaryClusterName | clusterName}}: &nbsp;{{currentBytesSent | memory}}&nbsp;</span>
                                         <insight ng-click="displayInsight('dataSent')" ng-show="showInsight"/>
                                     </td>
-                                    <td><div id="federationGraph" style="width: 120px; height: 70px;"></div></td>
+                                    <td><div id="federationGraph" style="width: 150px; height: 70px;"></div></td>
                                 </tr>
                             </table>
                         </div>
@@ -291,7 +291,7 @@
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <td>Action</td>
+                                            <td>Actions</td>
                                             <td>Symbol</td>
                                             <td align="right">Price</td>
                                             <td align="right">Positions</td>
