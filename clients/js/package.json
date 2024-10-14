@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@oracle/coherence": "^1.2.1",
+    "@oracle/coherence": "^1.2.2",
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
     "typescript": "^3.9.7",
