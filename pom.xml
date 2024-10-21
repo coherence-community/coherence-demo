@@ -45,7 +45,7 @@
     <jersey.version>3.0.11</jersey.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
     <jakarta.version>3.0.1</jakarta.version>
-    <jib.version>3.4.3</jib.version>
+    <jib.version>3.4.4</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <kotlin.version>2.0.20</kotlin.version>
     <netty.version>4.1.110.Final</netty.version>
