@@ -246,7 +246,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             labels: [''],
             hideHover: 'true',
             axes: false,
-            grid: false,
+            grid: true,
             gridIntegers: true ,
             hoverCallback: function (index, options, content, row) {
                return row.bytes + ' bytes';
