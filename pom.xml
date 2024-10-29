@@ -43,7 +43,7 @@
     <jaxrs.version>2.1.6</jaxrs.version>
     <jersey.version>2.35</jersey.version>
     <javax.activation.version>1.2.0</javax.activation.version>
-    <jib.version>3.4.3</jib.version>
+    <jib.version>3.4.4</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <netty.version>4.1.108.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
@@ -57,7 +57,7 @@
     <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
     <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
     <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
-    <maven.exec.plugin.version>3.4.1</maven.exec.plugin.version>
+    <maven.exec.plugin.version>3.5.0</maven.exec.plugin.version>
     <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
