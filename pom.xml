@@ -45,7 +45,7 @@
     <jersey.version>3.0.11</jersey.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
     <jakarta.version>3.0.1</jakarta.version>
-    <jib.version>3.4.3</jib.version>
+    <jib.version>3.4.4</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <kotlin.version>2.0.20</kotlin.version>
     <netty.version>4.1.110.Final</netty.version>
@@ -63,7 +63,7 @@
     <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
     <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
     <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
-    <maven.exec.plugin.version>3.4.1</maven.exec.plugin.version>
+    <maven.exec.plugin.version>3.5.0</maven.exec.plugin.version>
     <maven.javadoc.plugin.version>3.10.1</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
