@@ -942,7 +942,7 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
          let windowName = "new" + new Date().toISOString()
          let left = (screen.width/2)-250;
          let top = (screen.height/2)-200;
-          $window.open("/application/sse.html", windowName, "height=400,width=600,top=" + top + ",left=" + left);
+          $window.open("/application/sse.html", windowName, "height=400,width=640,top=" + top + ",left=" + left);
     }
 
     self.addSymbolTrades = function(symbol) {
