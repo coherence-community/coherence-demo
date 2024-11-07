@@ -75,7 +75,8 @@
             eventSource.addEventListener('priceUpdate', function (event) {
                 const messageContainer = document.getElementById('messages');
                 let price = JSON.parse(event.data)
-                let output = new Date().toISOString()  + ": Symbol=" + price.symbol + ", Price=" + formatter.format(price.price)
+                let output = new Date().toISOString()  + ": Symbol=" + price.symbol + ", Price=" + formatter.format(price.newPrice) + ", Change=" +
+                        formatter.format(price.newPrice - price.oldPrice)
 
                 const message = document.createElement('p');
                 message.textContent = output

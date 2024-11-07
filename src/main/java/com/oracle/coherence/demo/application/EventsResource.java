@@ -24,6 +24,7 @@ import com.oracle.coherence.demo.model.Price;
 
 import com.tangosol.net.NamedCache;
 
+import com.tangosol.util.MapEvent;
 import com.tangosol.util.listener.SimpleMapListener;
 
 import javax.annotation.PostConstruct;
@@ -41,6 +42,9 @@ import javax.ws.rs.sse.OutboundSseEvent;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseBroadcaster;
 import javax.ws.rs.sse.SseEventSink;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 
@@ -66,13 +70,14 @@ public class EventsResource {
         this.prices = Utilities.getPricesCache();
 
         prices.addMapListener(new SimpleMapListener<String, Price>()
-                .addUpdateHandler(e->broadcaster.broadcast(createEvent("priceUpdate", e.getNewValue()))));
+                .addUpdateHandler(e->broadcaster.broadcast(createEvent("priceUpdate",
+                        e.getNewValue().getSymbol(), e.getOldValue().getPrice(), e.getNewValue().getPrice()))));
     }
 
-    private OutboundSseEvent createEvent(String name, Price price) {
+    private OutboundSseEvent createEvent(String name, String symbol, double oldPrice, double newPrice) {
         return sse.newEventBuilder()
                   .name(name)
-                  .data(Price.class, price)
+                  .data(Price.class, new PriceUpdate(symbol, oldPrice, newPrice))
                   .mediaType(APPLICATION_JSON_TYPE)
                   .build();
     }
@@ -88,5 +93,31 @@ public class EventsResource {
     public void registerEventListener(@Context SseEventSink eventSink) {
         broadcaster.register(eventSink);
         eventSink.send(sse.newEvent("begin", new Date().toString()));
+    }
+
+    @XmlRootElement(name = "price")
+    @XmlAccessorType(XmlAccessType.PROPERTY)
+    public static class PriceUpdate {
+        private final String symbol;
+        private final double oldPrice;
+        private final double newPrice;
+
+        public PriceUpdate(String symbol, double oldPrice, double newPrice) {
+            this.symbol = symbol;
+            this.oldPrice = oldPrice;
+            this.newPrice = newPrice;
+        }
+
+        public String getSymbol() {
+            return symbol;
+        }
+
+        public double getOldPrice() {
+            return oldPrice;
+        }
+
+        public double getNewPrice() {
+            return newPrice;
+        }
     }
 }
