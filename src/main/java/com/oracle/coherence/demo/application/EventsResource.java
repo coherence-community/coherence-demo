@@ -1,7 +1,7 @@
 /*
  * File: EventsResource.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -38,6 +38,9 @@ import jakarta.ws.rs.sse.OutboundSseEvent;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseBroadcaster;
 import jakarta.ws.rs.sse.SseEventSink;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.util.Date;
 
@@ -55,7 +58,8 @@ public class EventsResource {
     private NamedCache<String, Price> prices;
 
     @Context
-    private Sse            sse;
+    private Sse sse;
+
     private SseBroadcaster broadcaster;
 
     @PostConstruct
@@ -64,13 +68,14 @@ public class EventsResource {
         this.prices = Utilities.getPricesCache();
 
         prices.addMapListener(new SimpleMapListener<String, Price>()
-                .addUpdateHandler(e->broadcaster.broadcast(createEvent("priceUpdate", e.getNewValue()))));
+                .addUpdateHandler(e->broadcaster.broadcast(createEvent("priceUpdate",
+                        e.getNewValue().getSymbol(), e.getOldValue().getPrice(), e.getNewValue().getPrice()))));
     }
 
-    private OutboundSseEvent createEvent(String name, Price price) {
+    private OutboundSseEvent createEvent(String name, String symbol, double oldPrice, double newPrice) {
         return sse.newEventBuilder()
                   .name(name)
-                  .data(Price.class, price)
+                  .data(Price.class, new PriceUpdate(symbol, oldPrice, newPrice))
                   .mediaType(APPLICATION_JSON_TYPE)
                   .build();
     }
@@ -85,7 +90,32 @@ public class EventsResource {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void registerEventListener(@Context SseEventSink eventSink) {
         broadcaster.register(eventSink);
-
         eventSink.send(sse.newEvent("begin", new Date().toString()));
+    }
+
+    @XmlRootElement(name = "price")
+    @XmlAccessorType(XmlAccessType.PROPERTY)
+    public static class PriceUpdate {
+        private final String symbol;
+        private final double oldPrice;
+        private final double newPrice;
+
+        public PriceUpdate(String symbol, double oldPrice, double newPrice) {
+            this.symbol = symbol;
+            this.oldPrice = oldPrice;
+            this.newPrice = newPrice;
+        }
+
+        public String getSymbol() {
+            return symbol;
+        }
+
+        public double getOldPrice() {
+            return oldPrice;
+        }
+
+        public double getNewPrice() {
+            return newPrice;
+        }
     }
 }
