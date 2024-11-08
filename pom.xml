@@ -32,7 +32,7 @@
     
     <!-- dependency versions -->
     <bedrock.version>7.0.5</bedrock.version>
-    <coherence.version>14.1.2-0-0-SNAPSHOT</coherence.version>
+    <coherence.version>14.1.2-0-0</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.17.1.0</derby.version>
@@ -63,6 +63,7 @@
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
     <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
     <maven.version>3.6.0</maven.version>
+    <pof.maven.plugin.version>${coherence.version}</pof.maven.plugin.version>
 
     <!-- startup options -->
     <metrics.enabled>false</metrics.enabled>
@@ -378,7 +379,7 @@
       <plugin>
         <groupId>${coherence.group.id}</groupId>
         <artifactId>pof-maven-plugin</artifactId>
-        <version>${coherence.version}</version>
+        <version>${pof.maven.plugin.version}</version>
         <executions>
           <execution>
             <id>instrument</id>
