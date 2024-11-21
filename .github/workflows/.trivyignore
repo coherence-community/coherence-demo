@@ -1,0 +1,6 @@
+# Copyright 2024 Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at
+# https://oss.oracle.com/licenses/upl.
+
+# Ignore com.squareup.okio:okio:2.8.0 which comes from jaeger-client (ver 1.8.1 - which is the latest version)
+CVE-2023-3635
