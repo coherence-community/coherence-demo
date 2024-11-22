@@ -76,7 +76,7 @@
                 const messageContainer = document.getElementById('messages');
                 let price = JSON.parse(event.data)
                 let output = new Date().toISOString()  + ": Symbol=" + price.symbol + ", new=" + formatter.format(price.newPrice) +
-                    ", old=" + + formatter.format(price.oldPrice) + ", change=" + formatter.format(price.newPrice - price.oldPrice)
+                    ", old=" + formatter.format(price.oldPrice) + ", change=" + formatter.format(price.newPrice - price.oldPrice)
 
                 const message = document.createElement('p');
                 message.textContent = output

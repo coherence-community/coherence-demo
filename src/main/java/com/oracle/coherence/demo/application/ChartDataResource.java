@@ -97,10 +97,12 @@ public class ChartDataResource {
 
         stopWatch.start();
 
+        // retrieve the trade summary using a custom aggregator across the members
         Map<String, TradeSummary> mapTradesBySymbol = trades.aggregate(GroupAggregator.createInstance(Trade::getSymbol,
                 new TradeSummaryAggregator()));
         stopWatch.stop();
 
+        // get the current prices for the symbols
         Map<String, Double> symbolPrice = Utilities.getPricesCache().aggregate(new ReducerAggregator<>(Price::getPrice));
 
         InvocationService invocationService = (InvocationService) CacheFactory.getService("InvocationService");
