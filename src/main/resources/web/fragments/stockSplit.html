@@ -19,8 +19,9 @@ Below is and example of the entry processor being used to run the stock split ag
             return null;
         });
 
-        System.out.printf("Updating stock price for %s from %,.2f to %,.2f\n", symbol, originalPrice, originalPrice / 2);
-        priceCache.invoke(symbol, Processors.update(Price::setPrice, originalPrice / 2));
+
+        Logger.out(String.format("Updating stock price for %s from $%,.2f to $%,.2f", symbol, originalPrice, originalPrice / factor));
+        priceCache.invoke(symbol, Processors.update(Price::setPrice, originalPrice / factor));
     }
 </pre>
 If you have Federation enabled, the newly split positions will be sent to other cluster.
