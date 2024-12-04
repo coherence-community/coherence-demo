@@ -25,6 +25,14 @@ from coherence import Filters, Aggregators, NamedCache, Session, Processors
 from coherence.event import MapListener
 from coherence import serialization
 
+import traceback
+import sys
+
+def custom_excepthook(exc_type, exc_value, exc_traceback):
+    print("Unhandled exception occurred:")
+    traceback.print_exception(exc_type, exc_value, exc_traceback)
+
+sys.excepthook = custom_excepthook
 
 @dataclass
 @serialization.proxy("Price")
@@ -71,11 +79,12 @@ async def run_demo() -> None:
     global session
 
     try:
-        await init_coherence()
 
         if len(sys.argv) < 2:
             usage()
+            return
         else:
+            await init_coherence()
             command = sys.argv[1]
             symbol: str = ""
             count: int = 0
@@ -95,7 +104,12 @@ async def run_demo() -> None:
                 await stock_split(symbol, count)
 
     finally:
-        await session.close()
+        try:
+            session
+        except:
+            return
+        else:
+            await session.close()
 
 
 async def display_cache_size() -> None:
