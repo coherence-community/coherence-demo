@@ -23,6 +23,7 @@ import com.oracle.coherence.demo.model.Price;
 import com.oracle.coherence.demo.model.Trade;
 
 import com.tangosol.net.CacheFactory;
+import com.tangosol.net.Coherence;
 import com.tangosol.net.NamedCache;
 
 import com.tangosol.net.cache.TypeAssertion;
@@ -106,6 +107,12 @@ public final class Utilities {
 
 
     /**
+     * The name of the federation status cache.
+     */
+    public static final String FEDERATION_STATUS = "federation-status";
+
+
+    /**
      * Instances not allowed.
      */
     private Utilities() {
@@ -137,6 +144,15 @@ public final class Utilities {
      */
     public static NamedCache<String, Price> getPricesCache() {
         return CacheFactory.getTypedCache(PRICE_CACHE, PRICE_CACHE_TYPE);
+    }
+
+    /**
+     * Obtain the federation-status cache.
+     *
+     * @return the price {@link NamedCache}
+     */
+    public static NamedCache<String, Boolean> getFederationStatusCache() {
+        return Coherence.getInstance().getSession().getCache(FEDERATION_STATUS);
     }
 
     /**
@@ -189,6 +205,23 @@ public final class Utilities {
         }
         return false;
     }
+
+    /**
+     * Set federation to be started.
+     */
+    public static void setFederationStarted() {
+        getFederationStatusCache().put("status", true);
+    }
+
+    /**
+     * Indicates if federation has been started.
+     *
+     * @return true if federation has been started
+     */
+    public static boolean isFederationStarted() {
+        return getFederationStatusCache().getOrDefault("status", false);
+    }
+
 
     /**
      * Obtain the Coherence cluster version.

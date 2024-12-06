@@ -199,8 +199,10 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
             if (self.clusterName !== self.secondaryClusterName && !insightCookies.skipSplash) {
                  self.displayInsight('welcome');
             }
-        });
 
+           // check if federation has already been started
+           self.checkFederation()
+        });
     });
 
     self.symbolsChartData = [];
@@ -836,6 +838,19 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
     self.federationOperation = function(operation) {
         $http.get('/service/federation/' + operation);
     };
+
+    // ---- the function to check if federation has already been started
+
+    self.checkFederation = function() {
+        $http.get('/service/federation/isStarted').then(function(response) {
+            if (response.data === "true") {
+               self.secondaryCluster = 'enabled';
+               self.localClusterName       = self.primaryClusterName;
+               self.federationControlLabel = self.STOP_FEDERATION;
+            }
+        });
+    };
+
 
     // ---- the function to carry out persistence operations ----
 

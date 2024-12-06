@@ -80,7 +80,7 @@
             <ul class="nav navbar-top-links navbar-right" ng-cloak>
 
                 <li class="dropdown" >
-                    <a href="#"><span id="statusMessage" ng-show="displayStatus" ng-class="{{lastStatusClass}}">{{lastStatusMessage}}</span>&nbsp;</a>
+                    <strong><a href="#"><span id="statusMessage" ng-show="displayStatus" ng-class="{{lastStatusClass}}">{{lastStatusMessage}}</span>&nbsp;</a></strong>
                 </li>
                 <!-- /.dropdown -->
                 <li class="dropdown" ng-show="(!isRunningInKubernetes && clusterName != secondaryClusterName) || (isRunningInKubernetes && federationConfiguredInK8s && clusterName != secondaryClusterName)">

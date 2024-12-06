@@ -61,6 +61,10 @@
             <key-type>java.lang.String</key-type>
             <value-type>com.oracle.coherence.demo.model.Price</value-type>
         </cache-mapping>
+        <cache-mapping>
+            <cache-name>federation-status</cache-name>
+            <scheme-name>federation-status-scheme</scheme-name>
+        </cache-mapping>
     </caching-scheme-mapping>
 
     <caching-schemes>
@@ -118,6 +122,10 @@
                 </topology>
             </topologies>
         </federated-scheme>
+        
+        <local-scheme>
+            <scheme-name>federation-status-scheme</scheme-name>
+        </local-scheme>
 
         <invocation-scheme>
             <service-name>InvocationService</service-name>
