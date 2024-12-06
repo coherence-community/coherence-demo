@@ -153,6 +153,14 @@ public class FederationResource {
         return Response.serverError().build();
     }
 
+    @GET
+    @Path("/isStarted")
+    @Produces( {TEXT_PLAIN})
+    public Response federationCommand() {
+        return Response.ok(Utilities.isFederationStarted()).build();
+    }
+
+
     /**
      * Obtain the name of the FederationMBean for a given service.
      *
