@@ -141,6 +141,8 @@ public class StartSecondaryResource {
 
             registry.registerResource(CoherenceCacheServer.class, "secondary", server);
 
+            Utilities.setFederationStarted();
+
             // return the member-id
             return Response.ok("secondary").build();
         }

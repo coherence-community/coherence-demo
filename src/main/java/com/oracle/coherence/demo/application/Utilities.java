@@ -99,14 +99,19 @@ public final class Utilities
     public static final String PRICE_CACHE = "Price";
 
 
+    /**
+     * The name of the federation status cache.
+     */
+    public static final String FEDERATION_STATUS = "federation-status";
+
+
     // ----- constructors ---------------------------------------------------
 
 
     /**
      * Instances not allowed.
      */
-    private Utilities()
-    {
+    private Utilities() {
         throw new IllegalStateException("illegal instantiation");
     }
 
@@ -119,8 +124,7 @@ public final class Utilities
      *
      * @param args  arguments to main
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         createPositions(null, NR_POSITIONS_TO_CREATE);
     }
 
@@ -130,8 +134,7 @@ public final class Utilities
      *
      * @return the trade {@link NamedCache}
      */
-    public static NamedCache<String, Trade> getTradesCache()
-    {
+    public static NamedCache<String, Trade> getTradesCache() {
         return Coherence.getInstance().getSession().getCache(TRADE_CACHE);
     }
 
@@ -141,9 +144,18 @@ public final class Utilities
      *
      * @return the price {@link NamedCache}
      */
-    public static NamedCache<String, Price> getPricesCache()
-    {
+    public static NamedCache<String, Price> getPricesCache() {
         return Coherence.getInstance().getSession().getCache(PRICE_CACHE);
+    }
+
+
+    /**
+     * Obtain the federation-status cache.
+     *
+     * @return the price {@link NamedCache}
+     */
+    public static NamedCache<String, Boolean> getFederationStatusCache() {
+        return Coherence.getInstance().getSession().getCache(FEDERATION_STATUS);
     }
 
 
@@ -154,8 +166,7 @@ public final class Utilities
      * @return an indicator showing if we are running under the Coherence Operator in
      *      Kubernetes
      */
-    public static boolean isRunningInKubernetes()
-    {
+    public static boolean isRunningInKubernetes() {
         return System.getenv("KUBERNETES_SERVICE_HOST") != null &&
                System.getenv("KUBERNETES_SERVICE_PORT") != null;
     }
@@ -165,8 +176,7 @@ public final class Utilities
      *
      * @return an indicator showing if we have enabled metrics
      */
-    public static boolean isMetricsEnabled()
-    {
+    public static boolean isMetricsEnabled() {
         Enumeration<String> serviceNames = CacheFactory.ensureCluster().getServiceNames();
         while (serviceNames.hasMoreElements()) {
             if ("MetricsHttpProxy".equals(serviceNames.nextElement())) {
@@ -176,6 +186,22 @@ public final class Utilities
         return false;
     }
 
+    /**
+     * Set federation to be started.
+     */
+    public static void setFederationStarted()
+    {
+        getFederationStatusCache().put("status", true);
+    }
+
+    /**
+     * Indicates if federation has been started.
+     *
+     * @return true if federation has been started
+     */
+    public static boolean isFederationStarted() {
+        return getFederationStatusCache().getOrDefault("status", false);
+    }
 
 
     /**
@@ -183,8 +209,7 @@ public final class Utilities
      *
      * @return the Coherence cluster version
      */
-    public static String getCoherenceVersion()
-    {
+    public static String getCoherenceVersion() {
         return CacheFactory.VERSION.replaceFirst(" .*$", "")
                                    .replaceFirst("[.-]SNAPSHOT.*$", "")
                                    .replaceAll("-", ".");
@@ -196,8 +221,7 @@ public final class Utilities
      *
      * @return an indicator showing if federation is configured in K8s.
      */
-    public static boolean isFederationConfiguredInK8s()
-    {
+    public static boolean isFederationConfiguredInK8s() {
         return isRunningInKubernetes() &&
                System.getProperty("primary.cluster") != null &&
                System.getProperty("secondary.cluster") != null &&
@@ -220,8 +244,7 @@ public final class Utilities
     /**
      * Add indexes to the caches to improve query performance.
      */
-    public static void addIndexes()
-    {
+    public static void addIndexes() {
         NamedCache<String, Trade> tradesCache = getTradesCache();
         Tracer                    tracer      = GlobalTracer.get();
         Span                      span        = tracer.buildSpan("Utilities.AddIndexes")
@@ -229,8 +252,7 @@ public final class Utilities
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
 
         Logger.out("Adding Indexes...");
-        try (Scope ignored = tracer.activateSpan(span))
-        {
+        try (Scope ignored = tracer.activateSpan(span)) {
             tradesCache.addIndex(Trade::getSymbol, true, null);
             spanLog(span, "Created trade symbol index");
             tradesCache.addIndex(Trade::getPurchaseValue, false, null);
@@ -238,8 +260,7 @@ public final class Utilities
             tradesCache.addIndex(Trade::getQuantity, false, null);
             spanLog(span, "Created trade amount index");
         }
-        finally
-        {
+        finally {
             span.finish();
         }
         Logger.out(" Done");
@@ -249,8 +270,7 @@ public final class Utilities
     /**
      * Remove indexes to the caches.
      */
-    public static void removeIndexes()
-    {
+    public static void removeIndexes() {
         NamedCache<String, Trade> tradesCache = getTradesCache();
         Tracer                    tracer      = GlobalTracer.get();
         Span                      span        = tracer.buildSpan("Utilities.RemoveIndexes")
@@ -258,8 +278,7 @@ public final class Utilities
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
 
         Logger.out("Removing Indexes...");
-        try (Scope ignored = tracer.activateSpan(span))
-        {
+        try (Scope ignored = tracer.activateSpan(span)) {
             tradesCache.removeIndex(Trade::getSymbol);
             spanLog(span, "Removed trade symbol index");
             tradesCache.removeIndex(Trade::getPurchaseValue);
@@ -267,8 +286,7 @@ public final class Utilities
             tradesCache.removeIndex(Trade::getQuantity);
             spanLog(span, "Removed trade amount index");
         }
-        finally
-        {
+        finally {
             span.finish();
         }
 
@@ -280,8 +298,7 @@ public final class Utilities
      * Populate initial prices for symbols. Make the current price for all
      * symbols to be $40 to make it fair and un-biased.
      */
-    public static void populatePrices()
-    {
+    public static void populatePrices() {
         NamedCache<String, Price> pricesCaches = getPricesCache();
         Tracer                    tracer       = GlobalTracer.get();
         Span                      span         = tracer.buildSpan("Utilities.PopulatePrices")
@@ -289,16 +306,13 @@ public final class Utilities
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
                 .withTag("symbol.count", SYMBOLS.length).start();
 
-        try (Scope ignored = tracer.activateSpan(span))
-        {
-            for (String symbol : SYMBOLS)
-            {
+        try (Scope ignored = tracer.activateSpan(span)) {
+            for (String symbol : SYMBOLS) {
                 Price price = new Price(symbol, INITIAL_PRICE);
                 pricesCaches.put(price.getSymbol(), price);
             }
         }
-        finally
-        {
+        finally {
             span.finish();
         }
     }
