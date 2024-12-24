@@ -38,7 +38,7 @@
     <derby.version>10.17.1.0</derby.version>
     <docker.version>${project.version}</docker.version>
     <eclipselink.version>4.0.2</eclipselink.version>
-    <jackson.version>2.18.1</jackson.version>
+    <jackson.version>2.18.2</jackson.version>
     <jackson.databind.version>${jackson.version}</jackson.databind.version>
     <jaeger.version>1.8.1</jaeger.version>
     <jaxrs.version>3.0.0</jaxrs.version>
@@ -48,7 +48,7 @@
     <jib.version>3.4.4</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <kotlin.version>2.0.21</kotlin.version>
-    <netty.version>4.1.115.Final</netty.version>
+    <netty.version>4.1.116.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
     <pof.maven.plugin.version>${coherence.version}</pof.maven.plugin.version>
@@ -64,7 +64,7 @@
     <maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
     <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
     <maven.exec.plugin.version>3.5.0</maven.exec.plugin.version>
-    <maven.javadoc.plugin.version>3.11.1</maven.javadoc.plugin.version>
+    <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
     <maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
     <maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
     <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
