@@ -20,7 +20,7 @@ The application showcases Coherence general features, scalability capabilities i
 * In-Place Processing
 * Federation (Grid Edition feature only)
 * Lambda Support
-* OpenTracing Support
+* OpenTelemetry Support
 * Polyglot client access from JavaScript, Python and Golang
 * Listening for events using Server Sent Events (SSE)
 
@@ -44,7 +44,7 @@ The demonstration uses AngularJS 1.7.5, Bootstrap 3.3.4, and a number of other f
   * [Table of Contents](#table-of-contents)
   * [Prerequisites](#prerequisites)
     + [General Prerequisites](#general-prerequisites)
-    + [OpenTracing Prerequisites](#openTracing-prerequisites)
+    + [OpenTelemetry Prerequisites](#openTelemetry-prerequisites)
   * [Run the Application Locally](#run-the-application-locally)
       - [Modify the Defaults](#modify-the-defaults)
   - [Run the Polyglot clients](clients/README.md)
@@ -71,33 +71,37 @@ To run the demonstration application, you must have the following software insta
 
    For more information about browser compatibility, see https://code.angularjs.org/1.7.5/docs/misc/faq.
 
-### OpenTracing Prerequisites
+### OpenTelemetry Prerequisites
 
-If you wish to demonstrate OpenTracing, then prior to running the demo, start the Jaeger OpenTracing implementation:
+If you wish to demonstrate OpenTelemetry, then prior to running the demo, start Jaeger:
 
 ```bash
-docker run --rm -d --name jaeger \
-        -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
-        -p 5775:5775/udp \
-        -p 6831:6831/udp \
-        -p 6832:6832/udp \
-        -p 5778:5778 \
-        -p 16686:16686 \
-        -p 14268:14268 \
-        -p 9411:9411 \
-        jaegertracing/all-in-one:1.20
+docker run -d --name jaeger \
+    -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \
+    -e COLLECTOR_OTLP_ENABLED=true \
+    -p 6831:6831/udp \
+    -p 6832:6832/udp \
+    -p 5778:5778 \
+    -p 16686:16686 \
+    -p 4317:4317 \
+    -p 4318:4318 \
+    -p 14250:14250 \
+    -p 14268:14268 \
+    -p 14269:14269 \
+    -p 9411:9411 \
+    jaegertracing/all-in-one:1.50
 ```
 
 Navigate to [http://localhost:16686](http://localhost:16686) in order to access the Jaeger UI.
 
 Note: If Jaeger is already running in your environment locally, you can skip this step.  If Jaeger is available
-at a different location, specify the `JAEGER_ENDPOINT` JVM property when starting the demo to override the default
+at a different location, specify the `otel.exporter.oltp.endpoint` JVM property when starting the demo to override the default
 location.
 
-> The following screenshot shows the Jaegar UI and a trace from a JAX-RS call to Coherence
+> The following screenshot shows the Jaeger UI and a trace from a JAX-RS call to Coherence
 > to JPA cache store, then backing up of cache entries across to another node.
 
-![Coherence Demo](assets/jaeger-ui.png "Jaegar UI showing tracing")
+![Coherence Demo](assets/jaeger-ui.png "Jaeger UI showing tracing")
 
 ## Run the Application Locally
 
@@ -136,7 +140,7 @@ The following features are available to demonstrate in the application:
 * Enable real-time price updates.
 * Enable or disable indexes for queries.
 * Add additional data, clear the cache or populate the cache from the **Tools** menu.
-* Show OpenTracing Support
+* Show OpenTelemetry Support
 * Open raw metrics endpoint
 
 Federation Features - Grid Edition Only
@@ -183,7 +187,7 @@ The steps to run the application on Kubernetes comprises:
   * storage-enabled Coherence servers
   * storage-disabled application with Grizzly HTTP Server
 
-> **Note:** If you want to enable Federation when running on Kubernetes, see [Enable Federation on Kubernetes](#enable-federation-on-kubernetes).
+> **Note:** If you want to enable Federation when running on Kubernetes, see [Enable Federation on Kubernetes](#enable-federation-on-kubernetes-grid-edition-only).
 
 1. **Create Namespace**
 

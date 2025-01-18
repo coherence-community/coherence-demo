@@ -2,7 +2,7 @@
 <!--
  * File: pom.xml
  *
- * Copyright (c) 2015, 2024 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2025, Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -32,7 +32,7 @@
 
     <!-- dependency versions -->
     <bedrock.version>7.0.5</bedrock.version>
-    <coherence.version>24.09</coherence.version>
+    <coherence.version>24.09.1-SNAPSHOT</coherence.version>
     <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0.1</copy.rename.maven.plugin.version>
     <derby.version>10.17.1.0</derby.version>
@@ -40,7 +40,9 @@
     <eclipselink.version>4.0.2</eclipselink.version>
     <jackson.version>2.18.1</jackson.version>
     <jackson.databind.version>${jackson.version}</jackson.databind.version>
-    <jaeger.version>1.8.1</jaeger.version>
+    <open.telemetry.version>1.46.0</open.telemetry.version>
+    <open.telemetry.api.incubator.version>${open.telemetry.version}-alpha</open.telemetry.api.incubator.version>
+    <open.telemetry.jdbc.version>2.12.0-alpha</open.telemetry.jdbc.version>
     <jaxrs.version>3.0.0</jaxrs.version>
     <jersey.version>3.0.11</jersey.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
@@ -49,9 +51,8 @@
     <jib.goal>dockerBuild</jib.goal>
     <kotlin.version>2.0.21</kotlin.version>
     <netty.version>4.1.115.Final</netty.version>
-    <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
-    <pof.maven.plugin.version>${coherence.version}</pof.maven.plugin.version>
+    <pof.maven.plugin.version>24.09</pof.maven.plugin.version>
     <pof.maven.plugin.group>${coherence.group.id}</pof.maven.plugin.group>
 
     <!-- maven configuration -->
@@ -175,21 +176,41 @@
       <version>${jackson.version}</version>
     </dependency>
 
-    <!-- jaeger/opentracing -->
+    <!-- OpenTelemetry -->
     <dependency>
-      <groupId>io.jaegertracing</groupId>
-      <artifactId>jaeger-client</artifactId>
-      <version>${jaeger.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jetbrains.kotlin</groupId>
-          <artifactId>kotlin-stdlib-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jetbrains.kotlin</groupId>
-          <artifactId>kotlin-stdlib</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+      <version>${open.telemetry.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-context</artifactId>
+      <version>${open.telemetry.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk</artifactId>
+      <version>${open.telemetry.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api-incubator</artifactId>
+      <version>${open.telemetry.api.incubator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
+      <version>${open.telemetry.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp</artifactId>
+      <version>${open.telemetry.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-jdbc</artifactId>
+      <version>${open.telemetry.jdbc.version}</version>
     </dependency>
 
     <!-- Include most recent versions of the following to avoid CVE's -->
@@ -271,13 +292,6 @@
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <version>${jakarta.version}</version>
-    </dependency>
-
-    <!-- opentracing jdbc -->
-    <dependency>
-      <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-jdbc</artifactId>
-      <version>${opentracing.jdbc.version}</version>
     </dependency>
 
     <!-- netty -->

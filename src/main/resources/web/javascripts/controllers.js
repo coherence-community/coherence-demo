@@ -1,7 +1,7 @@
 /*
  * File: controllers.js
  *
- * Copyright (c) 2019, 2024 Oracle and/or its affiliates.
+ * Copyright (c) 2019, 2025, Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -698,11 +698,11 @@ demoApp.controller('DemoController', ['$scope', '$http', '$interval', '$location
            "content": "fragments/populate.html"
        };
        self.insightContent['tracingEnabled'] = {
-           "header": "OpenTracing Support Enabled",
+           "header": "OpenTelemetry Support Enabled",
            "content": "fragments/tracingEnabled.html"
        };
        self.insightContent['tracingDisabled'] = {
-         "header": "OpenTracing Support Disabled",
+         "header": "OpenTelemetry Support Disabled",
          "content": "fragments/tracingDisabled.html"
        };
        self.insightContent['welcome'] = {

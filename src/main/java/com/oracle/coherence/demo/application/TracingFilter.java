@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2024 Oracle and/or its affiliates.
+ * Copyright (c) 2020, 2025, Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -16,17 +16,16 @@
 
 package com.oracle.coherence.demo.application;
 
-import io.opentracing.Scope;
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-
-import io.opentracing.tag.Tags;
-
-import io.opentracing.util.GlobalTracer;
-
 import java.net.URI;
 
-import java.util.Map;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanKind;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.Tracer;
+
+import io.opentelemetry.context.Scope;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -35,19 +34,19 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.container.ResourceInfo;
 
 import jakarta.ws.rs.core.Context;
-
 import jakarta.ws.rs.core.Response;
+
 import jakarta.ws.rs.ext.Provider;
 
 /**
- * Simple {@code JAXRS} request/response filter to enable tracing of {@code JAXRS} operations.
+ * Simple {@code JAX-RS} request/response filter to enable tracing of {@code JAX-RS} operations.
  */
 @Provider
 public class TracingFilter
         implements ContainerRequestFilter, ContainerResponseFilter {
 
     /**
-     * Value for OpenTracing {@link Tags#COMPONENT} key.
+     * Value for OpenTelemetry attribute key for JAX-RS.
      */
     private static final String JAXRS = "jaxrs";
 
@@ -69,15 +68,15 @@ public class TracingFilter
 
     @Override
     public void filter(ContainerRequestContext context) {
-        Tracer tracer = GlobalTracer.get();
-        Span span = tracer.buildSpan(getOperationName())
-                          .withTag(Tags.COMPONENT, JAXRS)
-                          .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
-                          .withTag(Tags.HTTP_METHOD, context.getMethod())
-                          .withTag(Tags.HTTP_URL, getURL(context)).start();
+        Tracer tracer = GlobalOpenTelemetry.getTracer("coherence.demo");
+        Span span = tracer.spanBuilder(getOperationName())
+                           .setSpanKind(SpanKind.SERVER)
+                           .setAttribute("component", JAXRS)
+                           .setAttribute("http.method", context.getMethod())
+                           .setAttribute("http.url", getURL(context)).startSpan();
 
         store(context, SPAN_KEY, span);
-        store(context, SCOPE_KEY, tracer.activateSpan(span));
+        store(context, SCOPE_KEY, span.makeCurrent());
     }
 
     @Override
@@ -86,15 +85,13 @@ public class TracingFilter
         Span  span  = load(requestContext, SPAN_KEY);
         Scope scope = load(requestContext, SCOPE_KEY);
 
-        if (responseContext.getStatusInfo().getFamily()
-            == Response.Status.Family.SERVER_ERROR) {
-            Tags.ERROR.set(span, true);
-            span.log(Map.of("event", "error"));
+        if (responseContext.getStatusInfo().getFamily() == Response.Status.Family.SERVER_ERROR) {
+            span.setStatus(StatusCode.ERROR);
         }
 
-        Tags.HTTP_STATUS.set(span, responseContext.getStatus());
+        span.setAttribute("http.status_code", responseContext.getStatus());
 
-        span.finish();
+        span.end();
         scope.close();
     }
 
@@ -129,7 +126,7 @@ public class TracingFilter
     }
 
     /**
-     * Store the specified key/value within the specified {@link ContainerRequestContext).
+     * Store the specified key/value within the specified {@link ContainerRequestContext}.
      *
      * @param context  the {@link ContainerRequestContext}
      * @param key      the key

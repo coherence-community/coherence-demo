@@ -1,7 +1,7 @@
 /*
  * File: Launcher.java
  *
- * Copyright (c) 2015, 2023 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2025, Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -47,18 +47,44 @@ public final class Launcher {
     /**
      * Default Jaeger tracing endpoint if not overridden by user.
      */
-    public static final String DEFAULT_JAEGER_ENDPOINT = "http://localhost:14268/api/traces";
+    public static final String DEFAULT_JAEGER_ENDPOINT = "http://localhost:4318/v1/traces";
 
     /**
-     * System property to define the Jaeger service name (as it will be displayed in the UI).
+     * System property to define the OpenTelemetry service name (as it will be displayed in the UI).
      */
-    public static final String JAEGER_SERVICE_NAME_PROPERTY = "JAEGER_SERVICE_NAME";
+    public static final String OTEL_SERVICE_NAME_PROPERTY = "otel.service.name";
 
     /**
-     * System property to define the Jaeger tracing endpoint.  If not explicitly overridden,
-     * the value will default to {@value DEFAULT_JAEGER_ENDPOINT}.
+     * System property to define the OpenTelemetry exporter end-point.
      */
-    public static final String JAEGER_ENDPOINT_PROPERTY = "JAEGER_ENDPOINT";
+    public static final String OTEL_EXPORTER_ENDPOINT_PROPERTY = "otel.exporter.oltp.endpoint";
+
+    /**
+     * System property to define the OpenTelemetry metrics exporter.
+     */
+    public static final String OTEL_METRICS_EXPORTER_PROPERTY = "otel.metrics.exporter";
+
+    /**
+     * By default, metrics will not be exported.
+     */
+    public static final String DEFAULT_OTEl_METRICS_EXPORTER = "none";
+
+    /**
+     * System property to define the OpenTelemetry logs exporter.
+     */
+    public static final String OTEL_LOGS_EXPORTER_PROPERTY = "otel.logs.exporter";
+
+    /**
+     * By default, logs will not be exported.
+     */
+    public static final String DEFAULT_OTEl_LOGS_EXPORTER = "none";
+
+    /**
+     * System property to enable auto-configuration of OpenTelemetry.
+     * See the <a href="https://opentelemetry.io/docs/languages/java/configuration/#zero-code-sdk-autoconfigure">documentation</a>
+     * for more details.
+     */
+    public static final String OTEL_AUTO_CONFIGURE_PROPERTY = "otel.java.global-autoconfigure.enabled";
 
     /**
      * Cluster port for the primary cluster.
@@ -152,6 +178,7 @@ public final class Launcher {
         // use WKA
         System.setProperty("coherence.wka", "127.0.0.1");
         System.setProperty("coherence.ttl", "0");
+        System.setProperty("coherence.tracing.ratio", "-1");  // disabled by default
 
         // enable http serving
         System.setProperty("with.http", "true");
@@ -167,12 +194,16 @@ public final class Launcher {
         // set cluster name
         System.setProperty("coherence.cluster", System.getProperty(PRIMARY_CLUSTER_PROPERTY));
 
-        // set properties necessary for Jaeger to function
-        System.setProperty(JAEGER_SERVICE_NAME_PROPERTY,
+        // set properties necessary for OpenTelemetry to function
+        System.setProperty(OTEL_AUTO_CONFIGURE_PROPERTY, "true");
+        System.setProperty(OTEL_SERVICE_NAME_PROPERTY,
                 "Coherence Demo (" + System.getProperty(PRIMARY_CLUSTER_PROPERTY) + ')');
-
-        System.setProperty(JAEGER_ENDPOINT_PROPERTY,
-                System.getProperty(JAEGER_ENDPOINT_PROPERTY, DEFAULT_JAEGER_ENDPOINT));
+        System.setProperty(OTEL_EXPORTER_ENDPOINT_PROPERTY,
+                System.getProperty(OTEL_EXPORTER_ENDPOINT_PROPERTY, DEFAULT_JAEGER_ENDPOINT));
+        System.setProperty(OTEL_METRICS_EXPORTER_PROPERTY,
+                System.getProperty(Launcher.OTEL_METRICS_EXPORTER_PROPERTY, DEFAULT_OTEl_METRICS_EXPORTER));
+        System.setProperty(OTEL_LOGS_EXPORTER_PROPERTY,
+                System.getProperty(Launcher.OTEL_LOGS_EXPORTER_PROPERTY, Launcher.DEFAULT_OTEl_LOGS_EXPORTER));
 
         // start the Default Cache Server
         Coherence.main(args);
