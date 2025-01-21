@@ -22,6 +22,11 @@ import com.oracle.coherence.common.base.Logger;
 import com.oracle.coherence.demo.model.Price;
 import com.oracle.coherence.demo.model.Trade;
 
+import com.tangosol.internal.tracing.Span;
+import com.tangosol.internal.tracing.Scope;
+import com.tangosol.internal.tracing.Tracer;
+import com.tangosol.internal.tracing.TracingHelper;
+
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Coherence;
 import com.tangosol.net.NamedCache;
@@ -30,12 +35,6 @@ import com.tangosol.util.Filters;
 import com.tangosol.util.InvocableMap;
 
 import com.tangosol.util.Processors;
-
-import io.opentelemetry.api.GlobalOpenTelemetry;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.api.trace.SpanKind;
-import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.context.Scope;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -245,24 +244,34 @@ public final class Utilities
      * Add indexes to the caches to improve query performance.
      */
     public static void addIndexes() {
-        NamedCache<String, Trade> tradesCache = getTradesCache();
-        Tracer                    tracer      = GlobalOpenTelemetry.getTracer("coherence.demo");
-        Span                      span        = tracer.spanBuilder("Utilities.AddIndexes")
-                                                    .setSpanKind(SpanKind.SERVER)
-                                                    .setAttribute("Component", "demo")
-                                                    .startSpan();
+        NamedCache<String, Trade> tradesCache    = getTradesCache();
+        Span                      span           = null;
+        Scope                     scope          = null;
+
+        if (TracingHelper.isEnabled()) {
+            Tracer tracer = TracingHelper.getTracer();
+                   span   = tracer.spanBuilder("Utilities.AddIndexes")
+                                .withMetadata("span.kind", "server")
+                                .withMetadata("Component", "demo")
+                                .startSpan();
+                   scope  = tracer.withSpan(span);
+        }
 
         Logger.out("Adding Indexes...");
-        try (Scope ignored = span.makeCurrent()) {
+        try {
             tradesCache.addIndex(Trade::getSymbol, true, null);
             spanLog(span, "Created trade symbol index");
             tradesCache.addIndex(Trade::getPurchaseValue, false, null);
             spanLog(span, "Created trade purchase value index");
             tradesCache.addIndex(Trade::getQuantity, false, null);
             spanLog(span, "Created trade amount index");
-        }
-        finally {
-            span.end();
+        } finally {
+            if (scope != null) {
+                scope.close();
+            }
+            if (span != null) {
+                span.end();
+            }
         }
         Logger.out(" Done");
     }
@@ -273,14 +282,20 @@ public final class Utilities
      */
     public static void removeIndexes() {
         NamedCache<String, Trade> tradesCache = getTradesCache();
-        Tracer                    tracer      = GlobalOpenTelemetry.getTracer("coherence.demo");
-        Span                      span        = tracer.spanBuilder("Utilities.RemoveIndexes")
-                                                    .setSpanKind(SpanKind.SERVER)
-                                                    .setAttribute("Component", "demo")
-                                                    .startSpan();
+        Span                      span           = null;
+        Scope                     scope          = null;
+
+        if (TracingHelper.isEnabled()) {
+            Tracer tracer = TracingHelper.getTracer();
+                   span = tracer.spanBuilder("Utilities.RemoveIndexes")
+                           .withMetadata("span.kind", "server")
+                           .withMetadata("Component", "demo")
+                           .startSpan();
+                   scope = tracer.withSpan(span);
+        }
 
         Logger.out("Removing Indexes...");
-        try (Scope ignored = span.makeCurrent()) {
+        try {
             tradesCache.removeIndex(Trade::getSymbol);
             spanLog(span, "Removed trade symbol index");
             tradesCache.removeIndex(Trade::getPurchaseValue);
@@ -289,7 +304,12 @@ public final class Utilities
             spanLog(span, "Removed trade amount index");
         }
         finally {
-            span.end();
+            if (scope != null) {
+                scope.close();
+            }
+            if (span != null) {
+                span.end();
+            }
         }
 
         Logger.out(" Done");
@@ -302,21 +322,32 @@ public final class Utilities
      */
     public static void populatePrices() {
         NamedCache<String, Price> pricesCaches = getPricesCache();
-        Tracer                    tracer       = GlobalOpenTelemetry.getTracer("coherence.demo");
-        Span                      span         = tracer.spanBuilder("Utilities.PopulatePrices")
-                                                     .setSpanKind(SpanKind.SERVER)
-                                                     .setAttribute("Component", "demo")
-                                                     .setAttribute("symbol.count", SYMBOLS.length)
-                                                     .startSpan();
+        Span                      span           = null;
+        Scope                     scope          = null;
 
-        try (Scope ignored = span.makeCurrent()) {
+        if (TracingHelper.isEnabled()) {
+            Tracer tracer = TracingHelper.getTracer();
+            span   = tracer.spanBuilder("Utilities.PopulatePrices")
+                    .withMetadata("span.kind", "server")
+                    .withMetadata("Component", "demo")
+                    .withMetadata("symbol.count", SYMBOLS.length)
+                    .startSpan();
+            scope  = tracer.withSpan(span);
+        }
+
+        try {
             for (String symbol : SYMBOLS) {
                 Price price = new Price(symbol, INITIAL_PRICE);
                 pricesCaches.put(price.getSymbol(), price);
             }
         }
         finally {
-            span.end();
+            if (scope != null) {
+                scope.close();
+            }
+            if (span != null) {
+                span.end();
+            }
         }
     }
 
@@ -366,16 +397,22 @@ public final class Utilities
 
         NamedCache<String, Trade> tradesCache = getTradesCache();
         NamedCache<String, Price> priceCache  = getPricesCache();
-        Tracer                    tracer       = GlobalOpenTelemetry.getTracer("coherence.demo");
-        Span                      span         = tracer.spanBuilder("Utilities.CreatePositions")
-                                                     .setSpanKind(SpanKind.SERVER)
-                                                     .setAttribute("Component", "demo")
-                                                     .setAttribute("symbol.count", SYMBOLS.length)
-                                                     .startSpan();
+        Span                      span        = null;
+        Scope                     scope       = null;
+
+        if (TracingHelper.isEnabled()) {
+            Tracer tracer = TracingHelper.getTracer();
+            span   = tracer.spanBuilder("Utilities.CreatePositions")
+                    .withMetadata("span.kind", "server")
+                    .withMetadata("Component", "demo")
+                    .withMetadata("symbol.count", SYMBOLS.length)
+                    .startSpan();
+            scope  = tracer.withSpan(span);
+        }
 
         boolean singleSymbol = symbolToInsert != null;
 
-        try (Scope ignored = span.makeCurrent())
+        try
         {
             Map<String,     Price> localPrices = new HashMap<>(priceCache.getAll(priceCache.keySet()));
             HashMap<String, Trade> trades      = new HashMap<>();
@@ -410,7 +447,14 @@ public final class Utilities
         }
         finally
         {
-            span.end();
+            if (scope != null)
+            {
+                scope.close();
+            }
+            if (span != null)
+            {
+                span.end();
+            }
         }
 
         Logger.out(String.format("Creation Complete! (Cache contains %d positions) ", tradesCache.size()));
@@ -427,27 +471,40 @@ public final class Utilities
 
         // choose random symbol to modify
         String symbol = SYMBOLS[random.nextInt(SYMBOLS.length)];
-        Tracer tracer = GlobalOpenTelemetry.getTracer("coherence.demo");
-        Span   span   = tracer.spanBuilder("Utilities.UpdatePrices")
-                .setSpanKind(SpanKind.SERVER)
-                .setAttribute("Component", "demo")
-                .setAttribute("update.symbol", symbol)
-                .startSpan();
+        Span                      span        = null;
+        Scope                     scope       = null;
 
-        try (Scope ignored = span.makeCurrent())
+        if (TracingHelper.isEnabled()) {
+            Tracer tracer = TracingHelper.getTracer();
+            span   = tracer.spanBuilder("Utilities.UpdatePrices")
+                    .withMetadata("span.kind", "server")
+                    .withMetadata("Component", "demo")
+                    .withMetadata("update.symbol", symbol)
+                    .startSpan();
+            scope  = tracer.withSpan(span);
+        }
+
+        try
         {
             // invoke using static method to ensure all arguments are captured
             priceCache.invoke(symbol, updateStockPrice(random.nextFloat()));
         }
         finally
         {
-            span.end();
+            if (scope != null)
+            {
+                scope.close();
+            }
+            if (span != null)
+            {
+                span.end();
+            }
         }
     }
 
 
     /**
-     * Invokes {@link Span#addEvent(String)} if {@code span} is not {@code null}.
+     * Invokes {@link Span#log(String)} if {@code span} is not {@code null}.
      *
      * @param span     the target {@link Span}
      * @param message  the message to log
@@ -456,7 +513,7 @@ public final class Utilities
     {
         if (span != null)
         {
-            span.addEvent(message);
+            span.log(message);
         }
     }
 

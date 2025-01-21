@@ -18,14 +18,10 @@ package com.oracle.coherence.demo.application;
 
 import java.net.URI;
 
-import io.opentelemetry.api.GlobalOpenTelemetry;
-
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.api.trace.SpanKind;
-import io.opentelemetry.api.trace.StatusCode;
-import io.opentelemetry.api.trace.Tracer;
-
-import io.opentelemetry.context.Scope;
+import com.tangosol.internal.tracing.Scope;
+import com.tangosol.internal.tracing.Span;
+import com.tangosol.internal.tracing.Tracer;
+import com.tangosol.internal.tracing.TracingHelper;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -68,31 +64,36 @@ public class TracingFilter
 
     @Override
     public void filter(ContainerRequestContext context) {
-        Tracer tracer = GlobalOpenTelemetry.getTracer("coherence.demo");
-        Span span = tracer.spanBuilder(getOperationName())
-                           .setSpanKind(SpanKind.SERVER)
-                           .setAttribute("component", JAXRS)
-                           .setAttribute("http.method", context.getMethod())
-                           .setAttribute("http.url", getURL(context)).startSpan();
+        if (TracingHelper.isEnabled()) {
+            Tracer tracer = TracingHelper.getTracer();
+            Span   span   = tracer.spanBuilder(getOperationName())
+                    .withMetadata("span.kind", "server")
+                    .withMetadata("component", JAXRS)
+                    .withMetadata("http.method", context.getMethod())
+                    .withMetadata("http.url", getURL(context)).startSpan();
 
-        store(context, SPAN_KEY, span);
-        store(context, SCOPE_KEY, span.makeCurrent());
+            store(context, SPAN_KEY, span);
+            store(context, SCOPE_KEY, tracer.withSpan(span));
+        }
     }
 
     @Override
     public void filter(ContainerRequestContext requestContext,
                        ContainerResponseContext responseContext) {
-        Span  span  = load(requestContext, SPAN_KEY);
-        Scope scope = load(requestContext, SCOPE_KEY);
+        Span span = load(requestContext, SPAN_KEY);
 
-        if (responseContext.getStatusInfo().getFamily() == Response.Status.Family.SERVER_ERROR) {
-            span.setStatus(StatusCode.ERROR);
+        if (span != null) {
+            Scope scope = load(requestContext, SCOPE_KEY);
+
+            if (responseContext.getStatusInfo().getFamily() == Response.Status.Family.SERVER_ERROR) {
+                span.setMetadata("error", true);
+            }
+
+            span.setMetadata("http.status_code", responseContext.getStatus());
+
+            span.end();
+            scope.close();
         }
-
-        span.setAttribute("http.status_code", responseContext.getStatus());
-
-        span.end();
-        scope.close();
     }
 
     /**

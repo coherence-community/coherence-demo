@@ -37,14 +37,16 @@ import com.oracle.bedrock.runtime.java.options.SystemProperty;
 import com.oracle.bedrock.runtime.options.DisplayName;
 
 import com.oracle.coherence.common.base.Logger;
+
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Cluster;
 import com.tangosol.net.Coherence;
 import com.tangosol.net.Member;
 
-import com.tangosol.util.ResourceRegistry;
+import com.tangosol.internal.tracing.TracingHelper;
+import com.tangosol.internal.tracing.Span;
 
-import io.opentelemetry.api.trace.Span;
+import com.tangosol.util.ResourceRegistry;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -129,7 +131,8 @@ public class StartMemberResource
                                 SystemProperty.of(Launcher.SECONDARY_CLUSTER_PROPERTY,
                                         System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY)),
                                 JvmOptions.include(newArguments.toArray(new String[0])));
-                Span span = Span.current();
+
+                Span span = TracingHelper.getActiveSpan();
                 Utilities.spanLog(span, "Starting new member");
 
                 // wait for the new cache server to join the cluster
