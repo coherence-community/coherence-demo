@@ -67,10 +67,10 @@ public class TracingFilter
         if (TracingHelper.isEnabled()) {
             Tracer tracer = TracingHelper.getTracer();
             Span   span   = tracer.spanBuilder(getOperationName())
-                    .withMetadata("span.kind", "server")
-                    .withMetadata("component", JAXRS)
-                    .withMetadata("http.method", context.getMethod())
-                    .withMetadata("http.url", getURL(context)).startSpan();
+                                .withMetadata("span.kind", "server")
+                                .withMetadata("component", JAXRS)
+                                .withMetadata("http.method", context.getMethod())
+                                .withMetadata("http.url", getURL(context)).startSpan();
 
             store(context, SPAN_KEY, span);
             store(context, SCOPE_KEY, tracer.withSpan(span));
