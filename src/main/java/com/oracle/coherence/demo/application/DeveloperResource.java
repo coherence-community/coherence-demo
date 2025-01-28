@@ -23,17 +23,14 @@ import com.oracle.coherence.demo.model.Trade;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 import javax.ws.rs.core.Response;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
@@ -65,7 +62,7 @@ public class DeveloperResource
      * @return the result as JSON
      */
     @GET
-    @Produces({APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN})
+    @Produces(APPLICATION_XML)
     @Path("environment")
     public Response getEnvironmentInfo()
     {
@@ -90,7 +87,60 @@ public class DeveloperResource
         mapEnv.put("maxCacheEntries",           System.getProperty("max.cache.entries", "99999999999"));
         mapEnv.put("disableShutdown",           Boolean.valueOf(System.getProperty("disable.shutdown", "false")));
 
-        return Response.status(Response.Status.OK).entity(mapEnv).build();
+        return Response.ok().entity(mapEnv).build();
+    }
+
+    /**
+     * Invoke the specified command to interact with the cities cache.
+     * <p>
+     * Available commands are:
+     * <ul>
+     *     <li>
+     *         size {@code ->} return cache size
+     *     </li>
+     *     <li>
+     *         list {@code ->} return all the entries in the cities cache
+     *     </li>
+     *     <li>
+     *         clear {@code ->} removes all entries from the cities cache
+     *     </li>
+     *     <li>
+     *         load {@code ->} load an entry given the key. The only valid keys: ny, dal, aus, la
+     *     </li>
+     * </ul>
+     *
+     * @param command  the command to invoke
+     * @param key this query param is only valid for the load command
+     *
+     * @return {@link Response#ok}, a {@code 404} if the command isn't found, or an error response
+     *         if an exception is raised
+     */
+    @GET
+    @Path("cities/{command}")
+    public Response citiesCommands(@PathParam("command") String command, @QueryParam("key") String key)
+    {
+        var citiesCached = Utilities.getCitiesCache();
+
+        Map<String, Object> result = new HashMap<>();
+
+        switch (command)
+        {
+            case "size":
+                result.put("size", citiesCached.size());
+                break;
+            case "list":
+                result.put("list", new ArrayList<>(citiesCached.entrySet()));
+                break;
+            case "clear":
+                citiesCached.clear();
+                result.put("clear", "ok");
+                break;
+            case "load":
+                result.put("load", citiesCached.get(key));
+                break;
+        }
+
+        return Response.ok().entity(result).build();
     }
 
     /**

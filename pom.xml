@@ -28,11 +28,11 @@
 
   <properties>
     <!-- The groupId of the Coherence product -->
-    <coherence.group.id>com.oracle.coherence.ce</coherence.group.id>
+    <coherence.group.id>com.oracle.coherence</coherence.group.id>
     
     <!-- dependency versions -->
     <bedrock.version>5.0.11</bedrock.version>
-    <coherence.version>22.06</coherence.version>
+    <coherence.version>14.1.2-0-0</coherence.version>
     <com.sun.xml.bind.version>2.3.0</com.sun.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0</copy.rename.maven.plugin.version>
     <derby.version>10.15.2.0</derby.version>
@@ -71,6 +71,14 @@
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>com.oracle.coherence.spring</groupId>
+      <artifactId>coherence-spring-core</artifactId>
+      <version>3.3.3</version>
+    </dependency>
+
+
     <!-- coherence -->
     <dependency>
       <groupId>${coherence.group.id}</groupId>
@@ -84,11 +92,11 @@
       <version>${coherence.version}</version>
     </dependency>
     
-    <dependency>
-      <groupId>${coherence.group.id}</groupId>
-      <artifactId>coherence-metrics</artifactId>
-      <version>${coherence.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>${coherence.group.id}</groupId>-->
+<!--      <artifactId>coherence-metrics</artifactId>-->
+<!--      <version>${coherence.version}</version>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>${coherence.group.id}</groupId>
@@ -346,6 +354,7 @@
             <argument>-Dcoherence.metrics.http.enabled=${metrics.enabled}</argument>
             <argument>-Dhttp.hostname=${http.hostname}</argument>
             <argument>-Dhttp.port=${http.port}</argument>
+            <argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005</argument>
             <argument>com.oracle.coherence.demo.application.Launcher</argument>
           </arguments>
         </configuration>

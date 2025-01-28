@@ -22,8 +22,10 @@
   Grid Edition version of the cache config which includes Federation.
 -->
 <cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns:spring="class://com.oracle.coherence.spring.namespace.NamespaceHandler"
               xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
-              xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd">
+              xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd
+                                  class://com.oracle.coherence.spring.namespace.NamespaceHandler coherence-spring-config.xsd">
 
     <defaults>
      <serializer>
@@ -61,9 +63,81 @@
             <key-type>java.lang.String</key-type>
             <value-type>com.oracle.coherence.demo.model.Price</value-type>
         </cache-mapping>
+
+        <cache-mapping>
+            <cache-name>Cities</cache-name>
+            <scheme-name>cities-near-cache</scheme-name>
+            <key-type>java.lang.String</key-type>
+            <value-type>java.lang.String</value-type>
+            <init-params>
+                <init-param>
+                    <param-name>cacheloader-bean-name</param-name>
+                    <param-value>cityCacheLoader</param-value>
+                </init-param>
+            </init-params>
+        </cache-mapping>
+
     </caching-scheme-mapping>
 
     <caching-schemes>
+
+        <near-scheme>
+            <scheme-name>cities-near-cache</scheme-name>
+            <front-scheme>
+                <local-scheme/>
+            </front-scheme>
+            <back-scheme>
+                <federated-scheme>
+                    <scheme-ref>federated-cities-affinitive-dist-cache</scheme-ref>
+                </federated-scheme>
+            </back-scheme>
+            <invalidation-strategy>all</invalidation-strategy>
+        </near-scheme>
+
+        <federated-scheme>
+            <scheme-name>federated-cities-affinitive-dist-cache</scheme-name>
+            <scheme-ref>federated-base-affinitive-dist-cache</scheme-ref>
+            <service-name>CitiesDistributed</service-name>
+            <autostart>true</autostart>
+            <topologies>
+                <topology>
+                    <name>Active</name>
+                </topology>
+            </topologies>
+        </federated-scheme>
+
+        <federated-scheme>
+            <scheme-name>federated-base-affinitive-dist-cache</scheme-name>
+            <scheme-ref>federated-based-dist-cache</scheme-ref>
+            <key-associator>
+                <class-name>java.lang.String</class-name>
+            </key-associator>
+            <key-partitioning>
+                <class-name>com.tangosol.net.partition.DefaultKeyPartitioningStrategy</class-name>
+            </key-partitioning>
+            <partition-assignment-strategy>
+                <instance>
+                    <class-name>com.tangosol.net.partition.SimpleAssignmentStrategy</class-name>
+                </instance>
+            </partition-assignment-strategy>
+        </federated-scheme>
+
+        <federated-scheme>
+            <scheme-name>federated-based-dist-cache</scheme-name>
+            <backing-map-scheme>
+                <read-write-backing-map-scheme>
+                    <internal-cache-scheme>
+                        <local-scheme/>
+                    </internal-cache-scheme>
+                    <cachestore-scheme>
+                        <!-- uncomment this line -->
+                        <!--federated-loading>true</federated-loading--> <!-- when this is enabled the cache-loader defined in the <spring:bean> is not getting called as if the next line is skipped -->
+                        <spring:bean>{cacheloader-bean-name}</spring:bean>
+                    </cachestore-scheme>
+                </read-write-backing-map-scheme>
+            </backing-map-scheme>
+        </federated-scheme>
+
         <federated-scheme>
             <scheme-name>federated-scheme</scheme-name>
             <backing-map-scheme>

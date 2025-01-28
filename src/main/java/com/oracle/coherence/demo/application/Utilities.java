@@ -88,6 +88,12 @@ public final class Utilities
     /**
      * The {@link TypeAssertion} for the trades cache.
      */
+    public static final TypeAssertion<String, String> CITIES_CACHE_TYPE =
+            TypeAssertion.withTypes(String.class, String.class);
+
+    /**
+     * The {@link TypeAssertion} for the trades cache.
+     */
     public static final TypeAssertion<String, Trade> TRADE_CACHE_TYPE =
             TypeAssertion.withTypes(String.class, Trade.class);
 
@@ -98,6 +104,11 @@ public final class Utilities
     public static final TypeAssertion<String, Price> PRICE_CACHE_TYPE =
             TypeAssertion.withTypes(String.class, Price.class);
 
+
+    /**
+     * The name of the trades cache.
+     */
+    public static final String CITIES_CACHE = "Cities";
 
     /**
      * The name of the trades cache.
@@ -136,6 +147,16 @@ public final class Utilities
         createPositions(NR_POSITIONS_TO_CREATE);
     }
 
+
+    /**
+     * Obtain the trades cache.
+     *
+     * @return the trade {@link NamedCache}
+     */
+    public static NamedCache<String, String> getCitiesCache()
+    {
+        return CacheFactory.getTypedCache(CITIES_CACHE, CITIES_CACHE_TYPE);
+    }
 
     /**
      * Obtain the trades cache.

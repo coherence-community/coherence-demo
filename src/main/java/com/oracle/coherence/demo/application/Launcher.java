@@ -20,7 +20,9 @@ package com.oracle.coherence.demo.application;
 
 import com.oracle.bedrock.util.Pair;
 
+import com.oracle.coherence.spring.CoherenceContext;
 import com.tangosol.net.DefaultCacheServer;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.time.ZoneId;
 
@@ -167,6 +169,11 @@ public final class Launcher
      */
     public static void main(String[] args)
     {
+
+        var applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        CoherenceContext.setApplicationContext(applicationContext);
+
         // set JVisualVM refresh time to 5 seconds for demo purposes only
         System.setProperty("com.oracle.coherence.jvisualvm.refreshtime", "5");
 
