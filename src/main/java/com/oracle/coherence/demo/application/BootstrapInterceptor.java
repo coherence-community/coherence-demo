@@ -60,11 +60,11 @@ public class BootstrapInterceptor
 
                     // check to see if the data is loaded already if we are in Kubernetes
                     if (Utilities.isRunningInKubernetes()) {
-                        if (pricesCache.size() == 0) {
+                        if (pricesCache.isEmpty()) {
                             // wait for a short while in case the two storage members start at exact same time
                             // and if the prices cache is still zero then load
                             Base.sleep(new Random().nextInt(4000) + 1000L);
-                            if (pricesCache.size() == 0) {
+                            if (pricesCache.isEmpty()) {
                                 loadData = true;
                             }
                         }

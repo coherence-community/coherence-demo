@@ -138,20 +138,11 @@ public final class Launcher {
      * @param args  unused
      */
     public static void main(String[] args) {
-        // set JVisualVM refresh time to 5 seconds for demo purposes only
-        System.setProperty("com.oracle.coherence.jvisualvm.refreshtime", "5");
 
         // set the cache configuration
         System.setProperty("coherence.cacheconfig", "cache-config.xml");
 
         System.setProperty("coherence.role", "CoherenceDemoLauncher");
-
-        // specify to ignore new 2server SE strategy
-        System.setProperty("coherence.distribution.2server", "false");
-
-        // use WKA
-        System.setProperty("coherence.wka", "127.0.0.1");
-        System.setProperty("coherence.ttl", "0");
 
         // enable http serving
         System.setProperty("with.http", "true");

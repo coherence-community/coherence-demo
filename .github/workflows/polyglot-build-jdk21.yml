@@ -60,7 +60,7 @@ jobs:
       run: |
         pwd
         cd clients/go
-        go get github.com/oracle/coherence-go-client@latest
+        go get github.com/oracle/coherence-go-client/v2@latest
         go build -o go-demo .
         ./go-demo size
         ./go-demo add-trades ORCL 1000
