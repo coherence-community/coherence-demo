@@ -231,11 +231,11 @@ async def stock_split(symbol: str, factor: int) -> None:
         print(f"{get_time()}: Splitting {symbol} using factor of {factor}")
 
         print(f"{get_time()}: Update quantity for {symbol}")
-        async for _ in trades.invoke_all(Processors.multiply("quantity", factor), None, Filters.equals("symbol", symbol)):
+        async for _ in await trades.invoke_all(Processors.multiply("quantity", factor), None, Filters.equals("symbol", symbol)):
             break  # ignore
 
         print(f"{get_time()}: Update price for {symbol}")
-        async for _ in trades.invoke_all(Processors.multiply("price", 1 / factor), None, Filters.equals("symbol", symbol)):
+        async for _ in await trades.invoke_all(Processors.multiply("price", 1 / factor), None, Filters.equals("symbol", symbol)):
             break  # ignore
 
         await prices.invoke(symbol, Processors.multiply("price", 1 / factor))
