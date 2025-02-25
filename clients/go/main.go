@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2024 Oracle and/or its affiliates.
+* Copyright (c) 2024, 2025 Oracle and/or its affiliates.
 *
 * You may not use this file except in compliance with the Universal Permissive
 * License (UPL), Version 1.0 (the "License.")
@@ -21,10 +21,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/oracle/coherence-go-client/coherence"
-	"github.com/oracle/coherence-go-client/coherence/extractors"
-	"github.com/oracle/coherence-go-client/coherence/filters"
-	"github.com/oracle/coherence-go-client/coherence/processors"
+	"github.com/oracle/coherence-go-client/v2/coherence"
+	"github.com/oracle/coherence-go-client/v2/coherence/extractors"
+	"github.com/oracle/coherence-go-client/v2/coherence/filters"
+	"github.com/oracle/coherence-go-client/v2/coherence/processors"
 	"log"
 	"math/rand"
 	"os"
