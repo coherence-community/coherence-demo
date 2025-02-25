@@ -254,7 +254,7 @@ func stockSplit(trades coherence.NamedCache[string, Trade], prices coherence.Nam
 
 	symbolExtractor := extractors.Extract[string]("symbol")
 
-	ch := coherence.InvokeAllFilter[string, Trade, string](ctx, trades, filters.Equal(symbolExtractor, symbol),
+	ch := coherence.InvokeAllFilter[string, Trade, int64](ctx, trades, filters.Equal(symbolExtractor, symbol),
 		processors.Multiply("quantity", factor))
 
 	count := 0
@@ -268,7 +268,7 @@ func stockSplit(trades coherence.NamedCache[string, Trade], prices coherence.Nam
 	log.Printf("Updated quantity for %d trades", count)
 
 	count = 0
-	ch2 := coherence.InvokeAllFilter[string, Trade, string](ctx, trades, filters.Equal(symbolExtractor, symbol),
+	ch2 := coherence.InvokeAllFilter[string, Trade, float64](ctx, trades, filters.Equal(symbolExtractor, symbol),
 		processors.Multiply("price", float32(1)/float32(factor)))
 
 	for v := range ch2 {
