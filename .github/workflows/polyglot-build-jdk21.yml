@@ -49,7 +49,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B package --file pom.xml -Dcoherence.version=24.09
+          mvn -B package --file pom.xml -Dcoherence.version=14.1.2-0-1 -Dcoherence.group.id=com.oracle.coherence.ce
           echo "Running Coherence"
           mvn exec:exec > output.log 2>&1 &
           echo "Sleeping 30..."
