@@ -51,7 +51,7 @@ jobs:
         run: |
           mvn -B package --file pom.xml -Dcoherence.version=14.1.2-0-1 -Dcoherence.group.id=com.oracle.coherence.ce
           echo "Running Coherence"
-          mvn exec:exec > output.log 2>&1 &
+          mvn exec:exec -Dcoherence.version=14.1.2-0-1 -Dcoherence.group.id=com.oracle.coherence.ce > output.log 2>&1 &
           echo "Sleeping 30..."
           sleep 30
           tail -100 output.log
@@ -62,6 +62,7 @@ jobs:
           cd clients/go
           go get github.com/oracle/coherence-go-client/v2@latest
           go build -o go-demo .
+          export COHERENCE_SERVER_ADDRESS=coherence:///localhost
           ./go-demo size
           ./go-demo add-trades ORCL 1000
           ./go-demo stock-split ORCL 2
