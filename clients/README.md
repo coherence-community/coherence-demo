@@ -54,7 +54,7 @@ Once you have started the Coherence Demonstration, select from the follow to run
 
 - [JavaScript](#javascript)
 - [Python](#python)
-- [Goang](#golang)
+- [Golang](#golang)
 
 See [here](#examples) to see sample runs:   
 
