@@ -16,6 +16,8 @@ jobs:
         javaVersion:
           - 21
           - 22
+          - 23
+          - 24
 
     steps:
       - name: Checkout
