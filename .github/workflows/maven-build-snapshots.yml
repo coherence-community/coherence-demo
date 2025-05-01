@@ -18,9 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         coherenceVersion:
-          - 24.09.3
+          - 25.03.1
         javaVersion:
           - 21
+          - 24
 
     steps:
     - uses: actions/checkout@v4
@@ -47,7 +48,7 @@ jobs:
       shell: bash
       run: |
         echo "Running verify against $COH_VERSION"
-        mvn --file pom.xml -nsu --batch-mode -e -Dcoherence.version=$COH_VERSION -Dpof.maven.plugin.version=24.03.1 clean install
+        mvn --file pom.xml -nsu --batch-mode -e -Dcoherence.version=$COH_VERSION -Dpof.maven.plugin.version=25.03.1 clean install
         echo "==== Testing end-points ====="
         mvn exec:exec > server.log 2>&1 &
         PID=$!
