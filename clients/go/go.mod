@@ -21,7 +21,7 @@ toolchain go1.23.7
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/oracle/coherence-go-client/v2 v2.1.0
+	github.com/oracle/coherence-go-client/v2 v2.2.0
 )
 
 require (
