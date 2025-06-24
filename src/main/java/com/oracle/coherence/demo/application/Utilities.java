@@ -26,6 +26,7 @@ import com.tangosol.net.CacheFactory;
 import com.tangosol.net.Coherence;
 import com.tangosol.net.NamedCache;
 
+import com.tangosol.net.Session;
 import com.tangosol.util.Filters;
 import com.tangosol.util.InvocableMap;
 
@@ -49,36 +50,35 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Brian Oliver
  */
-public final class Utilities
-{
+public final class Utilities {
     /**
-    * The number of positions to create.
-    */
+     * The number of positions to create.
+     */
     private static final int NR_POSITIONS_TO_CREATE = 100000;
 
     /**
-    * The minimum factor for price calculations.
-    */
+     * The minimum factor for price calculations.
+     */
     private static final float MIN_FACTOR = 0.95f;
 
     /**
-    * The maximum factor for price calculations.
-    */
+     * The maximum factor for price calculations.
+     */
     private static final float MAX_FACTOR = 1.06f;
 
     /**
-    * The initial price.
-    */
+     * The initial price.
+     */
     private static final double INITIAL_PRICE = 20;
 
     /**
-    * The minimum price.
-    */
+     * The minimum price.
+     */
     private static final double MIN_PRICE = 5;
 
     /**
-    * Stock symbols.
-    */
+     * Stock symbols.
+     */
     private static final String[] SYMBOLS = {"ORCL", "MSFT", "GOOG", "AAPL", "NFLX", "DELL"};
 
     /**
@@ -104,6 +104,10 @@ public final class Utilities
      */
     public static final String FEDERATION_STATUS = "federation-status";
 
+    /**
+     * Session to use.
+     */
+    private static Session s_session;
 
     // ----- constructors ---------------------------------------------------
 
@@ -122,10 +126,24 @@ public final class Utilities
     /**
      * Create the required positions.
      *
-     * @param args  arguments to main
+     * @param args arguments to main
      */
     public static void main(String[] args) {
         createPositions(null, NR_POSITIONS_TO_CREATE);
+    }
+
+
+    public static Session getSession() {
+        if (s_session == null) {
+            Coherence coherence = Coherence.getInstance();
+            if (coherence == null) {
+                s_session = Coherence.clusterMember().start().join().getSession();
+            } else {
+                s_session = coherence.getSession();
+            }
+        }
+
+        return s_session;
     }
 
 
@@ -135,7 +153,7 @@ public final class Utilities
      * @return the trade {@link NamedCache}
      */
     public static NamedCache<String, Trade> getTradesCache() {
-        return Coherence.getInstance().getSession().getCache(TRADE_CACHE);
+        return getSession().getCache(TRADE_CACHE);
     }
 
 
@@ -145,7 +163,7 @@ public final class Utilities
      * @return the price {@link NamedCache}
      */
     public static NamedCache<String, Price> getPricesCache() {
-        return Coherence.getInstance().getSession().getCache(PRICE_CACHE);
+        return getSession().getCache(PRICE_CACHE);
     }
 
 
@@ -155,7 +173,7 @@ public final class Utilities
      * @return the price {@link NamedCache}
      */
     public static NamedCache<String, Boolean> getFederationStatusCache() {
-        return Coherence.getInstance().getSession().getCache(FEDERATION_STATUS);
+        return getSession().getCache(FEDERATION_STATUS);
     }
 
 
@@ -164,11 +182,11 @@ public final class Utilities
      * Kubernetes.
      *
      * @return an indicator showing if we are running under the Coherence Operator in
-     *      Kubernetes
+     * Kubernetes
      */
     public static boolean isRunningInKubernetes() {
         return System.getenv("KUBERNETES_SERVICE_HOST") != null &&
-               System.getenv("KUBERNETES_SERVICE_PORT") != null;
+                System.getenv("KUBERNETES_SERVICE_PORT") != null;
     }
 
     /**
@@ -189,8 +207,7 @@ public final class Utilities
     /**
      * Set federation to be started.
      */
-    public static void setFederationStarted()
-    {
+    public static void setFederationStarted() {
         getFederationStatusCache().put("status", true);
     }
 
@@ -211,8 +228,8 @@ public final class Utilities
      */
     public static String getCoherenceVersion() {
         return CacheFactory.VERSION.replaceFirst(" .*$", "")
-                                   .replaceFirst("[.-]SNAPSHOT.*$", "")
-                                   .replaceAll("-", ".");
+                .replaceFirst("[.-]SNAPSHOT.*$", "")
+                .replaceAll("-", ".");
     }
 
 
@@ -223,10 +240,10 @@ public final class Utilities
      */
     public static boolean isFederationConfiguredInK8s() {
         return isRunningInKubernetes() &&
-               System.getProperty("primary.cluster") != null &&
-               System.getProperty("secondary.cluster") != null &&
-               System.getProperty("primary.cluster.host") != null &&
-               System.getProperty("secondary.cluster.host") != null;
+                System.getProperty("primary.cluster") != null &&
+                System.getProperty("secondary.cluster") != null &&
+                System.getProperty("primary.cluster.host") != null &&
+                System.getProperty("secondary.cluster.host") != null;
     }
 
 
@@ -235,8 +252,7 @@ public final class Utilities
      *
      * @return the Coherence cluster version as an integer
      */
-    public static int getCoherenceVersionAsInt()
-    {
+    public static int getCoherenceVersionAsInt() {
         return Integer.parseInt(getCoherenceVersion().replaceAll("\\.", ""));
     }
 
@@ -246,8 +262,8 @@ public final class Utilities
      */
     public static void addIndexes() {
         NamedCache<String, Trade> tradesCache = getTradesCache();
-        Tracer                    tracer      = GlobalTracer.get();
-        Span                      span        = tracer.buildSpan("Utilities.AddIndexes")
+        Tracer tracer = GlobalTracer.get();
+        Span span = tracer.buildSpan("Utilities.AddIndexes")
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
 
@@ -259,8 +275,7 @@ public final class Utilities
             spanLog(span, "Created trade purchase value index");
             tradesCache.addIndex(Trade::getQuantity, false, null);
             spanLog(span, "Created trade amount index");
-        }
-        finally {
+        } finally {
             span.finish();
         }
         Logger.out(" Done");
@@ -272,8 +287,8 @@ public final class Utilities
      */
     public static void removeIndexes() {
         NamedCache<String, Trade> tradesCache = getTradesCache();
-        Tracer                    tracer      = GlobalTracer.get();
-        Span                      span        = tracer.buildSpan("Utilities.RemoveIndexes")
+        Tracer tracer = GlobalTracer.get();
+        Span span = tracer.buildSpan("Utilities.RemoveIndexes")
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER).start();
 
@@ -285,8 +300,7 @@ public final class Utilities
             spanLog(span, "Removed trade purchase value index");
             tradesCache.removeIndex(Trade::getQuantity);
             spanLog(span, "Removed trade amount index");
-        }
-        finally {
+        } finally {
             span.finish();
         }
 
@@ -300,8 +314,8 @@ public final class Utilities
      */
     public static void populatePrices() {
         NamedCache<String, Price> pricesCaches = getPricesCache();
-        Tracer                    tracer       = GlobalTracer.get();
-        Span                      span         = tracer.buildSpan("Utilities.PopulatePrices")
+        Tracer tracer = GlobalTracer.get();
+        Span span = tracer.buildSpan("Utilities.PopulatePrices")
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
                 .withTag("symbol.count", SYMBOLS.length).start();
@@ -311,8 +325,7 @@ public final class Utilities
                 Price price = new Price(symbol, INITIAL_PRICE);
                 pricesCaches.put(price.getSymbol(), price);
             }
-        }
-        finally {
+        } finally {
             span.finish();
         }
     }
@@ -321,23 +334,21 @@ public final class Utilities
     /**
      * Create {@value NR_POSITIONS_TO_CREATE} in the cache.
      */
-    public static void createPositions()
-    {
+    public static void createPositions() {
         createPositions(null, NR_POSITIONS_TO_CREATE);
     }
 
     /**
      * Issue a stock split.
      */
-    public static void splitStock(String symbol, int factor)
-    {
+    public static void splitStock(String symbol, int factor) {
         NamedCache<String, Trade> tradesCache = getTradesCache();
-        NamedCache<String, Price> priceCache  = getPricesCache();
+        NamedCache<String, Price> priceCache = getPricesCache();
 
         double originalPrice = priceCache.get(symbol).getPrice();
 
         Logger.out(String.format("Splitting stock for %s using %d:1", symbol, factor));
-        
+
         // split the stock
         tradesCache.invokeAll(Filters.equal(Trade::getSymbol, symbol), entry -> {
             Trade trade = entry.getValue();
@@ -357,40 +368,36 @@ public final class Utilities
      * @param symbolToInsert the symbol to add to, if null, then all symbols
      * @param count          the number of entries to add
      */
-    public static void createPositions(String symbolToInsert, int count)
-    {
+    public static void createPositions(String symbolToInsert, int count) {
         Logger.out(String.format("Creating %d Positions...", count));
 
         NamedCache<String, Trade> tradesCache = getTradesCache();
-        NamedCache<String, Price> priceCache  = getPricesCache();
-        Tracer                    tracer      = GlobalTracer.get();
-        Span                      span        = tracer.buildSpan("Utilities.CreatePositions")
+        NamedCache<String, Price> priceCache = getPricesCache();
+        Tracer tracer = GlobalTracer.get();
+        Span span = tracer.buildSpan("Utilities.CreatePositions")
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
                 .withTag("symbol.count", SYMBOLS.length).start();
 
         boolean singleSymbol = symbolToInsert != null;
 
-        try (Scope ignored = tracer.activateSpan(span))
-        {
-            Map<String,     Price> localPrices = new HashMap<>(priceCache.getAll(priceCache.keySet()));
-            HashMap<String, Trade> trades      = new HashMap<>();
-            Random                 random      = ThreadLocalRandom.current();
+        try (Scope ignored = tracer.activateSpan(span)) {
+            Map<String, Price> localPrices = new HashMap<>(priceCache.getAll(priceCache.keySet()));
+            HashMap<String, Trade> trades = new HashMap<>();
+            Random random = ThreadLocalRandom.current();
 
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < count; i++) {
                 // create a random position
                 String symbol = singleSymbol ? symbolToInsert : SYMBOLS[random.nextInt(SYMBOLS.length)];
-                int    amount = random.nextInt(1000) + 1;
-                double price  = localPrices.get(symbol).getPrice();
+                int amount = random.nextInt(1000) + 1;
+                double price = localPrices.get(symbol).getPrice();
 
                 Trade trade = new Trade(symbol, amount, price);
 
                 trades.put(trade.getId(), trade);
 
                 // batch the putAll's at 100,000
-                if (i % 100_000 == 0)
-                {
+                if (i % 100_000 == 0) {
                     spanLog(span, "Flushed trades to cache" + (singleSymbol ? " for symbol " + symbolToInsert : ""));
                     Logger.out("Flushing trades from HashMap to Coherence cache...");
                     tradesCache.putAll(trades);
@@ -399,13 +406,10 @@ public final class Utilities
             }
 
             // insert any remaining trades not previously flushed
-            if (!trades.isEmpty())
-            {
+            if (!trades.isEmpty()) {
                 tradesCache.putAll(trades);
             }
-        }
-        finally
-        {
+        } finally {
             span.finish();
         }
 
@@ -416,26 +420,22 @@ public final class Utilities
     /**
      * Update a single random stock symbol price on each call.
      */
-    public static void updatePrices()
-    {
+    public static void updatePrices() {
         NamedCache<String, Price> priceCache = getPricesCache();
-        Random                    random     = ThreadLocalRandom.current();
+        Random random = ThreadLocalRandom.current();
 
         // choose random symbol to modify
         String symbol = SYMBOLS[random.nextInt(SYMBOLS.length)];
         Tracer tracer = GlobalTracer.get();
-        Span   span   = tracer.buildSpan("Utilities.UpdatePrices")
+        Span span = tracer.buildSpan("Utilities.UpdatePrices")
                 .withTag(Tags.COMPONENT, "demo")
                 .withTag(Tags.SPAN_KIND, Tags.SPAN_KIND_SERVER)
                 .withTag("update.symbol", symbol).start();
 
-        try (Scope ignored = tracer.activateSpan(span))
-        {
+        try (Scope ignored = tracer.activateSpan(span)) {
             // invoke using static method to ensure all arguments are captured
             priceCache.invoke(symbol, updateStockPrice(random.nextFloat()));
-        }
-        finally
-        {
+        } finally {
             span.finish();
         }
     }
@@ -444,13 +444,11 @@ public final class Utilities
     /**
      * Invokes {@link Span#log(String)} if {@code span} is not {@code null}.
      *
-     * @param span     the target {@link Span}
-     * @param message  the message to log
+     * @param span    the target {@link Span}
+     * @param message the message to log
      */
-    public static void spanLog(Span span, String message)
-    {
-        if (span != null)
-        {
+    public static void spanLog(Span span, String message) {
+        if (span != null) {
             span.log(message);
         }
     }
@@ -459,18 +457,15 @@ public final class Utilities
     /**
      * An entry processor to update the price of a symbol.
      *
-     * @param randomValue  a random float to generate the price
-     *
+     * @param randomValue a random float to generate the price
      * @return a {@link InvocableMap.EntryProcessor} to carry out the processing
      */
-    private static InvocableMap.EntryProcessor<String, Price, Void> updateStockPrice(float randomValue)
-    {
+    private static InvocableMap.EntryProcessor<String, Price, Void> updateStockPrice(float randomValue) {
         return entry ->
         {
-            if (entry.isPresent())
-            {
-                Price  price    = entry.getValue();
-                float  factor   = (randomValue * (MAX_FACTOR - MIN_FACTOR) + MIN_FACTOR);
+            if (entry.isPresent()) {
+                Price price = entry.getValue();
+                float factor = (randomValue * (MAX_FACTOR - MIN_FACTOR) + MIN_FACTOR);
                 double newPrice = price.getPrice() * factor;
 
                 // when setting the price, if the value < MIN_PRICE, then make it MIN_PRICE
