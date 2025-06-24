@@ -380,6 +380,7 @@
             <argument>-Xms512m</argument>
             <argument>-Dcoherence.log.level=5</argument>
             <argument>-Dcoherence.management=all</argument>
+            <!--suppress UnresolvedMavenProperty -->
             <argument>-Dcoherence.management.http=${management.http}</argument>
             <argument>-Dcoherence.ttl=0</argument>
             <argument>-Djava.net.preferIPv4Stack=true</argument>
