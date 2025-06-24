@@ -122,7 +122,7 @@ public class StartSecondaryResource {
                             SystemProperty.of(Launcher.JAEGER_ENDPOINT_PROPERTY,
                                     System.getProperty(Launcher.JAEGER_ENDPOINT_PROPERTY,
                                             Launcher.DEFAULT_JAEGER_ENDPOINT)),
-                            Logging.at(0),
+                            Logging.at(9),
                             RoleName.of("CoherenceDemoServer-" + secondaryName),
                             ClusterPort.of(Launcher.SECONDARY_PORT),
                             ClusterName.of(secondaryName),

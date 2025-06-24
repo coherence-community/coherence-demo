@@ -33,7 +33,7 @@
     <!-- dependency versions -->
     <bedrock.version>7.0.6</bedrock.version>
     <coherence.version>25.03.1</coherence.version>
-    <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
+    <jakarta.xml.bind.version>4.0.2</jakarta.xml.bind.version>
     <copy.rename.maven.plugin.version>1.0.1</copy.rename.maven.plugin.version>
     <derby.version>10.17.1.0</derby.version>
     <docker.version>${project.version}</docker.version>
@@ -41,14 +41,14 @@
     <jackson.version>2.19.0</jackson.version>
     <jackson.databind.version>${jackson.version}</jackson.databind.version>
     <jaeger.version>1.8.1</jaeger.version>
-    <jaxrs.version>3.0.0</jaxrs.version>
-    <jersey.version>3.0.11</jersey.version>
+    <jaxrs.version>3.1.0</jaxrs.version>
+    <jersey.version>3.1.10</jersey.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
-    <jakarta.version>3.0.1</jakarta.version>
+    <jakarta.version>4.0.1</jakarta.version>
     <jib.version>3.4.5</jib.version>
     <jib.goal>dockerBuild</jib.goal>
     <kotlin.version>2.0.21</kotlin.version>
-    <netty.version>4.2.1.Final</netty.version>
+    <netty.version>4.1.118.Final</netty.version>
     <opentracing.jdbc.version>0.2.15</opentracing.jdbc.version>
 
     <pof.maven.plugin.version>${coherence.version}</pof.maven.plugin.version>
