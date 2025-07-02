@@ -132,7 +132,13 @@ public final class Utilities {
         createPositions(null, NR_POSITIONS_TO_CREATE);
     }
 
-
+    /**
+     * Obtains a Coherence session. If a session has not been previously obtained,
+     * it will be created by either joining a Coherence cluster or using an existing
+     * Coherence instance.
+     *
+     * @return a Coherence session
+     */
     public static Session getSession() {
         if (s_session == null) {
             Coherence coherence = Coherence.getInstance();
@@ -339,7 +345,15 @@ public final class Utilities {
     }
 
     /**
-     * Issue a stock split.
+     * Issues a stock split for the specified symbol by a given factor.
+     *
+     * This method performs the following operations:
+     * 1. Retrieves the current price of the specified stock symbol.
+     * 2. Splits the stock by the given factor, updating the quantity of all trades associated with the symbol.
+     * 3. Updates the stock price by dividing the original price by the split factor.
+     *
+     * @param symbol the stock symbol to be split
+     * @param factor the split factor (e.g., 2 for a 2:1 split)
      */
     public static void splitStock(String symbol, int factor) {
         NamedCache<String, Trade> tradesCache = getTradesCache();

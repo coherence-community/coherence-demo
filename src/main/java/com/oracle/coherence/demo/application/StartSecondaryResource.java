@@ -1,7 +1,7 @@
 /*
  * File: StartSecondaryResource.java
  *
- * Copyright (c) 2015, 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2025 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -73,6 +73,12 @@ public class StartSecondaryResource {
      */
     @Context
     private UriInfo uriInfo;
+
+    /**
+     * Default constructor for StartSecondaryResource.
+     */
+    public StartSecondaryResource() {
+    }
 
     /**
      * Starts the secondary cluster for demonstrating cluster replication.
