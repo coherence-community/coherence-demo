@@ -1,7 +1,7 @@
 /*
  * File: StartMemberResource.java
  *
- * Copyright (c) 2015, 2023, Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2025, Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -73,6 +73,12 @@ import static com.oracle.bedrock.predicate.Predicates.greaterThan;
 @Path("/start-member/{serverCount}")
 public class StartMemberResource
         extends AbstractClusterMemberResource {
+
+    /**
+     * Default constructor for StartMemberResource.
+     */
+    public StartMemberResource() {
+    }
 
     /**
      * Starts additional cluster members.

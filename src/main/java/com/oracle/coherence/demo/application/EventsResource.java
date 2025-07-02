@@ -62,6 +62,12 @@ public class EventsResource {
 
     private SseBroadcaster broadcaster;
 
+    /**
+     * Default constructor for EventsResource.
+     */
+    public EventsResource() {
+    }
+
     @PostConstruct
     void createBroadcaster() {
         this.broadcaster = sse.newBroadcaster();
@@ -93,6 +99,9 @@ public class EventsResource {
         eventSink.send(sse.newEvent("begin", new Date().toString()));
     }
 
+    /**
+     * Represents a price update to be sent back via web sockets.
+     */
     @XmlRootElement(name = "price")
     @XmlAccessorType(XmlAccessType.PROPERTY)
     public static class PriceUpdate {
@@ -100,20 +109,42 @@ public class EventsResource {
         private final double oldPrice;
         private final double newPrice;
 
+        /**
+         * Constructs a new PriceUpdate instance with the specified symbol and price information.
+         *
+         * @param symbol    the stock symbol associated with the price update
+         * @param oldPrice  the previous price of the stock
+         * @param newPrice  the current price of the stock
+         */
         public PriceUpdate(String symbol, double oldPrice, double newPrice) {
             this.symbol = symbol;
             this.oldPrice = oldPrice;
             this.newPrice = newPrice;
         }
 
+        /**
+         * Returns the stock symbol associated with this price update.
+         *
+         * @return the stock symbol
+         */
         public String getSymbol() {
             return symbol;
         }
 
+        /**
+         * Returns the previous price of the stock.
+         *
+         * @return the old price
+         */
         public double getOldPrice() {
             return oldPrice;
         }
 
+        /**
+         * Returns the current price of the stock.
+         *
+         * @return the new price
+         */
         public double getNewPrice() {
             return newPrice;
         }

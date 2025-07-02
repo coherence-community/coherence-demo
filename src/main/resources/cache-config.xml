@@ -44,6 +44,10 @@
             <cache-name>Price</cache-name>
             <scheme-name>distributed-scheme</scheme-name>
         </cache-mapping>
+        <cache-mapping>
+            <cache-name>federation-status</cache-name>
+            <scheme-name>federation-status-scheme</scheme-name>
+        </cache-mapping>
     </caching-scheme-mapping>
 
     <caching-schemes>
@@ -133,5 +137,10 @@
             </acceptor-config>
             <autostart system-property="with.http">true</autostart>
         </proxy-scheme>
+
+        <local-scheme>
+            <scheme-name>federation-status-scheme</scheme-name>
+        </local-scheme>
+
     </caching-schemes>
 </cache-config>

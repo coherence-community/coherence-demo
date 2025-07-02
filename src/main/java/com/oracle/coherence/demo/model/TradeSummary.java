@@ -53,6 +53,7 @@ public class TradeSummary {
     }
 
     /**
+     * Constructs a TradeSummary object.
      *
      * @param quantity  total number of shares acquired for the {@link Trade}
      * @param count   number of trades

@@ -77,6 +77,12 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ManagementResource {
 
     /**
+     * Default constructor for ManagementResource.
+     */
+    public ManagementResource() {
+    }
+
+    /**
      * Run a jmx query and return the results as JSON.
      *
      * @param queryArgs          the arguments to query, see MbeanServerConnection.queryNames

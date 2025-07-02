@@ -1,7 +1,7 @@
 /*
  * File: AbstractClusterMemberResource.java
  *
- * Copyright (c) 2015, 2021 Oracle and/or its affiliates.
+ * Copyright (c) 2015, 2025 Oracle and/or its affiliates.
  *
  * You may not use this file except in compliance with the Universal Permissive
  * License (UPL), Version 1.0 (the "License.")
@@ -35,6 +35,12 @@ public class AbstractClusterMemberResource {
      * Mapping of Member IDs to local stable ID.
      */
     private static final Map<String, Integer> MEMBER_TO_STABLE_ID = new HashMap<>();
+
+    /**
+     * Default constructor for AbstractClusterMemberResource.
+     */
+    public AbstractClusterMemberResource() {
+    }
 
     /**
      * Get a local stable ID for members started by REST.

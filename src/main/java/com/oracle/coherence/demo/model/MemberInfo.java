@@ -180,6 +180,11 @@ public class MemberInfo {
         return roleName;
     }
 
+    /**
+     * Sets the number of entries stored for the member.
+     *
+     * @param entryCount the new entry count
+     */
     public void setEntryCount(int entryCount) {
         this.entryCount = entryCount;
     }

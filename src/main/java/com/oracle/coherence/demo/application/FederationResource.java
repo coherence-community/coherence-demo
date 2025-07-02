@@ -72,6 +72,12 @@ public class FederationResource {
     private static final String SECONDARY_CLUSTER = System.getProperty(Launcher.SECONDARY_CLUSTER_PROPERTY);
 
     /**
+     * Default constructor for FederationResource.
+     */
+    public FederationResource() {
+    }
+
+    /**
      * Invoke the specified federated resource command.
      * <p>
      * Available commands are:
@@ -153,6 +159,11 @@ public class FederationResource {
         return Response.serverError().build();
     }
 
+    /**
+     * Returns if federation is started.
+     *
+     * @return if federation is started.
+     */
     @GET
     @Path("/isStarted")
     @Produces( {TEXT_PLAIN})
