@@ -322,7 +322,7 @@ The steps to run the application on Kubernetes comprises:
 
 You must use Oracle Coherence 12.2.1.4.0 or later for Federation to work within Kubernetes.
 
-The setup for this example uses two Coherence clusters in the same Kubernetes cluster. If you want to use Federation across Kubernetes cluster, see the [Oracle Coherence Operator Samples](https://oracle.github.io/coherence-operator/docs/samples/#list-of-samples).
+The setup for this example uses two Coherence clusters in the same Kubernetes cluster. If you want to use Federation across Kubernetes cluster, see the [Oracle Coherence Operator Samples]https://docs.coherence.community/coherence-operator/docs/latest/examples/021_deployment/README).
 
 * Primary Cluster
   * Cluster name: primary-cluster
@@ -514,7 +514,7 @@ mvn exec:exec -Pgrid-edition -Dcoherence.version=14.1.1-0-0
 ## View Cluster Metrics via Grafana
 
 If you wish to view metrics via Grafana, please carry out the steps
-[here](https://oracle.github.io/coherence-operator/docs/latest/#/examples/021_deployment/README)
+[here](https://docs.coherence.community/coherence-operator/docs/latest/examples/021_deployment/README)
 before you install any of the examples above.
 
 > Note: Before you run the above, you must change the namespace in `src/main/yaml/prometheus-rbac.yaml` in the coherence-operator cloned repository
