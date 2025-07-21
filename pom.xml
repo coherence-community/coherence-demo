@@ -37,7 +37,7 @@
     <copy.rename.maven.plugin.version>1.0.1</copy.rename.maven.plugin.version>
     <derby.version>10.17.1.0</derby.version>
     <docker.version>${project.version}</docker.version>
-    <eclipselink.version>4.0.2</eclipselink.version>
+    <eclipselink.version>4.0.7</eclipselink.version>
     <jackson.version>2.19.0</jackson.version>
     <jackson.databind.version>${jackson.version}</jackson.databind.version>
     <jaeger.version>1.8.1</jaeger.version>
