@@ -17,13 +17,16 @@ spec:
       port: 9612
       serviceMonitor:
         enabled: true
+    - name: management
   coherence:
     cacheConfig: cache-config.xml
     metrics:
       enabled: true
-  image: coherence-demo:8.0.0-SNAPSHOT
+    management:
+      enabled: true
+  image: coherence-demo:8.3.0-SNAPSHOT
   imagePullPolicy: IfNotPresent
-  replicas: 2
+  replicas: 3
 ---
 apiVersion: coherence.oracle.com/v1
 kind: Coherence
@@ -48,13 +51,14 @@ spec:
       serviceMonitor:
         enabled: true
     - name: management
-      port: 30000
   coherence:
     cacheConfig: cache-config.xml
     storageEnabled: false
     metrics:
       enabled: true
       port: 9612
-  image: coherence-demo:8.0.0-SNAPSHOT
+    management:
+      enabled: true
+  image: coherence-demo:8.3.0-SNAPSHOT
   imagePullPolicy: IfNotPresent
   replicas: 1

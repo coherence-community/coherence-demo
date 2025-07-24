@@ -512,7 +512,7 @@
                   <jmxFlag>-XX:+UnlockExperimentalVMOptions</jmxFlag>
                   <jmxFlag>-XX:+UseG1GC</jmxFlag>
                 </jvmFlags>
-                <mainClass>com.tangosol.net.DefaultCacheServer</mainClass>
+                <mainClass>com.tangosol.net.Coherence</mainClass>
                 <ports>
                   <port>8080</port>
                 </ports>
