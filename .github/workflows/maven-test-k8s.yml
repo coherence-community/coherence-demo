@@ -1,0 +1,46 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Test Deploy K8s
+
+on:
+  push:
+    branches:
+    - '*'
+  schedule:
+    # Every day at 1am
+    - cron: '0 1 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        javaVersion:
+          - 21
+          - 24
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up JDK ${{ matrix.javaVersion }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: '${{ matrix.javaVersion }}'
+        distribution: 'zulu'
+
+    - name: Print Versions
+      run: mvn -version && ant -version
+
+    - name: Cache Maven packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2-snapshots
+
+    - name: Build and Run with K8s
+      run: |
+        ./scripts/k8s-test.sh scripts/kind-config.yaml v3.5.2

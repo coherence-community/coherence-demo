@@ -49,8 +49,7 @@ public class StopMemberResource
     /**
      * Stops the specified cluster member.
      *
-     * @param memberId  the member ID
-     *
+     * @param memberId the member ID
      * @return an empty response
      */
     @GET
@@ -61,12 +60,14 @@ public class StopMemberResource
 
         CoherenceCacheServer server = registry.getResource(CoherenceCacheServer.class, memberId);
 
-        releaseMemberToStableIdAssociation(memberId);
+        if (memberId != null) {
+            releaseMemberToStableIdAssociation(memberId);
 
-        if (server != null) {
-            registry.unregisterResource(CoherenceCacheServer.class, memberId);
+            if (server != null) {
+                registry.unregisterResource(CoherenceCacheServer.class, memberId);
 
-            server.close();
+                server.close();
+            }
         }
 
         return Response.noContent().build();

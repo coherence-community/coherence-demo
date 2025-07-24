@@ -217,7 +217,7 @@ The steps to run the application on Kubernetes comprises:
    Install the operator using `kubectl`. (It will be installed into a new namespace called `coherence`)
 
    ```bash
-   kubectl apply -f https://github.com/oracle/coherence-operator/releases/download/v3.3.3/coherence-operator.yaml
+   kubectl apply -f https://github.com/oracle/coherence-operator/releases/download/v3.5.2/coherence-operator.yaml
    ```
 
    Confirm the creation of the operator:
