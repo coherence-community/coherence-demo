@@ -17,8 +17,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        coherenceVersion:
-          - 25.03.2
         javaVersion:
           - 21
           - 24
@@ -45,4 +43,4 @@ jobs:
 
     - name: Build and Run with K8s
       run: |
-        ./scripts/k8s-test.sh ${{ matrix.coherenceVersion }} scripts/kind-config.yaml v3.5.2
+        ./scripts/k8s-test.sh scripts/kind-config.yaml v3.5.2
