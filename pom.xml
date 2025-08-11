@@ -42,7 +42,7 @@
     <jackson.databind.version>${jackson.version}</jackson.databind.version>
     <jaeger.version>1.8.1</jaeger.version>
     <jaxrs.version>3.1.0</jaxrs.version>
-    <jersey.version>3.1.10</jersey.version>
+    <jersey.version>3.1.11</jersey.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
     <jakarta.version>4.1.0</jakarta.version>
     <jib.version>3.4.6</jib.version>
